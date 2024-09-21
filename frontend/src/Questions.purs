@@ -85,6 +85,23 @@ ageQuestion = mkQuestion "Edad" $
     , HP.id "age"
     , HP.name "participant[age]"
     , HP.required true
-    , HE.onValueInput \_ -> SendForm
     ]
 
+sexQuestion :: forall w. HH.HTML w Action
+sexQuestion = mkQuestion "Sexo" $
+  HH.input
+    [ HP.type_ HP.InputRadio 
+    , HP.id "sex"
+    , HP.name "participant[sex]"
+    , HP.required true
+    , HP.value "0"
+    ]
+  <> HH.text "Masculino"
+  <> HH.input
+      [ HP.type_ HP.InputRadio 
+      , HP.id "sex"
+      , HP.name "participant[sex]"
+      , HP.required true
+      , HP.value "0"
+      ]
+  <> HH.text "Femenino"
