@@ -28,14 +28,15 @@ Participantes
     alcoholFrequency Int Maybe
     drugs Bool
     drugsFrequency Int Maybe
-    disorder String Maybe
+    disorder Bool
+    disorderInput String Maybe
     injury Bool
     injuryTreated Bool Maybe
     injuryLocation String Maybe
     abuse Int
     abuseOther String Maybe
     shortage Int
-    loss Int
+    loss Bool
     ipAddr String
     deriving Show
 

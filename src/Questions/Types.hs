@@ -22,14 +22,15 @@ data ParticipantForm
     alcoholFrequency :: Maybe Int,
     drugs :: Bool,
     drugsFrequency :: Maybe Int,
-    disorder :: Maybe String,
+    disorder :: Bool,
+    disorderInput :: Maybe String,
     injury :: Bool,
     injuryTreated :: Maybe Bool,
     injuryLocation :: Maybe String,
     abuse :: Int,
     abuseOther :: Maybe String,
     shortage :: Int,
-    loss :: Int
+    loss :: Bool
   }
   deriving (Show, Generic, ToJSON)
 
@@ -49,6 +50,7 @@ participantFromForm pForm addr = participante
                                  , participantesDrugsFrequency=pDrugsFreq
                                  , participantesDrugs=pDrugs
                                  , participantesDisorder=pDisorder
+                                 , participantesDisorderInput=pDisorderInput
                                  , participantesAlcoholFrequency=pAlcoholFreq
                                  , participantesAlcohol=pAlcohol
                                  , participantesAge=pAge
@@ -63,6 +65,7 @@ participantFromForm pForm addr = participante
     pDrugs = drugs pForm
     pDrugsFreq = drugsFrequency pForm
     pDisorder = disorder pForm
+    pDisorderInput = disorderInput pForm
     pInjury = injury pForm
     pInjuryTreated = injuryTreated pForm
     pInjuryLocation = injuryLocation pForm

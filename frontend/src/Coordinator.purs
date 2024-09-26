@@ -1,12 +1,14 @@
 module Coordinator where
 
 import Prelude
+
 import Data.Maybe (Maybe(..))
+import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
 import Halogen as H
 import Halogen.HTML as HH
-import Type.Proxy (Proxy(..))
 import Questions as Q
+import Type.Proxy (Proxy(..))
 
 data Stage 
   = Questions
@@ -36,7 +38,7 @@ _questions = Proxy :: Proxy "questions"
 initialState :: forall i. i -> Stage
 initialState _ = Questions
 
-mainComponent :: forall query input output m. MonadEffect m => H.Component query input output m
+mainComponent :: forall query input output m. MonadAff m => H.Component query input output m
 mainComponent =
   H.mkComponent
   { initialState
@@ -44,7 +46,7 @@ mainComponent =
   , eval: H.mkEval $ H.defaultEval { handleAction = mainHandler }
   }
 
-render :: forall m. MonadEffect m => Stage -> H.ComponentHTML Action ChildSlots m
+render :: forall m. MonadAff m => Stage -> H.ComponentHTML Action ChildSlots m
 render = case _ of
   Questions -> HH.slot_ _questions unit Q.questionsComponent unit
   Barrat -> HH.text "Barrat Component"

@@ -22,10 +22,12 @@ description:         Web app for neuropsychological tests
 dependencies:
 - base >= 4.7 && < 5
 - servant
+- servant-lucid
 - servant-server
 - persistent
 - persistent-postgresql
 - persistent-template
+- lucid
 - monad-logger
 - bytestring
 - network

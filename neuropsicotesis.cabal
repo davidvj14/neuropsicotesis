@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Api
+      Config
       DB
       Lib
       Questions.Api
@@ -40,6 +41,7 @@ library
     , base >=4.7 && <5
     , bytestring
     , cookie
+    , lucid
     , monad-logger
     , mtl
     , network
@@ -47,6 +49,7 @@ library
     , persistent-postgresql
     , persistent-template
     , servant
+    , servant-lucid
     , servant-server
     , text
     , wai
@@ -66,6 +69,7 @@ executable neuropsicotesis-exe
     , base >=4.7 && <5
     , bytestring
     , cookie
+    , lucid
     , monad-logger
     , mtl
     , network
@@ -74,6 +78,7 @@ executable neuropsicotesis-exe
     , persistent-postgresql
     , persistent-template
     , servant
+    , servant-lucid
     , servant-server
     , text
     , wai
@@ -94,6 +99,7 @@ test-suite neuropsicotesis-test
     , base >=4.7 && <5
     , bytestring
     , cookie
+    , lucid
     , monad-logger
     , mtl
     , network
@@ -102,6 +108,7 @@ test-suite neuropsicotesis-test
     , persistent-postgresql
     , persistent-template
     , servant
+    , servant-lucid
     , servant-server
     , text
     , wai
