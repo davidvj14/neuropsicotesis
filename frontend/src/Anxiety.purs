@@ -59,7 +59,9 @@ handleAction action = do
   case action of
     UpdateAnswers index val -> setAnswer index val
     HandleSubmit ev -> handleSubmit ev
-    _ -> setAnswer 0 ""
+    InstructionsDone _ -> H.modify_ \state -> state { stage = AnxietyForm }
+    _ -> pure unit
+    
 
 setAnswer :: forall m. MonadEffect m => Int -> String -> H.HalogenM State Action ChildSlots Output m Unit
 setAnswer index val = do
@@ -132,7 +134,7 @@ render state = case state.stage of
   Instructions -> HH.slot _instructions 0 (instructionsComponent instructions) unit InstructionsDone
   AnxietyForm -> HH.slot _anxietySlot 1 anxietyComponent unit (\_ -> ActionUnit)
 
-renderAnxiety :: forall m.  H.ComponentHTML Action () m
+renderAnxiety :: forall m.  H.ComponentHTML Action ChildSlots m
 renderAnxiety =
   HH.div
     [ HP.class_ $ H.ClassName "container"]
@@ -163,7 +165,7 @@ anxietyComponent :: forall input query m. MonadAff m => H.Component query input 
 anxietyComponent =
   H.mkComponent
     { initialState
-    , render: render
+    , render: (\_ -> renderAnxiety)
     , eval: H.mkEval $ H.defaultEval
        { handleAction = handleAction
        }
