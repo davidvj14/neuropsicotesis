@@ -54,7 +54,7 @@ render :: forall m. MonadAff m => Stage -> H.ComponentHTML Action ChildSlots m
 render stage = case stage of
   Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
   Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
-  BeckAnxiety -> HH.slot _anxiety 2 Anx.anxietyComponent unit HandleBeckAnx
+  BeckAnxiety -> HH.slot _anxiety 2 Anx.mainComponent unit HandleBeckAnx
   Wisconsin -> HH.text "Wisconsin Component"
   GoNoGo -> HH.text "GoNoGo Component"
   Stroop -> HH.text "Stroop Component"
