@@ -8,13 +8,14 @@ import Effect.Class (class MonadEffect)
 import Halogen as H
 import Halogen.HTML as HH
 import Questions as Q
+import Anxiety as Anx
 import Type.Proxy (Proxy(..))
 
 data Stage 
   = Questions
   | Barrat
+  | BeckAnxiety
   | Wisconsin
-  | Beck
   | GoNoGo
   | Stroop
   | Ending
@@ -23,6 +24,7 @@ data Stage
 data Action 
   = HandleQuestions Q.Output
   | HandleBarrat Barrat.Output
+  | HandleBeckAnx Anx.Output
   | HandleCardSorting
   | HandleCardGame
   | HandleEnding
@@ -30,10 +32,12 @@ data Action
 type ChildSlots = 
   ( questions :: Q.Slot
   , barrat :: Barrat.Slot
+  , anxiety :: Anx.Slot
   )
 
 _questions = Proxy :: Proxy "questions"
 _barrat = Proxy :: Proxy "barrat"
+_anxiety = Proxy :: Proxy "anxiety"
 
 initialState :: forall i. i -> Stage
 initialState _ = Questions
@@ -50,8 +54,8 @@ render :: forall m. MonadAff m => Stage -> H.ComponentHTML Action ChildSlots m
 render stage = case stage of
   Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
   Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
+  BeckAnxiety -> HH.slot _anxiety 2 Anx.anxietyComponent unit HandleBeckAnx
   Wisconsin -> HH.text "Wisconsin Component"
-  Beck -> HH.text "Beck Component"
   GoNoGo -> HH.text "GoNoGo Component"
   Stroop -> HH.text "Stroop Component"
   Ending -> HH.text "Ending Component"
@@ -61,8 +65,7 @@ mainHandler :: forall output m. MonadEffect m => Action -> H.HalogenM Stage Acti
 mainHandler action = do
   case action of
     HandleQuestions _ -> H.modify_ \_ -> Barrat
-    HandleBarrat _ -> H.modify_ \_ -> Wisconsin
-    HandleCardSorting -> H.modify_ \_ -> Beck
-    HandleCardGame -> H.modify_ \_ -> Ending
-    HandleEnding -> H.modify_ \_ -> Void
+    HandleBarrat _ -> H.modify_ \_ -> BeckAnxiety
+    HandleBeckAnx _ -> H.modify_ \_ -> Void
+    _ -> H.modify_ \_ -> Void
 
