@@ -170,3 +170,17 @@ anxietyComponent =
        { handleAction = handleAction
        }
     }
+
+mainComponent :: forall query input m. MonadAff m => H.Component query input Output m
+mainComponent =
+  H.mkComponent
+  { initialState
+  , render
+  , eval: H.mkEval $ H.defaultEval { handleAction = mainHandler }
+  }
+
+mainHandler :: forall m. MonadEffect m => Action -> H.HalogenM State Action ChildSlots Output m Unit
+mainHandler =
+  case _ of
+       InstructionsDone _ -> H.modify_ \state -> state { stage = AnxietyForm }
+       _ -> pure unit
