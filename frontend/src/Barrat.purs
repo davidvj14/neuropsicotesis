@@ -40,7 +40,6 @@ type Slot = forall query. H.Slot query Output Int
 
 handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action () Output m Unit
 handleAction action = do
-  H.liftEffect $ log "??"
   case action of
     UpdateAnswers index val -> setAnswer index val
     HandleSubmit ev -> handleSubmit ev
@@ -54,20 +53,12 @@ setAnswer index val = do
 
 handleSubmit :: forall m. MonadAff m => Event -> H.HalogenM State Action () Output m Unit
 handleSubmit ev = do
-  H.liftEffect $ log "???"
   H.liftEffect $ preventDefault ev
   answers <- H.gets _.answers
   _ <- H.liftAff $ AX.post ResponseFormat.ignore "/barrat"
     (Just $ RequestBody.String $ joinWith " " answers)
   H.raise BarratDone
 
-{-
-handleQuery :: forall a m. MonadEffect m => Query a -> H.HalogenM State Action () Output m (Maybe a)
-handleQuery = case _ of
-  GetState reply -> do
-    state <- H.get
-    pure $ Just (reply state)
-    -}
 questions :: Array String
 questions = 
   [ "1. Planifico mis tareas con cuidado"
