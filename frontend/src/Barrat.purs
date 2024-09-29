@@ -37,7 +37,6 @@ data Action
 
 data Output = BarratDone
 type Slot = forall query. H.Slot query Output Int
--- data Query a = GetState (State -> a)
 
 handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action () Output m Unit
 handleAction action = do
