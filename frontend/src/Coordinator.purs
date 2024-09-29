@@ -2,7 +2,7 @@ module Coordinator where
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
+import Barrat as Barrat
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
 import Halogen as H
@@ -13,27 +13,27 @@ import Type.Proxy (Proxy(..))
 data Stage 
   = Questions
   | Barrat
-  | CardSorting
-  | CardGame
+  | Wisconsin
+  | Beck
+  | GoNoGo
+  | Stroop
   | Ending
   | Void
 
 data Action 
   = HandleQuestions Q.Output
-  | HandleBarrat
+  | HandleBarrat Barrat.Output
   | HandleCardSorting
   | HandleCardGame
   | HandleEnding
 
 type ChildSlots = 
-  ( questions :: Q.Slot Unit
-  -- Add other slots here as needed
-  -- , barrat :: Barrat.Slot Unit
-  -- , cardSorting :: CardSorting.Slot Unit
-  -- etc.
+  ( questions :: Q.Slot
+  , barrat :: Barrat.Slot
   )
 
 _questions = Proxy :: Proxy "questions"
+_barrat = Proxy :: Proxy "barrat"
 
 initialState :: forall i. i -> Stage
 initialState _ = Questions
@@ -47,19 +47,22 @@ mainComponent =
   }
 
 render :: forall m. MonadAff m => Stage -> H.ComponentHTML Action ChildSlots m
-render = case _ of
-  Questions -> HH.slot_ _questions unit Q.questionsComponent unit
-  Barrat -> HH.text "Barrat Component"
-  CardSorting -> HH.text "Card Sorting Component"
-  CardGame -> HH.text "Card Game Component"
+render stage = case stage of
+  Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
+  Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
+  Wisconsin -> HH.text "Wisconsin Component"
+  Beck -> HH.text "Beck Component"
+  GoNoGo -> HH.text "GoNoGo Component"
+  Stroop -> HH.text "Stroop Component"
   Ending -> HH.text "Ending Component"
   Void -> HH.text "Void"
 
 mainHandler :: forall output m. MonadEffect m => Action -> H.HalogenM Stage Action ChildSlots output m Unit
-mainHandler = case _ of
-  HandleQuestions Q.Submitted -> H.modify_ \_ -> Barrat
-  HandleBarrat -> H.modify_ \_ -> CardSorting
-  HandleCardSorting -> H.modify_ \_ -> CardGame
-  HandleCardGame -> H.modify_ \_ -> Ending
-  HandleEnding -> H.modify_ \_ -> Void
+mainHandler action = do
+  case action of
+    HandleQuestions _ -> H.modify_ \_ -> Barrat
+    HandleBarrat _ -> H.modify_ \_ -> Wisconsin
+    HandleCardSorting -> H.modify_ \_ -> Beck
+    HandleCardGame -> H.modify_ \_ -> Ending
+    HandleEnding -> H.modify_ \_ -> Void
 

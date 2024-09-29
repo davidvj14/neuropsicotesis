@@ -1,4 +1,4 @@
-
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# LANGUAGE DataKinds                  #-}
 {-# LANGUAGE DerivingStrategies         #-}
 {-# LANGUAGE FlexibleInstances          #-}
@@ -40,6 +40,15 @@ Participantes
     ipAddr String
     deriving Show
 
+Beck
+    p_id ParticipantesId
+    anxiexyScore Int
+    anxietyAnswers [Int]
+    depressionScore
+    depressionAnswers [Int]
+    Primary p_id
+    deriving Show
+
 Barrat
     p_id ParticipantesId
     cognitive Int
@@ -47,8 +56,15 @@ Barrat
     unplanned Int
     raw_answers [Int]
     Primary p_id
+    deriving Show
 
-CardSorting
+GoNoGo
+    p_id ParticipantesId
+    Primary p_id
+    deriving Show
+
+
+Wisconsin
     p_id ParticipantesId
     sorting_score Int
     errors Int
@@ -58,15 +74,8 @@ CardSorting
     sorting_ttf Int
     tae Double
     game_time Int
-    Primary p_id
+    attempts [Int]
     
-CardGame
-    p_id ParticipantesId
-    game_score Int
-    answers [Int]
-    game_ttf Int
-    game_time Int
-    questions [Int]
     Primary p_id
 
 Suspicious

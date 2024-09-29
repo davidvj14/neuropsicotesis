@@ -18,6 +18,7 @@ to generate this file without the comments in this block.
   , "argonaut"
   , "argonaut-codecs"
   , "argonaut-core"
+  , "arrays"
   , "console"
   , "effect"
   , "either"
@@ -29,6 +30,8 @@ to generate this file without the comments in this block.
   , "maybe"
   , "prelude"
   , "record"
+  , "strings"
+  , "tuples"
   , "web-events"
   ]
 , packages = ./packages.dhall

@@ -27,6 +27,7 @@ dependencies:
 - persistent
 - persistent-postgresql
 - persistent-template
+- lens
 - lucid
 - monad-logger
 - bytestring

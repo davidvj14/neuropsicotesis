@@ -88,3 +88,20 @@ input[type="submit"]:hover {
     0% { opacity: 1; }
     100% { opacity: 0; }
 }
+
+table {
+    width: 100%;
+}
+th, td {
+    padding: 1.4vw;
+    text-align: center;
+    border-bottom: 0.07vw solid #ddd;
+}
+th {
+    background-color: #f2f2f2;
+}
+.radio-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+

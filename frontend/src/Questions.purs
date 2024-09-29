@@ -65,14 +65,13 @@ data Action
   | ShowQuestion String Boolean
   | CompositeAction (Array Action)
   | SendForm Event
-  | SendForm2 
   | GoNext
 
 data Output = Submitted
 
-type Slot = H.Slot Query Output
+type Slot = forall query. H.Slot query Output Int
 
-data Query a = GetState (State -> a)
+--data Query a = GetState (State -> a)
 
 initialState :: forall i. i -> State
 initialState _ =
@@ -105,14 +104,13 @@ initialState _ =
     , code: ""
   }
 
-questionsComponent :: forall input m. MonadAff m => H.Component Query input Output m
+questionsComponent :: forall input query m. MonadAff m => H.Component query input Output m
 questionsComponent =
   H.mkComponent
     { initialState
     , render: renderQuestions
     , eval: H.mkEval $ H.defaultEval 
         { handleAction = eventHandler
-        , handleQuery = handleQuery
         }
     }
 
@@ -164,12 +162,13 @@ eventHandler = case _ of
   CompositeAction actions -> traverse_ eventHandler actions
   _ -> H.raise Submitted
 
+{-
 handleQuery :: forall a m. MonadEffect m => Query a -> H.HalogenM State Action () Output m (Maybe a)
 handleQuery = case _ of
   GetState reply -> do
     state <- H.get
     pure $ Just (reply state)
-
+    -}
 updateForm :: forall m. MonadEffect m => String -> String -> H.HalogenM State Action () Output m Unit
 updateForm key value = do
   formData <- H.gets _.formData
@@ -223,17 +222,13 @@ formHandler = do
     then do
        form <- H.gets _.formData
        H.liftAff $ sendForm form
+       H.liftEffect $ log "submitting..."
        H.raise Submitted
     else do
        H.modify_ \state -> { formData: state.formData
                            , conditionalDivs: state.conditionalDivs { badCode = true }
                            , code: state.code
                            }
-  H.raise Submitted
-    --username <- H.gets _.username
-    --H.modify_ _ { loading = true }
-    --response <- H.liftAff $ AX.get AXRF.string ("https://api.github.com/users/" <> username)
-    --H.modify_ _ { loading = false, result = map _.body (hush response) }
 
 sendForm :: FormData -> Aff Unit
 sendForm form = do
