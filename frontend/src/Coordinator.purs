@@ -32,7 +32,7 @@ data Action
 type ChildSlots = 
   ( questions :: Q.Slot
   , barrat :: Barrat.Slot
-  , anxiety :: Anx.Slot
+  , anxiety :: Anx.AnxietySlot
   )
 
 _questions = Proxy :: Proxy "questions"
