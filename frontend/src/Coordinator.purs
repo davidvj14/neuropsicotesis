@@ -82,7 +82,7 @@ renderCurrent stage =
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"
         Ending -> HH.text "Ending Component"
-        Void -> HH.text "Void"
+        Void -> HH.text ""
     ]
 
 maybeRenderFadingOut :: forall m. MonadAff m => Maybe Stage -> H.ComponentHTML Action ChildSlots m
@@ -116,6 +116,7 @@ mainHandler action = do
 fadeToStage :: forall output m. MonadAff m => Stage -> H.HalogenM State Action ChildSlots output m Unit
 fadeToStage nextStage = do
   H.modify_ \s -> s { fadingOutStage = Just s.currentStage }
+  H.modify_ \s -> s { currentStage = Void }
   H.liftAff $ delay (Milliseconds 500.0)
   H.modify_ \s -> s { currentStage = nextStage }
   H.liftAff $ delay (Milliseconds 50.0)
