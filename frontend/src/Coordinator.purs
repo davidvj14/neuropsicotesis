@@ -119,5 +119,4 @@ fadeToStage nextStage = do
   H.modify_ \s -> s { currentStage = Void }
   H.liftAff $ delay (Milliseconds 500.0)
   H.modify_ \s -> s { currentStage = nextStage }
-  H.liftAff $ delay (Milliseconds 50.0)
   mainHandler FadeOutComplete
