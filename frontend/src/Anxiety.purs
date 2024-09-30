@@ -29,6 +29,13 @@ type State =
   , stage :: AnxietyStage
   }
 
+data Action 
+  = UpdateAnswers Int String
+  | HandleSubmit Event
+  | InstructionsDone InstructionsOutput
+  | ActionUnit
+
+
 initialState :: forall i. i -> State
 initialState _ =
   { answers: replicate 30 ""
@@ -36,23 +43,15 @@ initialState _ =
   }
 
 type AnxietySlot = forall query. H.Slot query Output Int
+data Output = AnxietyDone
+
+_instructions = Proxy :: Proxy "instructions"
+_anxietySlot = Proxy :: Proxy "anxietySlot"
 
 type ChildSlots = 
   ( instructions :: InstructionsSlot
   , anxietySlot :: AnxietySlot
   )
-
-_instructions = Proxy :: Proxy "instructions"
-_anxietySlot = Proxy :: Proxy "anxietySlot"
-
-data Action 
-  = UpdateAnswers Int String
-  | HandleSubmit Event
-  | InstructionsDone InstructionsOutput
-  | ActionUnit
-
-data Output = AnxietyDone
-type Slot = forall query. H.Slot query Output Int
 
 handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action ChildSlots Output m Unit
 handleAction action = do
