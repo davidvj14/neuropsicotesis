@@ -33,11 +33,12 @@ handleAction _ = H.raise DoneReading
 mkInstructions :: forall w. String -> HH.HTML w Action
 mkInstructions instructions = 
   HH.div
-    [ HP.class_ $ HH.ClassName "instructions" ]
+    [ HP.class_ $ HH.ClassName "instructions-container" ]
     [ HH.text instructions 
     , HH.input
         [ HP.type_ HP.InputButton 
         , HE.onClick \_ -> ClickedDone
+        , HP.value "Continuar"
         ]
     ]
 
