@@ -421,6 +421,7 @@ disorderQuestion = mkQuestion "Tienes algún diagnóstico psiquiátrico o neurol
       , HE.onChecked \_ -> CompositeAction [ UpdateForm "disorder" "1", ShowQuestion "disorder" true ]
       ]
   , HH.text "Sí"
+  , HH.br_
   , HH.input
       [ HP.type_ HP.InputRadio 
       , HP.id "disorder_no"
@@ -458,6 +459,7 @@ injuryQuestion = mkQuestion "¿Has presentado algún golpe en la cabeza importan
       , HE.onChecked \_ -> CompositeAction [ UpdateForm "injury" "1", ShowQuestion "injury" true ]
       ]
   , HH.text "Sí"
+  , HH.br_
   , HH.input
       [ HP.type_ HP.InputRadio 
       , HP.id "injury_no"
