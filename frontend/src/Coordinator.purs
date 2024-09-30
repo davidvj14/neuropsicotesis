@@ -60,9 +60,14 @@ mainComponent =
 
 render :: forall m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
 render state = 
-  HH.div_
-    [ maybeRenderFadingOut state.fadingOutStage
-    , renderCurrent state.currentStage
+  HH.div
+    [ HP.class_ $ H.ClassName "coordinator-container"]
+    [
+    HH.div
+      [ HP.class_ $ H.ClassName "stage-container" ]
+      [ maybeRenderFadingOut state.fadingOutStage
+      , renderCurrent state.currentStage
+      ]
     ]
 
 renderCurrent :: forall m. MonadAff m => Stage -> H.ComponentHTML Action ChildSlots m
