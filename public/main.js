@@ -900,24 +900,24 @@
 
   // output/Control.Monad/index.js
   var unlessM = function(dictMonad) {
-    var bind7 = bind(dictMonad.Bind1());
+    var bind8 = bind(dictMonad.Bind1());
     var unless2 = unless(dictMonad.Applicative0());
     return function(mb) {
       return function(m) {
-        return bind7(mb)(function(b2) {
+        return bind8(mb)(function(b2) {
           return unless2(b2)(m);
         });
       };
     };
   };
   var ap = function(dictMonad) {
-    var bind7 = bind(dictMonad.Bind1());
-    var pure11 = pure(dictMonad.Applicative0());
+    var bind8 = bind(dictMonad.Bind1());
+    var pure14 = pure(dictMonad.Applicative0());
     return function(f) {
       return function(a2) {
-        return bind7(f)(function(f$prime) {
-          return bind7(a2)(function(a$prime) {
-            return pure11(f$prime(a$prime));
+        return bind8(f)(function(f$prime) {
+          return bind8(a2)(function(a$prime) {
+            return pure14(f$prime(a$prime));
           });
         });
       };
@@ -1006,10 +1006,10 @@
     var catchError1 = catchError(dictMonadError);
     var Monad0 = dictMonadError.MonadThrow0().Monad0();
     var map24 = map(Monad0.Bind1().Apply0().Functor0());
-    var pure11 = pure(Monad0.Applicative0());
+    var pure14 = pure(Monad0.Applicative0());
     return function(a2) {
       return catchError1(map24(Right.create)(a2))(function($52) {
-        return pure11(Left.create($52));
+        return pure14(Left.create($52));
       });
     };
   };
@@ -1460,13 +1460,13 @@
     };
   };
   var bindExceptT = function(dictMonad) {
-    var bind7 = bind(dictMonad.Bind1());
-    var pure11 = pure(dictMonad.Applicative0());
+    var bind8 = bind(dictMonad.Bind1());
+    var pure14 = pure(dictMonad.Applicative0());
     return {
       bind: function(v) {
         return function(k) {
-          return bind7(v)(either(function($193) {
-            return pure11(Left.create($193));
+          return bind8(v)(either(function($193) {
+            return pure14(Left.create($193));
           })(function(a2) {
             var v1 = k(a2);
             return v1;
@@ -1518,25 +1518,25 @@
     var append6 = append(dictSemigroup);
     return function(dictMonad) {
       var Bind1 = dictMonad.Bind1();
-      var bind7 = bind(Bind1);
-      var pure11 = pure(dictMonad.Applicative0());
+      var bind8 = bind(Bind1);
+      var pure14 = pure(dictMonad.Applicative0());
       var functorExceptT1 = functorExceptT(Bind1.Apply0().Functor0());
       return {
         alt: function(v) {
           return function(v1) {
-            return bind7(v)(function(rm) {
+            return bind8(v)(function(rm) {
               if (rm instanceof Right) {
-                return pure11(new Right(rm.value0));
+                return pure14(new Right(rm.value0));
               }
               ;
               if (rm instanceof Left) {
-                return bind7(v1)(function(rn) {
+                return bind8(v1)(function(rn) {
                   if (rn instanceof Right) {
-                    return pure11(new Right(rn.value0));
+                    return pure14(new Right(rn.value0));
                   }
                   ;
                   if (rn instanceof Left) {
-                    return pure11(new Left(append6(rm.value0)(rn.value0)));
+                    return pure14(new Left(append6(rm.value0)(rn.value0)));
                   }
                   ;
                   throw new Error("Failed pattern match at Control.Monad.Except.Trans (line 87, column 9 - line 89, column 49): " + [rn.constructor.name]);
@@ -1775,13 +1775,13 @@
   };
   var traverse_ = function(dictApplicative) {
     var applySecond2 = applySecond(dictApplicative.Apply0());
-    var pure11 = pure(dictApplicative);
+    var pure14 = pure(dictApplicative);
     return function(dictFoldable) {
       var foldr22 = foldr(dictFoldable);
       return function(f) {
         return foldr22(function($454) {
           return applySecond2(f($454));
-        })(pure11(unit));
+        })(pure14(unit));
       };
     };
   };
@@ -1939,13 +1939,13 @@
     }
     return function(apply3) {
       return function(map24) {
-        return function(pure11) {
+        return function(pure14) {
           return function(f) {
             return function(array) {
               function go2(bot, top2) {
                 switch (top2 - bot) {
                   case 0:
-                    return pure11([]);
+                    return pure14([]);
                   case 1:
                     return map24(array1)(f(array[bot]));
                   case 2:
@@ -4533,18 +4533,6 @@
     return dict.liftAff;
   };
 
-  // output/Effect.Console/foreign.js
-  var log2 = function(s) {
-    return function() {
-      console.log(s);
-    };
-  };
-  var warn = function(s) {
-    return function() {
-      console.warn(s);
-    };
-  };
-
   // output/Effect.Exception.Unsafe/index.js
   var unsafeThrowException = function($1) {
     return unsafePerformEffect(throwException($1));
@@ -6213,7 +6201,7 @@
     return Lift.create;
   }();
   var goLeft = function(dictApplicative) {
-    var pure11 = pure(dictApplicative);
+    var pure14 = pure(dictApplicative);
     return function(fStack) {
       return function(valStack) {
         return function(nat) {
@@ -6221,7 +6209,7 @@
             return function(count) {
               if (func instanceof Pure) {
                 return new Tuple(new Cons({
-                  func: pure11(func.value0),
+                  func: pure14(func.value0),
                   count
                 }, fStack), valStack);
               }
@@ -6292,7 +6280,7 @@
   };
   var foldFreeAp = function(dictApplicative) {
     var goApply1 = goApply(dictApplicative);
-    var pure11 = pure(dictApplicative);
+    var pure14 = pure(dictApplicative);
     var goLeft1 = goLeft(dictApplicative);
     return function(nat) {
       return function(z) {
@@ -6301,7 +6289,7 @@
           var $tco_result;
           function $tco_loop(v) {
             if (v.value1.value0 instanceof Pure) {
-              var v1 = goApply1(v.value0)(v.value1.value1)(pure11(v.value1.value0.value0));
+              var v1 = goApply1(v.value0)(v.value1.value1)(pure14(v.value1.value0.value0));
               if (v1 instanceof Left) {
                 $tco_done = true;
                 return v1.value0;
@@ -7242,10 +7230,10 @@
   // output/Foreign.Index/index.js
   var unsafeReadProp = function(dictMonad) {
     var fail3 = fail(dictMonad);
-    var pure11 = pure(applicativeExceptT(dictMonad));
+    var pure14 = pure(applicativeExceptT(dictMonad));
     return function(k) {
       return function(value16) {
-        return unsafeReadPropImpl(fail3(new TypeMismatch("object", typeOf(value16))), pure11, k, value16);
+        return unsafeReadPropImpl(fail3(new TypeMismatch("object", typeOf(value16))), pure14, k, value16);
       };
     };
   };
@@ -7273,12 +7261,16 @@
   var domcontentloaded = "DOMContentLoaded";
   var change = "change";
 
+  // output/Web.UIEvent.MouseEvent.EventTypes/index.js
+  var click = "click";
+
   // output/Halogen.HTML.Events/index.js
   var map14 = /* @__PURE__ */ map(functorMaybe);
   var composeKleisli2 = /* @__PURE__ */ composeKleisli(bindMaybe);
   var composeKleisliFlipped3 = /* @__PURE__ */ composeKleisliFlipped(/* @__PURE__ */ bindExceptT(monadIdentity));
   var readProp2 = /* @__PURE__ */ readProp(monadIdentity);
   var readString2 = /* @__PURE__ */ readString(monadIdentity);
+  var mouseHandler = unsafeCoerce2;
   var handler$prime = function(et) {
     return function(f) {
       return handler(et)(function(ev) {
@@ -7293,6 +7285,12 @@
       });
     };
   };
+  var onClick = /* @__PURE__ */ function() {
+    var $15 = handler2(click);
+    return function($16) {
+      return $15(mouseHandler($16));
+    };
+  }();
   var onSubmit = /* @__PURE__ */ handler2("submit");
   var addForeignPropHandler = function(key) {
     return function(prop3) {
@@ -7340,156 +7338,55 @@
     };
   }();
 
-  // output/Barrat/index.js
-  var bind3 = /* @__PURE__ */ bind(bindHalogenM);
-  var gets2 = /* @__PURE__ */ gets(monadStateHalogenM);
-  var modify_3 = /* @__PURE__ */ modify_2(monadStateHalogenM);
+  // output/Extras/index.js
   var type_4 = /* @__PURE__ */ type_3(isPropInputType);
-  var show3 = /* @__PURE__ */ show(showInt);
-  var value4 = /* @__PURE__ */ value3(isPropString);
-  var discard2 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
-  var BarratDone = /* @__PURE__ */ function() {
-    function BarratDone2() {
+  var DoneReading = /* @__PURE__ */ function() {
+    function DoneReading2() {
     }
     ;
-    BarratDone2.value = new BarratDone2();
-    return BarratDone2;
+    DoneReading2.value = new DoneReading2();
+    return DoneReading2;
   }();
-  var UpdateAnswers = /* @__PURE__ */ function() {
-    function UpdateAnswers2(value0, value1) {
-      this.value0 = value0;
-      this.value1 = value1;
+  var ClickedDone = /* @__PURE__ */ function() {
+    function ClickedDone2() {
     }
     ;
-    UpdateAnswers2.create = function(value0) {
-      return function(value1) {
-        return new UpdateAnswers2(value0, value1);
-      };
-    };
-    return UpdateAnswers2;
+    ClickedDone2.value = new ClickedDone2();
+    return ClickedDone2;
   }();
-  var HandleSubmit = /* @__PURE__ */ function() {
-    function HandleSubmit2(value0) {
-      this.value0 = value0;
-    }
-    ;
-    HandleSubmit2.create = function(value0) {
-      return new HandleSubmit2(value0);
-    };
-    return HandleSubmit2;
-  }();
-  var setAnswer = function(dictMonadEffect) {
-    return function(index4) {
-      return function(val) {
-        return bind3(gets2(function(v) {
-          return v.answers;
-        }))(function(arr) {
-          var v = updateAt(index4)(val)(arr);
-          if (v instanceof Nothing) {
-            return unsafeThrow("Could not update array");
-          }
-          ;
-          if (v instanceof Just) {
-            return modify_3(function(state3) {
-              var $36 = {};
-              for (var $37 in state3) {
-                if ({}.hasOwnProperty.call(state3, $37)) {
-                  $36[$37] = state3[$37];
-                }
-                ;
-              }
-              ;
-              $36.answers = v.value0;
-              return $36;
-            });
-          }
-          ;
-          throw new Error("Failed pattern match at Barrat (line 52, column 3 - line 54, column 73): " + [v.constructor.name]);
-        });
-      };
-    };
+  var mkInstructions = function(instructions2) {
+    return div2([class_("instructions")])([text(instructions2), input([type_4(InputButton.value), onClick(function(v) {
+      return ClickedDone.value;
+    })])]);
   };
-  var questions = ["1. Planifico mis tareas con cuidado", "2. Hago las cosas sin pensarlas", "3. Casi nunca me tomo las cosas a pecho (no me perturbo con facilidad)", "4. Mis pensamientos pueden tener gran velocidad (tengo pensamientos que van muy r\xE1pido en mi mente)", "5. Planifico mis viajes con antelaci\xF3n", "6. Soy una persona con autocontrol", "7. Me concentro con facilidad (se me hace f\xE1cil concentrarme)", "8. Ahorro con regularidad", "9. Se me hace dif\xEDcil estar quieto/a durante largos per\xEDodos de tiempo", "10. Pienso las cosas cuidadosamente", "11. Planifico para tener un trabajo fijo (me esfuerzo por asegurar que tendr\xE9 dinero para pagar mis gastos)", "12. Digo las cosas sin pensarlas", "13. Me gusta pensar sobre problemas complicados (me gusta pensar sobre problemas complejos)", "14. Cambio de trabajo frecuentemente (no me quedo en el mismo trabajo durante largos per\xEDodos de tiempo)", "15. Act\xFAo impulsivamente", "16. Me aburro con facilidad tratando de resolver problemas en mi mente (me aburre pensar en algo por demasiado tiempo)", "17. Visito al m\xE9dico y al dentista con regularidad", "18. Hago las cosas en el momento que se me ocurren", "19. Soy una persona que piensa sin distraerse (puedo enfocar mi mente en una sola cosa por mucho tiempo)", "20. Cambio de vivienda a menudo (me mudo con frecuencia o no me gusta vivir en el mismo sitio por mucho tiempo)", "21. Compro cosas impulsivamente", "22. Termino lo que empiezo", "23. Camino y me muevo con rapidez", "24. Resuelvo los problemas experimentando (resuelvo los problemas empleando una posible soluci\xF3n y viendo si funciona)", "25. Gasto en efectivo o a cr\xE9dito m\xE1s de lo que gano (gasto m\xE1s de lo gano)", "26. Hablo r\xE1pido", "27. Tengo pensamientos extra\xF1os cuando estoy pensando (a veces tengo pensamientos irrelevantes cuando pienso)", "28. Me interesa m\xE1s el presente que el futuro", "29. Me siento inquieto/a en clases o charlas (me siento inquieto/a si tengo que o\xEDr a alguien hablar durante un largo per\xEDodo de tiempo)", "30. Planifico el futuro (me interesa m\xE1s el futuro que el presente)"];
-  var mkQuestion = function(q2) {
-    return function(index4) {
-      return tr([])([td_([text(q2)]), td_([input([type_4(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v) {
-        return new UpdateAnswers(index4, "1");
-      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
-        return new UpdateAnswers(index4, "2");
-      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
-        return new UpdateAnswers(index4, "3");
-      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
-        return new UpdateAnswers(index4, "4");
-      })])])]);
-    };
-  };
-  var mkAllQuestions = /* @__PURE__ */ function() {
-    var zipped = zip(questions)(range2(0)(29));
-    var step3 = function(arr) {
-      return function(v) {
-        return snoc(arr)(mkQuestion(v.value0)(v.value1));
-      };
-    };
-    return foldl2(step3)([])(zipped);
-  }();
-  var renderBarrat = function(v) {
-    return div2([class_("container")])([form([id3("barrat_form"), onSubmit(function(ev) {
-      return new HandleSubmit(ev);
-    })])([table_([thead_([tr([])([th_([]), th_([text("Raramente o nunca")]), th_([text("Ocasionalmente")]), th_([text("A menudo")]), th_([text("Siempre o casi siempre")])])]), tbody_(mkAllQuestions)]), input([type_4(InputSubmit.value), title("Siguiente"), value4("Siguiente")])])]);
+  var renderInstructions = function(instructions2) {
+    return mkInstructions(instructions2);
   };
   var initialState = function(v) {
-    return {
-      answers: replicate(30)("")
-    };
-  };
-  var handleSubmit = function(dictMonadAff) {
-    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
-    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
-    return function(ev) {
-      return discard2(liftEffect8(log2("???")))(function() {
-        return discard2(liftEffect8(preventDefault(ev)))(function() {
-          return bind3(gets2(function(v) {
-            return v.answers;
-          }))(function(answers) {
-            return bind3(liftAff2(post2(ignore)("/barrat")(new Just(new $$String(joinWith(" ")(answers))))))(function() {
-              return raise(BarratDone.value);
-            });
-          });
-        });
-      });
-    };
+    return unit;
   };
   var handleAction = function(dictMonadAff) {
-    var MonadEffect0 = dictMonadAff.MonadEffect0();
-    var liftEffect8 = liftEffect(monadEffectHalogenM(MonadEffect0));
-    var setAnswer1 = setAnswer(MonadEffect0);
-    var handleSubmit1 = handleSubmit(dictMonadAff);
-    return function(action2) {
-      return discard2(liftEffect8(log2("??")))(function() {
-        if (action2 instanceof UpdateAnswers) {
-          return setAnswer1(action2.value0)(action2.value1);
-        }
-        ;
-        if (action2 instanceof HandleSubmit) {
-          return handleSubmit1(action2.value0);
-        }
-        ;
-        throw new Error("Failed pattern match at Barrat (line 45, column 3 - line 47, column 39): " + [action2.constructor.name]);
-      });
+    return function(v) {
+      return raise(DoneReading.value);
     };
   };
-  var barratComponent = function(dictMonadAff) {
-    return mkComponent({
-      initialState,
-      render: renderBarrat,
-      "eval": mkEval({
-        handleQuery: defaultEval.handleQuery,
-        receive: defaultEval.receive,
-        initialize: defaultEval.initialize,
-        finalize: defaultEval.finalize,
-        handleAction: handleAction(dictMonadAff)
-      })
-    });
+  var instructionsComponent = function(dictMonadAff) {
+    var handleAction1 = handleAction(dictMonadAff);
+    return function(instructions2) {
+      return mkComponent({
+        initialState,
+        render: function(v) {
+          return renderInstructions(instructions2);
+        },
+        "eval": mkEval({
+          handleQuery: defaultEval.handleQuery,
+          receive: defaultEval.receive,
+          initialize: defaultEval.initialize,
+          finalize: defaultEval.finalize,
+          handleAction: handleAction1
+        })
+      });
+    };
   };
 
   // output/Halogen.HTML/index.js
@@ -7514,6 +7411,417 @@
         };
       };
     };
+  };
+
+  // output/Anxiety/index.js
+  var bind3 = /* @__PURE__ */ bind(bindHalogenM);
+  var gets2 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var modify_3 = /* @__PURE__ */ modify_2(monadStateHalogenM);
+  var type_5 = /* @__PURE__ */ type_3(isPropInputType);
+  var show3 = /* @__PURE__ */ show(showInt);
+  var pure6 = /* @__PURE__ */ pure(applicativeHalogenM);
+  var discard2 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var slot2 = /* @__PURE__ */ slot();
+  var slot1 = /* @__PURE__ */ slot2({
+    reflectSymbol: function() {
+      return "instructions";
+    }
+  })(ordInt);
+  var slot22 = /* @__PURE__ */ slot2({
+    reflectSymbol: function() {
+      return "anxietySlot";
+    }
+  })(ordInt);
+  var AnxietyDone = /* @__PURE__ */ function() {
+    function AnxietyDone2() {
+    }
+    ;
+    AnxietyDone2.value = new AnxietyDone2();
+    return AnxietyDone2;
+  }();
+  var Instructions = /* @__PURE__ */ function() {
+    function Instructions2() {
+    }
+    ;
+    Instructions2.value = new Instructions2();
+    return Instructions2;
+  }();
+  var AnxietyForm = /* @__PURE__ */ function() {
+    function AnxietyForm2() {
+    }
+    ;
+    AnxietyForm2.value = new AnxietyForm2();
+    return AnxietyForm2;
+  }();
+  var UpdateAnswers = /* @__PURE__ */ function() {
+    function UpdateAnswers3(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    UpdateAnswers3.create = function(value0) {
+      return function(value1) {
+        return new UpdateAnswers3(value0, value1);
+      };
+    };
+    return UpdateAnswers3;
+  }();
+  var HandleSubmit = /* @__PURE__ */ function() {
+    function HandleSubmit3(value0) {
+      this.value0 = value0;
+    }
+    ;
+    HandleSubmit3.create = function(value0) {
+      return new HandleSubmit3(value0);
+    };
+    return HandleSubmit3;
+  }();
+  var InstructionsDone = /* @__PURE__ */ function() {
+    function InstructionsDone2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    InstructionsDone2.create = function(value0) {
+      return new InstructionsDone2(value0);
+    };
+    return InstructionsDone2;
+  }();
+  var ActionUnit = /* @__PURE__ */ function() {
+    function ActionUnit2() {
+    }
+    ;
+    ActionUnit2.value = new ActionUnit2();
+    return ActionUnit2;
+  }();
+  var setAnswer = function(dictMonadEffect) {
+    return function(index4) {
+      return function(val) {
+        return bind3(gets2(function(v) {
+          return v.answers;
+        }))(function(arr) {
+          var v = updateAt(index4)(val)(arr);
+          if (v instanceof Nothing) {
+            return unsafeThrow("Could not update array");
+          }
+          ;
+          if (v instanceof Just) {
+            return modify_3(function(state3) {
+              var $56 = {};
+              for (var $57 in state3) {
+                if ({}.hasOwnProperty.call(state3, $57)) {
+                  $56[$57] = state3[$57];
+                }
+                ;
+              }
+              ;
+              $56.answers = v.value0;
+              return $56;
+            });
+          }
+          ;
+          throw new Error("Failed pattern match at Anxiety (line 68, column 3 - line 70, column 73): " + [v.constructor.name]);
+        });
+      };
+    };
+  };
+  var questions = ["1. Torpe o entumecido", "2. Acalorado", "3. Con temblor en las piernas", "4. Incapaz de relajarse", "5. Con temor a que ocurra lo peor", "6. Mareado, o que se le va la cabeza", "7. Con latidos del coraz\xF3n fuerte y acelerados", "8. Inestable", "9. Atemorizado o asustado", "10. Nervioso", "11. Con sensaci\xF3n de bloqueo", "12. Con temblores en las manos", "13. Inquieto, inseguro", "14. Con miedo a perder el control", "15. Con sensaci\xF3n de ahogo", "16. Con temor a morir", "17. Con miedo", "18. Con problemas digestivos", "19. Con desvanecimientos", "20. Con rubor facial", "21. Con sudores, frios o calientes"];
+  var mkQuestion = function(q2) {
+    return function(index4) {
+      return tr([])([td_([text(q2)]), td_([input([type_5(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v) {
+        return new UpdateAnswers(index4, "1");
+      })])]), td_([input([type_5(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+        return new UpdateAnswers(index4, "2");
+      })])]), td_([input([type_5(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+        return new UpdateAnswers(index4, "3");
+      })])]), td_([input([type_5(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+        return new UpdateAnswers(index4, "4");
+      })])])]);
+    };
+  };
+  var mkAllQuestions = /* @__PURE__ */ function() {
+    var zipped = zip(questions)(range2(0)(29));
+    var step3 = function(arr) {
+      return function(v) {
+        return snoc(arr)(mkQuestion(v.value0)(v.value1));
+      };
+    };
+    return foldl2(step3)([])(zipped);
+  }();
+  var renderAnxiety = /* @__PURE__ */ function() {
+    return div2([class_("container")])([form([id3("anxiety_form"), onSubmit(function(ev) {
+      return new HandleSubmit(ev);
+    })])([table_([thead_([tr([])([th_([]), th_([text("En absoluto")]), th_([text("Levemente")]), th_([text("Moderadamente")]), th_([text("Severamente")])])]), tbody_(mkAllQuestions)]), input([type_5(InputSubmit.value), title("Siguiente"), value3(isPropString)("Siguiente")])])]);
+  }();
+  var mainHandler = function(dictMonadEffect) {
+    return function(v) {
+      if (v instanceof InstructionsDone) {
+        return modify_3(function(state3) {
+          var $65 = {};
+          for (var $66 in state3) {
+            if ({}.hasOwnProperty.call(state3, $66)) {
+              $65[$66] = state3[$66];
+            }
+            ;
+          }
+          ;
+          $65.stage = AnxietyForm.value;
+          return $65;
+        });
+      }
+      ;
+      return pure6(unit);
+    };
+  };
+  var instructions = /* @__PURE__ */ function() {
+    return "En este cuestionario hay una lista de s\xEDntomas comunes de la ansiedad. Lea cada uno de los \xEDtems atentamente, e indique cuanto le ha afectado en las \xFAltimas 2 semanas incluyendo hoy.";
+  }();
+  var initialState2 = function(v) {
+    return {
+      answers: replicate(30)(""),
+      stage: Instructions.value
+    };
+  };
+  var handleSubmit = function(dictMonadAff) {
+    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
+    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
+    return function(ev) {
+      return discard2(liftEffect8(preventDefault(ev)))(function() {
+        return bind3(gets2(function(v) {
+          return v.answers;
+        }))(function(answers) {
+          return bind3(liftAff2(post2(ignore)("/anxiety")(new Just(new $$String(joinWith(" ")(answers))))))(function() {
+            return raise(AnxietyDone.value);
+          });
+        });
+      });
+    };
+  };
+  var handleAction2 = function(dictMonadAff) {
+    var setAnswer1 = setAnswer(dictMonadAff.MonadEffect0());
+    var handleSubmit1 = handleSubmit(dictMonadAff);
+    return function(action2) {
+      if (action2 instanceof UpdateAnswers) {
+        return setAnswer1(action2.value0)(action2.value1);
+      }
+      ;
+      if (action2 instanceof HandleSubmit) {
+        return handleSubmit1(action2.value0);
+      }
+      ;
+      if (action2 instanceof InstructionsDone) {
+        return modify_3(function(state3) {
+          var $73 = {};
+          for (var $74 in state3) {
+            if ({}.hasOwnProperty.call(state3, $74)) {
+              $73[$74] = state3[$74];
+            }
+            ;
+          }
+          ;
+          $73.stage = AnxietyForm.value;
+          return $73;
+        });
+      }
+      ;
+      return pure6(unit);
+    };
+  };
+  var anxietyComponent = function(dictMonadAff) {
+    return mkComponent({
+      initialState: initialState2,
+      render: function(v) {
+        return renderAnxiety;
+      },
+      "eval": mkEval({
+        handleQuery: defaultEval.handleQuery,
+        receive: defaultEval.receive,
+        initialize: defaultEval.initialize,
+        finalize: defaultEval.finalize,
+        handleAction: handleAction2(dictMonadAff)
+      })
+    });
+  };
+  var _instructions = /* @__PURE__ */ function() {
+    return $$Proxy.value;
+  }();
+  var _anxietySlot = /* @__PURE__ */ function() {
+    return $$Proxy.value;
+  }();
+  var render = function(dictMonadAff) {
+    var instructionsComponent2 = instructionsComponent(dictMonadAff);
+    var anxietyComponent1 = anxietyComponent(dictMonadAff);
+    return function(state3) {
+      if (state3.stage instanceof Instructions) {
+        return slot1(_instructions)(0)(instructionsComponent2(instructions))(unit)(InstructionsDone.create);
+      }
+      ;
+      if (state3.stage instanceof AnxietyForm) {
+        return slot22(_anxietySlot)(1)(anxietyComponent1)(unit)(function(v) {
+          return ActionUnit.value;
+        });
+      }
+      ;
+      throw new Error("Failed pattern match at Anxiety (line 132, column 16 - line 134, column 81): " + [state3.stage.constructor.name]);
+    };
+  };
+  var mainComponent = function(dictMonadAff) {
+    return mkComponent({
+      initialState: initialState2,
+      render: render(dictMonadAff),
+      "eval": mkEval({
+        handleQuery: defaultEval.handleQuery,
+        receive: defaultEval.receive,
+        initialize: defaultEval.initialize,
+        finalize: defaultEval.finalize,
+        handleAction: mainHandler(dictMonadAff.MonadEffect0())
+      })
+    });
+  };
+
+  // output/Barrat/index.js
+  var bind4 = /* @__PURE__ */ bind(bindHalogenM);
+  var gets3 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var modify_4 = /* @__PURE__ */ modify_2(monadStateHalogenM);
+  var type_6 = /* @__PURE__ */ type_3(isPropInputType);
+  var show4 = /* @__PURE__ */ show(showInt);
+  var value4 = /* @__PURE__ */ value3(isPropString);
+  var discard3 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var BarratDone = /* @__PURE__ */ function() {
+    function BarratDone2() {
+    }
+    ;
+    BarratDone2.value = new BarratDone2();
+    return BarratDone2;
+  }();
+  var UpdateAnswers2 = /* @__PURE__ */ function() {
+    function UpdateAnswers3(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    UpdateAnswers3.create = function(value0) {
+      return function(value1) {
+        return new UpdateAnswers3(value0, value1);
+      };
+    };
+    return UpdateAnswers3;
+  }();
+  var HandleSubmit2 = /* @__PURE__ */ function() {
+    function HandleSubmit3(value0) {
+      this.value0 = value0;
+    }
+    ;
+    HandleSubmit3.create = function(value0) {
+      return new HandleSubmit3(value0);
+    };
+    return HandleSubmit3;
+  }();
+  var setAnswer2 = function(dictMonadEffect) {
+    return function(index4) {
+      return function(val) {
+        return bind4(gets3(function(v) {
+          return v.answers;
+        }))(function(arr) {
+          var v = updateAt(index4)(val)(arr);
+          if (v instanceof Nothing) {
+            return unsafeThrow("Could not update array");
+          }
+          ;
+          if (v instanceof Just) {
+            return modify_4(function(state3) {
+              var $34 = {};
+              for (var $35 in state3) {
+                if ({}.hasOwnProperty.call(state3, $35)) {
+                  $34[$35] = state3[$35];
+                }
+                ;
+              }
+              ;
+              $34.answers = v.value0;
+              return $34;
+            });
+          }
+          ;
+          throw new Error("Failed pattern match at Barrat (line 50, column 3 - line 52, column 73): " + [v.constructor.name]);
+        });
+      };
+    };
+  };
+  var questions2 = ["1. Planifico mis tareas con cuidado", "2. Hago las cosas sin pensarlas", "3. Casi nunca me tomo las cosas a pecho (no me perturbo con facilidad)", "4. Mis pensamientos pueden tener gran velocidad (tengo pensamientos que van muy r\xE1pido en mi mente)", "5. Planifico mis viajes con antelaci\xF3n", "6. Soy una persona con autocontrol", "7. Me concentro con facilidad (se me hace f\xE1cil concentrarme)", "8. Ahorro con regularidad", "9. Se me hace dif\xEDcil estar quieto/a durante largos per\xEDodos de tiempo", "10. Pienso las cosas cuidadosamente", "11. Planifico para tener un trabajo fijo (me esfuerzo por asegurar que tendr\xE9 dinero para pagar mis gastos)", "12. Digo las cosas sin pensarlas", "13. Me gusta pensar sobre problemas complicados (me gusta pensar sobre problemas complejos)", "14. Cambio de trabajo frecuentemente (no me quedo en el mismo trabajo durante largos per\xEDodos de tiempo)", "15. Act\xFAo impulsivamente", "16. Me aburro con facilidad tratando de resolver problemas en mi mente (me aburre pensar en algo por demasiado tiempo)", "17. Visito al m\xE9dico y al dentista con regularidad", "18. Hago las cosas en el momento que se me ocurren", "19. Soy una persona que piensa sin distraerse (puedo enfocar mi mente en una sola cosa por mucho tiempo)", "20. Cambio de vivienda a menudo (me mudo con frecuencia o no me gusta vivir en el mismo sitio por mucho tiempo)", "21. Compro cosas impulsivamente", "22. Termino lo que empiezo", "23. Camino y me muevo con rapidez", "24. Resuelvo los problemas experimentando (resuelvo los problemas empleando una posible soluci\xF3n y viendo si funciona)", "25. Gasto en efectivo o a cr\xE9dito m\xE1s de lo que gano (gasto m\xE1s de lo gano)", "26. Hablo r\xE1pido", "27. Tengo pensamientos extra\xF1os cuando estoy pensando (a veces tengo pensamientos irrelevantes cuando pienso)", "28. Me interesa m\xE1s el presente que el futuro", "29. Me siento inquieto/a en clases o charlas (me siento inquieto/a si tengo que o\xEDr a alguien hablar durante un largo per\xEDodo de tiempo)", "30. Planifico el futuro (me interesa m\xE1s el futuro que el presente)"];
+  var mkQuestion2 = function(q2) {
+    return function(index4) {
+      return tr([])([td_([text(q2)]), td_([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v) {
+        return new UpdateAnswers2(index4, "1");
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
+        return new UpdateAnswers2(index4, "2");
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
+        return new UpdateAnswers2(index4, "3");
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
+        return new UpdateAnswers2(index4, "4");
+      })])])]);
+    };
+  };
+  var mkAllQuestions2 = /* @__PURE__ */ function() {
+    var zipped = zip(questions2)(range2(0)(29));
+    var step3 = function(arr) {
+      return function(v) {
+        return snoc(arr)(mkQuestion2(v.value0)(v.value1));
+      };
+    };
+    return foldl2(step3)([])(zipped);
+  }();
+  var renderBarrat = function(v) {
+    return div2([class_("container")])([form([id3("barrat_form"), onSubmit(function(ev) {
+      return new HandleSubmit2(ev);
+    })])([table_([thead_([tr([])([th_([]), th_([text("Raramente o nunca")]), th_([text("Ocasionalmente")]), th_([text("A menudo")]), th_([text("Siempre o casi siempre")])])]), tbody_(mkAllQuestions2)]), input([type_6(InputSubmit.value), title("Siguiente"), value4("Siguiente")])])]);
+  };
+  var initialState3 = function(v) {
+    return {
+      answers: replicate(30)("")
+    };
+  };
+  var handleSubmit2 = function(dictMonadAff) {
+    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
+    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
+    return function(ev) {
+      return discard3(liftEffect8(preventDefault(ev)))(function() {
+        return bind4(gets3(function(v) {
+          return v.answers;
+        }))(function(answers) {
+          return bind4(liftAff2(post2(ignore)("/barrat")(new Just(new $$String(joinWith(" ")(answers))))))(function() {
+            return raise(BarratDone.value);
+          });
+        });
+      });
+    };
+  };
+  var handleAction3 = function(dictMonadAff) {
+    var setAnswer1 = setAnswer2(dictMonadAff.MonadEffect0());
+    var handleSubmit1 = handleSubmit2(dictMonadAff);
+    return function(action2) {
+      if (action2 instanceof UpdateAnswers2) {
+        return setAnswer1(action2.value0)(action2.value1);
+      }
+      ;
+      if (action2 instanceof HandleSubmit2) {
+        return handleSubmit1(action2.value0);
+      }
+      ;
+      throw new Error("Failed pattern match at Barrat (line 43, column 3 - line 45, column 39): " + [action2.constructor.name]);
+    };
+  };
+  var barratComponent = function(dictMonadAff) {
+    return mkComponent({
+      initialState: initialState3,
+      render: renderBarrat,
+      "eval": mkEval({
+        handleQuery: defaultEval.handleQuery,
+        receive: defaultEval.receive,
+        initialize: defaultEval.initialize,
+        finalize: defaultEval.finalize,
+        handleAction: handleAction3(dictMonadAff)
+      })
+    });
   };
 
   // output/Data.String.CodePoints/foreign.js
@@ -7612,23 +7920,35 @@
     };
   };
 
+  // output/Effect.Console/foreign.js
+  var log2 = function(s) {
+    return function() {
+      console.log(s);
+    };
+  };
+  var warn = function(s) {
+    return function() {
+      console.warn(s);
+    };
+  };
+
   // output/Questions/index.js
-  var bind4 = /* @__PURE__ */ bind(bindAff);
-  var discard3 = /* @__PURE__ */ discard(discardUnit);
-  var discard1 = /* @__PURE__ */ discard3(bindAff);
+  var bind5 = /* @__PURE__ */ bind(bindAff);
+  var discard4 = /* @__PURE__ */ discard(discardUnit);
+  var discard1 = /* @__PURE__ */ discard4(bindAff);
   var liftEffect3 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var pure6 = /* @__PURE__ */ pure(applicativeAff);
+  var pure7 = /* @__PURE__ */ pure(applicativeAff);
   var bind12 = /* @__PURE__ */ bind(bindHalogenM);
-  var gets3 = /* @__PURE__ */ gets(monadStateHalogenM);
-  var modify_4 = /* @__PURE__ */ modify_2(monadStateHalogenM);
+  var gets4 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var modify_5 = /* @__PURE__ */ modify_2(monadStateHalogenM);
   var append5 = /* @__PURE__ */ append(semigroupArray);
-  var type_5 = /* @__PURE__ */ type_3(isPropInputType);
+  var type_7 = /* @__PURE__ */ type_3(isPropInputType);
   var value5 = /* @__PURE__ */ value3(isPropString);
   var gEncodeJsonCons2 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
   var gEncodeJsonCons1 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJString));
   var gEncodeJsonCons22 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJBoolean);
   var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonInt));
-  var discard22 = /* @__PURE__ */ discard3(bindHalogenM);
+  var discard22 = /* @__PURE__ */ discard4(bindHalogenM);
   var traverse_4 = /* @__PURE__ */ traverse_(applicativeHalogenM)(foldableArray);
   var Submitted = /* @__PURE__ */ function() {
     function Submitted2() {
@@ -7694,16 +8014,16 @@
     return SendForm2;
   }();
   var validateCode = function(code2) {
-    return bind4(post2(json2)("/code-validation")(new Just(json(jsonSingletonObject("code")(id(code2))))))(function(response) {
+    return bind5(post2(json2)("/code-validation")(new Just(json(jsonSingletonObject("code")(id(code2))))))(function(response) {
       if (response instanceof Left) {
         return discard1(liftEffect3(log2(printError(response.value0))))(function() {
-          return pure6(false);
+          return pure7(false);
         });
       }
       ;
       if (response instanceof Right) {
         return discard1(liftEffect3(log2(stringify(response.value0.body))))(function() {
-          return pure6(true);
+          return pure7(true);
         });
       }
       ;
@@ -7713,10 +8033,10 @@
   var updateForm = function(dictMonadEffect) {
     return function(key) {
       return function(value1) {
-        return bind12(gets3(function(v) {
+        return bind12(gets4(function(v) {
           return v.formData;
         }))(function(formData) {
-          return modify_4(function(state3) {
+          return modify_5(function(state3) {
             return {
               formData: function() {
                 if (key === "age") {
@@ -7926,7 +8246,7 @@
   };
   var updateCode = function(dictMonadEffect) {
     return function(newCode) {
-      return modify_4(function(state3) {
+      return modify_5(function(state3) {
         return {
           formData: state3.formData,
           conditionalDivs: state3.conditionalDivs,
@@ -7938,7 +8258,7 @@
   var showQuestion = function(dictMonadEffect) {
     return function(key) {
       return function(shouldShow) {
-        return modify_4(function(state3) {
+        return modify_5(function(state3) {
           return {
             formData: state3.formData,
             conditionalDivs: function() {
@@ -8015,20 +8335,20 @@
       };
     };
   };
-  var mkQuestion2 = function(label5) {
+  var mkQuestion3 = function(label5) {
     return function(innerHtml) {
       return div2([class_("question")])(append5([label_([text(label5)]), br_])(append5(innerHtml)([br_])));
     };
   };
   var sexQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("Sexo")([input([type_5(InputRadio.value), id3("sex"), required2(true), value5("0"), onChecked(function(v) {
+    return mkQuestion3("Sexo")([input([type_7(InputRadio.value), id3("sex"), required2(true), value5("0"), onChecked(function(v) {
       return new UpdateForm("sex", "0");
-    })]), text("Masculino"), br_, input([type_5(InputRadio.value), id3("sex"), required2(true), value5("1"), onChecked(function(v) {
+    })]), text("Masculino"), br_, input([type_7(InputRadio.value), id3("sex"), required2(true), value5("1"), onChecked(function(v) {
       return new UpdateForm("sex", "1");
     })]), text("Femenino")]);
   }();
   var shortageQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFEn tu vida viviste carencia econ\xF3mica, social o emocional?")([input([type_5(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
+    return mkQuestion3("\xBFEn tu vida viviste carencia econ\xF3mica, social o emocional?")([input([type_7(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
       return new UpdateForm("shortage", function() {
         if (c) {
           return "1";
@@ -8036,7 +8356,7 @@
         ;
         return "-1";
       }());
-    })]), text("Econ\xF3mica"), br_, input([type_5(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
+    })]), text("Econ\xF3mica"), br_, input([type_7(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
       return new UpdateForm("shortage", function() {
         if (c) {
           return "2";
@@ -8044,7 +8364,7 @@
         ;
         return "-2";
       }());
-    })]), text("Social"), br_, input([type_5(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
+    })]), text("Social"), br_, input([type_7(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
       return new UpdateForm("shortage", function() {
         if (c) {
           return "4";
@@ -8052,7 +8372,7 @@
         ;
         return "-4";
       }());
-    })]), text("Emocional"), br_, input([type_5(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
+    })]), text("Emocional"), br_, input([type_7(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
       return new UpdateForm("shortage", function() {
         if (c) {
           return "-1000";
@@ -8063,37 +8383,37 @@
     })]), text("Ninguna")]);
   }();
   var majorQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("Carrera")([input([type_5(InputText.value), id3("major"), required2(true), onValueInput(function(val) {
+    return mkQuestion3("Carrera")([input([type_7(InputText.value), id3("major"), required2(true), onValueInput(function(val) {
       return new UpdateForm("major", val);
     })])]);
   }();
   var lossQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFHas vivido alguna p\xE9rdida importante recientemente?")([small_([text("Alg\xFAn familiar, mascota, trabajo, etc.")]), input([type_5(InputRadio.value), id3("loss_yes"), name4("loss"), value5("1"), required2(true), onChecked(function(v) {
+    return mkQuestion3("\xBFHas vivido alguna p\xE9rdida importante recientemente?")([small_([text("Alg\xFAn familiar, mascota, trabajo, etc.")]), input([type_7(InputRadio.value), id3("loss_yes"), name4("loss"), value5("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("loss", "1"), new ShowQuestion("loss", true)]);
-    })]), text("S\xED"), br_, input([type_5(InputRadio.value), id3("loss_no"), name4("loss"), value5("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("loss_no"), name4("loss"), value5("0"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("loss", "0"), new ShowQuestion("disorder", false)]);
     })]), text("No")]);
   }();
   var injuryTreatedQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFFue tratado el traumatismo?")([input([type_5(InputRadio.value), id3("treated_yes"), name4("treated"), value5("1"), required2(true), onChecked(function(v) {
+    return mkQuestion3("\xBFFue tratado el traumatismo?")([input([type_7(InputRadio.value), id3("treated_yes"), name4("treated"), value5("1"), required2(true), onChecked(function(v) {
       return new UpdateForm("injuryTreated", "1");
-    })]), text("S\xED"), input([type_5(InputRadio.value), id3("treated_no"), name4("treated"), value5("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), input([type_7(InputRadio.value), id3("treated_no"), name4("treated"), value5("0"), required2(true), onChecked(function(v) {
       return new UpdateForm("injuryTreated", "0");
     })]), text("No")]);
   }();
   var injuryQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFHas presentado alg\xFAn golpe en la cabeza importante?")([small_([text("Por el cual te hayan hecho una tomograf\xEDa y que haya generado alg\xFAn traumatismo en el cerebro")]), input([type_5(InputRadio.value), id3("injury_yes"), name4("injury"), value5("1"), required2(true), onChecked(function(v) {
+    return mkQuestion3("\xBFHas presentado alg\xFAn golpe en la cabeza importante?")([small_([text("Por el cual te hayan hecho una tomograf\xEDa y que haya generado alg\xFAn traumatismo en el cerebro")]), input([type_7(InputRadio.value), id3("injury_yes"), name4("injury"), value5("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("injury", "1"), new ShowQuestion("injury", true)]);
-    })]), text("S\xED"), input([type_5(InputRadio.value), id3("injury_no"), name4("injury"), value5("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), input([type_7(InputRadio.value), id3("injury_no"), name4("injury"), value5("0"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("injury", "0"), new ShowQuestion("injury", false)]);
     })]), text("No")]);
   }();
   var injuryLocationQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFEn d\xF3nde se ubic\xF3 el golpe?")([input([type_5(InputText.value), id3("injury_location_input"), name4("injury_location"), required2(true), onValueChange(function(val) {
+    return mkQuestion3("\xBFEn d\xF3nde se ubic\xF3 el golpe?")([input([type_7(InputText.value), id3("injury_location_input"), name4("injury_location"), required2(true), onValueChange(function(val) {
       return new UpdateForm("injuryLocation", val);
     })])]);
   }();
-  var initialState2 = function(v) {
+  var initialState4 = function(v) {
     return {
       formData: {
         age: -1 | 0,
@@ -8190,19 +8510,19 @@
     }
   })())());
   var sendForm = function(form2) {
-    return bind4(post2(json2)("/participant")(new Just(json(formToJSON(form2)))))(function() {
-      return pure6(unit);
+    return bind5(post2(json2)("/participant")(new Just(json(formToJSON(form2)))))(function() {
+      return pure7(unit);
     });
   };
   var formHandler = function(dictMonadAff) {
     var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
     var liftEffect12 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
-    return bind12(gets3(function(v) {
+    return bind12(gets4(function(v) {
       return v.code;
     }))(function(code2) {
       return bind12(liftAff2(validateCode(code2)))(function(codeResult) {
         if (codeResult) {
-          return bind12(gets3(function(v) {
+          return bind12(gets4(function(v) {
             return v.formData;
           }))(function(form2) {
             return discard22(liftAff2(sendForm(form2)))(function() {
@@ -8213,7 +8533,7 @@
           });
         }
         ;
-        return modify_4(function(state3) {
+        return modify_5(function(state3) {
           return {
             formData: state3.formData,
             conditionalDivs: function() {
@@ -8268,26 +8588,26 @@
     };
   };
   var drugsQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFConsumes drogas?")([input([type_5(InputRadio.value), id3("drugs_yes"), required2(true), onChecked(function(v) {
+    return mkQuestion3("\xBFConsumes drogas?")([input([type_7(InputRadio.value), id3("drugs_yes"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("drugs", "1"), new ShowQuestion("drugsFreq", false)]);
-    })]), text("S\xED"), br_, input([type_5(InputRadio.value), id3("drugs_no"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("drugs_no"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("drugs", "0"), new ShowQuestion("drugsFreq", false)]);
     })]), text("No")]);
   }();
   var disorderQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("Tienes alg\xFAn diagn\xF3stico psiqui\xE1trico o neurol\xF3gico?")([small_([text("Dicho diagn\xF3stico debe de haber sido designado por un profesional de la salud, puede ser diagn\xF3stico de ansiedad, depresi\xF3n, bipolaridad tipo I o II, TDA-H, autismo, alguna enfermedad neurodegenerativa, etc.")]), input([type_5(InputRadio.value), id3("disorder_yes"), name4("disorder"), value5("1"), required2(true), onChecked(function(v) {
+    return mkQuestion3("Tienes alg\xFAn diagn\xF3stico psiqui\xE1trico o neurol\xF3gico?")([small_([text("Dicho diagn\xF3stico debe de haber sido designado por un profesional de la salud, puede ser diagn\xF3stico de ansiedad, depresi\xF3n, bipolaridad tipo I o II, TDA-H, autismo, alguna enfermedad neurodegenerativa, etc.")]), input([type_7(InputRadio.value), id3("disorder_yes"), name4("disorder"), value5("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("disorder", "1"), new ShowQuestion("disorder", true)]);
-    })]), text("S\xED"), input([type_5(InputRadio.value), id3("disorder_no"), name4("disorder"), value5("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), input([type_7(InputRadio.value), id3("disorder_no"), name4("disorder"), value5("0"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("disorder", "0"), new ShowQuestion("disorder", false)]);
     })]), text("No")]);
   }();
   var disorderInputQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFCu\xE1l es tu diagn\xF3stico?")([input([type_5(InputText.value), id3("disorder_input"), name4("disorder"), required2(true), onValueChange(function(val) {
+    return mkQuestion3("\xBFCu\xE1l es tu diagn\xF3stico?")([input([type_7(InputText.value), id3("disorder_input"), name4("disorder"), required2(true), onValueChange(function(val) {
       return new UpdateForm("disorderInput", val);
     })])]);
   }();
   var codeVerification = function(isBad) {
-    return mkQuestion2("Ingresa aqu\xED el c\xF3digo que te proporcion\xF3 la persona que est\xE1 aplicando la prueba")([input([type_5(InputText.value), id3("code"), required2(true), onValueInput(function(val) {
+    return mkQuestion3("Ingresa aqu\xED el c\xF3digo que te proporcion\xF3 la persona que est\xE1 aplicando la prueba")([input([type_7(InputText.value), id3("code"), required2(true), onValueInput(function(val) {
       return new UpdateCode(val);
     })]), function() {
       if (isBad) {
@@ -8298,25 +8618,25 @@
     }()]);
   };
   var alcoholQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFConsumes alcohol?")([input([type_5(InputRadio.value), id3("alcohol_yes"), name4("alcohol"), required2(true), onChecked(function(v) {
+    return mkQuestion3("\xBFConsumes alcohol?")([input([type_7(InputRadio.value), id3("alcohol_yes"), name4("alcohol"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("alcohol", "1"), new ShowQuestion("alcoholFreq", true)]);
-    })]), text("S\xED"), br_, input([type_5(InputRadio.value), id3("alcohol_no"), name4("alcohol"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("alcohol_no"), name4("alcohol"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("alcohol", "0"), new ShowQuestion("alcoholFreq", false)]);
     })]), text("No")]);
   }();
-  var alcoholFreqQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
+  var alcoholFreqQuestion = /* @__PURE__ */ mkQuestion3("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
     return new UpdateForm("alcoholFreq", value1);
   }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value5("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value5("0")])([/* @__PURE__ */ text("Todos los d\xEDas")]), /* @__PURE__ */ option([/* @__PURE__ */ value5("1")])([/* @__PURE__ */ text("Una vez a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value5("2")])([/* @__PURE__ */ text("Cada dos semanas")]), /* @__PURE__ */ option([/* @__PURE__ */ value5("3")])([/* @__PURE__ */ text("Una vez al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value5("4")])([/* @__PURE__ */ text("De manera espor\xE1dica")])])]);
   var ageQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("Edad")([input([type_5(InputNumber.value), id3("age"), required2(true), onValueInput(function(val) {
+    return mkQuestion3("Edad")([input([type_7(InputNumber.value), id3("age"), required2(true), onValueInput(function(val) {
       return new UpdateForm("age", val);
     })])]);
   }();
   var abuseQuestionOther = /* @__PURE__ */ function() {
-    return input([type_5(InputText.value), name4("abuseOther"), required2(true)]);
+    return input([type_7(InputText.value), name4("abuseOther"), required2(true)]);
   }();
   var abuseQuestion = function(other) {
-    return mkQuestion2("\xBFEn tu vida viviste alg\xFAn tipo de abuso?")([input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    return mkQuestion3("\xBFEn tu vida viviste alg\xFAn tipo de abuso?")([input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "1";
@@ -8324,7 +8644,7 @@
         ;
         return "-1";
       }());
-    })]), text("Abuso psicol\xF3gico"), br_, input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    })]), text("Abuso psicol\xF3gico"), br_, input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "2";
@@ -8332,7 +8652,7 @@
         ;
         return "-2";
       }());
-    })]), text("Violencia f\xEDsica"), br_, input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    })]), text("Violencia f\xEDsica"), br_, input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "4";
@@ -8340,7 +8660,7 @@
         ;
         return "-4";
       }());
-    })]), text("Abuso sexual"), br_, input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    })]), text("Abuso sexual"), br_, input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "8";
@@ -8348,7 +8668,7 @@
         ;
         return "-8";
       }());
-    })]), text("Abuso escolar o bullying"), br_, input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    })]), text("Abuso escolar o bullying"), br_, input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "16";
@@ -8356,7 +8676,7 @@
         ;
         return "-16";
       }());
-    })]), text("Abuso financiero"), br_, input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    })]), text("Abuso financiero"), br_, input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "-1000";
@@ -8364,7 +8684,7 @@
         ;
         return "1000";
       }());
-    })]), text("Ninguno"), br_, input([type_5(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    })]), text("Ninguno"), br_, input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new CompositeAction([new UpdateForm("abuse", function() {
         if (c) {
           return "32";
@@ -8407,12 +8727,12 @@
       }
       ;
       return div_([]);
-    }(), abuseQuestion(state3.conditionalDivs.abuseOther), shortageQuestion, lossQuestion, codeVerification(state3.conditionalDivs.badCode), input([type_5(InputSubmit.value), title("Siguiente"), value5("Siguiente")])])]);
+    }(), abuseQuestion(state3.conditionalDivs.abuseOther), shortageQuestion, lossQuestion, codeVerification(state3.conditionalDivs.badCode), input([type_7(InputSubmit.value), title("Siguiente"), value5("Siguiente")])])]);
   };
   var renderQuestions = renderQuestionsForm;
   var questionsComponent = function(dictMonadAff) {
     return mkComponent({
-      initialState: initialState2,
+      initialState: initialState4,
       render: renderQuestions,
       "eval": mkEval({
         handleQuery: defaultEval.handleQuery,
@@ -8425,16 +8745,21 @@
   };
 
   // output/Coordinator/index.js
-  var modify_5 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var slot2 = /* @__PURE__ */ slot();
-  var slot1 = /* @__PURE__ */ slot2({
+  var modify_6 = /* @__PURE__ */ modify_2(monadStateHalogenM);
+  var slot3 = /* @__PURE__ */ slot();
+  var slot12 = /* @__PURE__ */ slot3({
     reflectSymbol: function() {
       return "questions";
     }
   })(ordInt);
-  var slot22 = /* @__PURE__ */ slot2({
+  var slot23 = /* @__PURE__ */ slot3({
     reflectSymbol: function() {
       return "barrat";
+    }
+  })(ordInt);
+  var slot32 = /* @__PURE__ */ slot3({
+    reflectSymbol: function() {
+      return "anxiety";
     }
   })(ordInt);
   var Questions = /* @__PURE__ */ function() {
@@ -8451,19 +8776,19 @@
     Barrat2.value = new Barrat2();
     return Barrat2;
   }();
+  var BeckAnxiety = /* @__PURE__ */ function() {
+    function BeckAnxiety2() {
+    }
+    ;
+    BeckAnxiety2.value = new BeckAnxiety2();
+    return BeckAnxiety2;
+  }();
   var Wisconsin = /* @__PURE__ */ function() {
     function Wisconsin2() {
     }
     ;
     Wisconsin2.value = new Wisconsin2();
     return Wisconsin2;
-  }();
-  var Beck = /* @__PURE__ */ function() {
-    function Beck2() {
-    }
-    ;
-    Beck2.value = new Beck2();
-    return Beck2;
   }();
   var GoNoGo = /* @__PURE__ */ function() {
     function GoNoGo2() {
@@ -8513,63 +8838,42 @@
     };
     return HandleBarrat2;
   }();
-  var HandleCardSorting = /* @__PURE__ */ function() {
-    function HandleCardSorting2() {
+  var HandleBeckAnx = /* @__PURE__ */ function() {
+    function HandleBeckAnx2(value0) {
+      this.value0 = value0;
     }
     ;
-    HandleCardSorting2.value = new HandleCardSorting2();
-    return HandleCardSorting2;
+    HandleBeckAnx2.create = function(value0) {
+      return new HandleBeckAnx2(value0);
+    };
+    return HandleBeckAnx2;
   }();
-  var HandleCardGame = /* @__PURE__ */ function() {
-    function HandleCardGame2() {
-    }
-    ;
-    HandleCardGame2.value = new HandleCardGame2();
-    return HandleCardGame2;
-  }();
-  var HandleEnding = /* @__PURE__ */ function() {
-    function HandleEnding2() {
-    }
-    ;
-    HandleEnding2.value = new HandleEnding2();
-    return HandleEnding2;
-  }();
-  var mainHandler = function(dictMonadEffect) {
+  var mainHandler2 = function(dictMonadEffect) {
     return function(action2) {
       if (action2 instanceof HandleQuestions) {
-        return modify_5(function(v) {
+        return modify_6(function(v) {
           return Barrat.value;
         });
       }
       ;
       if (action2 instanceof HandleBarrat) {
-        return modify_5(function(v) {
-          return Wisconsin.value;
+        return modify_6(function(v) {
+          return BeckAnxiety.value;
         });
       }
       ;
-      if (action2 instanceof HandleCardSorting) {
-        return modify_5(function(v) {
-          return Beck.value;
-        });
-      }
-      ;
-      if (action2 instanceof HandleCardGame) {
-        return modify_5(function(v) {
-          return Ending.value;
-        });
-      }
-      ;
-      if (action2 instanceof HandleEnding) {
-        return modify_5(function(v) {
+      if (action2 instanceof HandleBeckAnx) {
+        return modify_6(function(v) {
           return Void.value;
         });
       }
       ;
-      throw new Error("Failed pattern match at Coordinator (line 62, column 3 - line 67, column 41): " + [action2.constructor.name]);
+      return modify_6(function(v) {
+        return Void.value;
+      });
     };
   };
-  var initialState3 = function(v) {
+  var initialState5 = function(v) {
     return Questions.value;
   };
   var _questions = /* @__PURE__ */ function() {
@@ -8578,24 +8882,28 @@
   var _barrat = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
-  var render = function(dictMonadAff) {
+  var _anxiety = /* @__PURE__ */ function() {
+    return $$Proxy.value;
+  }();
+  var render2 = function(dictMonadAff) {
     var questionsComponent2 = questionsComponent(dictMonadAff);
     var barratComponent2 = barratComponent(dictMonadAff);
+    var mainComponent1 = mainComponent(dictMonadAff);
     return function(stage) {
       if (stage instanceof Questions) {
-        return slot1(_questions)(0)(questionsComponent2)(unit)(HandleQuestions.create);
+        return slot12(_questions)(0)(questionsComponent2)(unit)(HandleQuestions.create);
       }
       ;
       if (stage instanceof Barrat) {
-        return slot22(_barrat)(1)(barratComponent2)(unit)(HandleBarrat.create);
+        return slot23(_barrat)(1)(barratComponent2)(unit)(HandleBarrat.create);
+      }
+      ;
+      if (stage instanceof BeckAnxiety) {
+        return slot32(_anxiety)(2)(mainComponent1)(unit)(HandleBeckAnx.create);
       }
       ;
       if (stage instanceof Wisconsin) {
         return text("Wisconsin Component");
-      }
-      ;
-      if (stage instanceof Beck) {
-        return text("Beck Component");
       }
       ;
       if (stage instanceof GoNoGo) {
@@ -8614,19 +8922,19 @@
         return text("Void");
       }
       ;
-      throw new Error("Failed pattern match at Coordinator (line 50, column 16 - line 58, column 25): " + [stage.constructor.name]);
+      throw new Error("Failed pattern match at Coordinator (line 54, column 16 - line 62, column 25): " + [stage.constructor.name]);
     };
   };
-  var mainComponent = function(dictMonadAff) {
+  var mainComponent2 = function(dictMonadAff) {
     return mkComponent({
-      initialState: initialState3,
-      render: render(dictMonadAff),
+      initialState: initialState5,
+      render: render2(dictMonadAff),
       "eval": mkEval({
         handleQuery: defaultEval.handleQuery,
         receive: defaultEval.receive,
         initialize: defaultEval.initialize,
         finalize: defaultEval.finalize,
-        handleAction: mainHandler(dictMonadAff.MonadEffect0())
+        handleAction: mainHandler2(dictMonadAff.MonadEffect0())
       })
     });
   };
@@ -8721,24 +9029,24 @@
   var toEventTarget = unsafeCoerce2;
 
   // output/Halogen.Aff.Util/index.js
-  var bind5 = /* @__PURE__ */ bind(bindAff);
+  var bind6 = /* @__PURE__ */ bind(bindAff);
   var liftEffect4 = /* @__PURE__ */ liftEffect(monadEffectAff);
   var bindFlipped6 = /* @__PURE__ */ bindFlipped(bindEffect);
   var composeKleisliFlipped4 = /* @__PURE__ */ composeKleisliFlipped(bindEffect);
-  var pure7 = /* @__PURE__ */ pure(applicativeAff);
+  var pure8 = /* @__PURE__ */ pure(applicativeAff);
   var bindFlipped1 = /* @__PURE__ */ bindFlipped(bindMaybe);
   var pure12 = /* @__PURE__ */ pure(applicativeEffect);
   var map17 = /* @__PURE__ */ map(functorEffect);
-  var discard4 = /* @__PURE__ */ discard(discardUnit);
+  var discard5 = /* @__PURE__ */ discard(discardUnit);
   var throwError2 = /* @__PURE__ */ throwError(monadThrowAff);
   var selectElement = function(query2) {
-    return bind5(liftEffect4(bindFlipped6(composeKleisliFlipped4(function() {
+    return bind6(liftEffect4(bindFlipped6(composeKleisliFlipped4(function() {
       var $16 = querySelector(query2);
       return function($17) {
         return $16(toParentNode($17));
       };
     }())(document))(windowImpl)))(function(mel) {
-      return pure7(bindFlipped1(fromElement)(mel));
+      return pure8(bindFlipped1(fromElement)(mel));
     });
   };
   var runHalogenAff = /* @__PURE__ */ runAff_(/* @__PURE__ */ either(throwException)(/* @__PURE__ */ $$const(/* @__PURE__ */ pure12(unit))));
@@ -8758,9 +9066,9 @@
       return nonCanceler;
     };
   });
-  var awaitBody = /* @__PURE__ */ discard4(bindAff)(awaitLoad)(function() {
-    return bind5(selectElement("body"))(function(body2) {
-      return maybe(throwError2(error("Could not find body")))(pure7)(body2);
+  var awaitBody = /* @__PURE__ */ discard5(bindAff)(awaitLoad)(function() {
+    return bind6(selectElement("body"))(function(body2) {
+      return maybe(throwError2(error("Could not find body")))(pure8)(body2);
     });
   });
 
@@ -8852,13 +9160,13 @@
   var lookup5 = /* @__PURE__ */ lookup2(ordSubscriptionId);
   var bind13 = /* @__PURE__ */ bind(bindAff);
   var liftEffect5 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var discard5 = /* @__PURE__ */ discard(discardUnit);
-  var discard12 = /* @__PURE__ */ discard5(bindAff);
+  var discard6 = /* @__PURE__ */ discard(discardUnit);
+  var discard12 = /* @__PURE__ */ discard6(bindAff);
   var traverse_12 = /* @__PURE__ */ traverse_(applicativeAff);
   var traverse_22 = /* @__PURE__ */ traverse_12(foldableList);
   var fork3 = /* @__PURE__ */ fork(monadForkAff);
   var parSequence_2 = /* @__PURE__ */ parSequence_(parallelAff)(applicativeParAff)(foldableList);
-  var pure8 = /* @__PURE__ */ pure(applicativeAff);
+  var pure9 = /* @__PURE__ */ pure(applicativeAff);
   var map18 = /* @__PURE__ */ map(functorCoyoneda);
   var parallel3 = /* @__PURE__ */ parallel(parallelAff);
   var map19 = /* @__PURE__ */ map(functorAff);
@@ -8908,7 +9216,7 @@
           return bind13(liftEffect5(read(lchs)))(function(v) {
             return discard12(traverse_22(fork3)(v.finalizers))(function() {
               return discard12(parSequence_2(v.initializers))(function() {
-                return pure8(result);
+                return pure9(result);
               });
             });
           });
@@ -8929,16 +9237,16 @@
       });
     };
   };
-  var evalQ = function(render2) {
+  var evalQ = function(render3) {
     return function(ref2) {
       return function(q2) {
         return bind13(liftEffect5(read(ref2)))(function(v) {
-          return evalM(render2)(ref2)(v["component"]["eval"](new Query(map18(Just.create)(liftCoyoneda(q2)), $$const(Nothing.value))));
+          return evalM(render3)(ref2)(v["component"]["eval"](new Query(map18(Just.create)(liftCoyoneda(q2)), $$const(Nothing.value))));
         });
       };
     };
   };
-  var evalM = function(render2) {
+  var evalM = function(render3) {
     return function(initRef) {
       return function(v) {
         var evalChildQuery = function(ref2) {
@@ -8948,7 +9256,7 @@
                 var evalChild = function(v3) {
                   return parallel3(bind13(liftEffect5(read(v3)))(function(dsx) {
                     return unDriverStateX(function(ds) {
-                      return evalQ(render2)(ds.selfRef)(v2.value1);
+                      return evalQ(render3)(ds.selfRef)(v2.value1);
                     })(dsx);
                   }));
                 };
@@ -8963,7 +9271,7 @@
               return bind13(liftEffect5(read(ref2)))(function(v2) {
                 var v3 = v1.value0(v2.state);
                 if (unsafeRefEq(v2.state)(v3.value1)) {
-                  return pure8(v3.value0);
+                  return pure9(v3.value0);
                 }
                 ;
                 if (otherwise) {
@@ -8985,8 +9293,8 @@
                     lifecycleHandlers: v2.lifecycleHandlers,
                     state: v3.value1
                   })(ref2)))(function() {
-                    return discard12(handleLifecycle(v2.lifecycleHandlers)(render2(v2.lifecycleHandlers)(ref2)))(function() {
-                      return pure8(v3.value0);
+                    return discard12(handleLifecycle(v2.lifecycleHandlers)(render3(v2.lifecycleHandlers)(ref2)))(function() {
+                      return pure9(v3.value0);
                     });
                   });
                 }
@@ -8998,11 +9306,11 @@
             if (v1 instanceof Subscribe) {
               return bind13(fresh(SubscriptionId)(ref2))(function(sid) {
                 return bind13(liftEffect5(subscribe(v1.value0(sid))(function(act) {
-                  return handleAff(evalF(render2)(ref2)(new Action(act)));
+                  return handleAff(evalF(render3)(ref2)(new Action(act)));
                 })))(function(finalize) {
                   return bind13(liftEffect5(read(ref2)))(function(v2) {
                     return discard12(liftEffect5(modify_(map22(insert6(sid)(finalize)))(v2.subscriptions)))(function() {
-                      return pure8(v1.value1(sid));
+                      return pure9(v1.value1(sid));
                     });
                   });
                 });
@@ -9011,7 +9319,7 @@
             ;
             if (v1 instanceof Unsubscribe) {
               return discard12(liftEffect5(unsubscribe3(v1.value0)(ref2)))(function() {
-                return pure8(v1.value1);
+                return pure9(v1.value1);
               });
             }
             ;
@@ -9027,7 +9335,7 @@
               return bind13(liftEffect5(read(ref2)))(function(v2) {
                 return bind13(liftEffect5(read(v2.handlerRef)))(function(handler3) {
                   return discard12(queueOrRun(v2.pendingOuts)(handler3(v1.value0)))(function() {
-                    return pure8(v1.value1);
+                    return pure9(v1.value1);
                   });
                 });
               });
@@ -9035,7 +9343,7 @@
             ;
             if (v1 instanceof Par) {
               return sequential2(retractFreeAp2(hoistFreeAp(function() {
-                var $119 = evalM(render2)(ref2);
+                var $119 = evalM(render3)(ref2);
                 return function($120) {
                   return parallel3($119($120));
                 };
@@ -9049,9 +9357,9 @@
                     return bind13(fork3($$finally(liftEffect5(function __do2() {
                       modify_($$delete4(fid))(v2.forks)();
                       return write(true)(doneRef)();
-                    }))(evalM(render2)(ref2)(v1.value0))))(function(fiber) {
+                    }))(evalM(render3)(ref2)(v1.value0))))(function(fiber) {
                       return discard12(liftEffect5(unlessM2(read(doneRef))(modify_(insert12(fid)(fiber))(v2.forks))))(function() {
-                        return pure8(v1.value1(fid));
+                        return pure9(v1.value1(fid));
                       });
                     });
                   });
@@ -9063,7 +9371,7 @@
               return bind13(liftEffect5(read(ref2)))(function(v2) {
                 return bind13(liftEffect5(read(v2.forks)))(function(forkMap) {
                   return discard12(traverse_32(joinFiber)(lookup12(v1.value0)(forkMap)))(function() {
-                    return pure8(v1.value1);
+                    return pure9(v1.value1);
                   });
                 });
               });
@@ -9073,7 +9381,7 @@
               return bind13(liftEffect5(read(ref2)))(function(v2) {
                 return bind13(liftEffect5(read(v2.forks)))(function(forkMap) {
                   return discard12(traverse_32(killFiber(error("Cancelled")))(lookup12(v1.value0)(forkMap)))(function() {
-                    return pure8(v1.value1);
+                    return pure9(v1.value1);
                   });
                 });
               });
@@ -9081,7 +9389,7 @@
             ;
             if (v1 instanceof GetRef) {
               return bind13(liftEffect5(read(ref2)))(function(v2) {
-                return pure8(v1.value1(lookup22(v1.value0)(v2.refs)));
+                return pure9(v1.value1(lookup22(v1.value0)(v2.refs)));
               });
             }
             ;
@@ -9092,7 +9400,7 @@
       };
     };
   };
-  var evalF = function(render2) {
+  var evalF = function(render3) {
     return function(ref2) {
       return function(v) {
         if (v instanceof RefUpdate) {
@@ -9120,7 +9428,7 @@
         ;
         if (v instanceof Action) {
           return bind13(liftEffect5(read(ref2)))(function(v1) {
-            return evalM(render2)(ref2)(v1["component"]["eval"](new Action2(v.value0, unit)));
+            return evalM(render3)(ref2)(v1["component"]["eval"](new Action2(v.value0, unit)));
           });
         }
         ;
@@ -9130,8 +9438,8 @@
   };
 
   // output/Halogen.Aff.Driver/index.js
-  var bind6 = /* @__PURE__ */ bind(bindEffect);
-  var discard6 = /* @__PURE__ */ discard(discardUnit);
+  var bind7 = /* @__PURE__ */ bind(bindEffect);
+  var discard7 = /* @__PURE__ */ discard(discardUnit);
   var for_2 = /* @__PURE__ */ for_(applicativeEffect)(foldableMaybe);
   var traverse_6 = /* @__PURE__ */ traverse_(applicativeAff)(foldableList);
   var fork4 = /* @__PURE__ */ fork(monadForkAff);
@@ -9139,10 +9447,10 @@
   var traverse_13 = /* @__PURE__ */ traverse_(applicativeEffect);
   var traverse_23 = /* @__PURE__ */ traverse_13(foldableMaybe);
   var traverse_33 = /* @__PURE__ */ traverse_13(foldableMap);
-  var discard23 = /* @__PURE__ */ discard6(bindAff);
+  var discard23 = /* @__PURE__ */ discard7(bindAff);
   var parSequence_3 = /* @__PURE__ */ parSequence_(parallelAff)(applicativeParAff)(foldableList);
   var liftEffect6 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var pure9 = /* @__PURE__ */ pure(applicativeEffect);
+  var pure10 = /* @__PURE__ */ pure(applicativeEffect);
   var map20 = /* @__PURE__ */ map(functorEffect);
   var pure13 = /* @__PURE__ */ pure(applicativeAff);
   var when2 = /* @__PURE__ */ when(applicativeEffect);
@@ -9191,7 +9499,7 @@
         var squashChildInitializers = function(lchs) {
           return function(preInits) {
             return unDriverStateX(function(st) {
-              var parentInitializer = evalM(render2)(st.selfRef)(st["component"]["eval"](new Initialize(unit)));
+              var parentInitializer = evalM(render3)(st.selfRef)(st["component"]["eval"](new Initialize(unit)));
               return modify_(function(handlers) {
                 return {
                   initializers: new Cons(discard23(parSequence_3(reverse2(handlers.initializers)))(function() {
@@ -9221,7 +9529,7 @@
                     finalizers: pre2.finalizers
                   })(lchs)();
                   bindFlipped8(unDriverStateX(function() {
-                    var $63 = render2(lchs);
+                    var $63 = render3(lchs);
                     return function($64) {
                       return $63(function(v) {
                         return v.selfRef;
@@ -9239,9 +9547,9 @@
           return function(handler3) {
             return function(childrenInRef) {
               return function(childrenOutRef) {
-                return unComponentSlot(function(slot3) {
+                return unComponentSlot(function(slot4) {
                   return function __do2() {
-                    var childrenIn = map20(slot3.pop)(read(childrenInRef))();
+                    var childrenIn = map20(slot4.pop)(read(childrenInRef))();
                     var $$var2 = function() {
                       if (childrenIn instanceof Just) {
                         write(childrenIn.value0.value1)(childrenInRef)();
@@ -9251,10 +9559,10 @@
                             flip(write)(st.handlerRef)(function() {
                               var $65 = maybe(pure13(unit))(handler3);
                               return function($66) {
-                                return $65(slot3.output($66));
+                                return $65(slot4.output($66));
                               };
                             }())();
-                            return handleAff(evalM(render2)(st.selfRef)(st["component"]["eval"](new Receive(slot3.input, unit))))();
+                            return handleAff(evalM(render3)(st.selfRef)(st["component"]["eval"](new Receive(slot4.input, unit))))();
                           };
                         })(dsx)();
                         return childrenIn.value0.value0;
@@ -9264,25 +9572,25 @@
                         return runComponent(lchs)(function() {
                           var $67 = maybe(pure13(unit))(handler3);
                           return function($68) {
-                            return $67(slot3.output($68));
+                            return $67(slot4.output($68));
                           };
-                        }())(slot3.input)(slot3.component)();
+                        }())(slot4.input)(slot4.component)();
                       }
                       ;
                       throw new Error("Failed pattern match at Halogen.Aff.Driver (line 213, column 14 - line 222, column 98): " + [childrenIn.constructor.name]);
                     }();
                     var isDuplicate = map20(function($69) {
-                      return isJust(slot3.get($69));
+                      return isJust(slot4.get($69));
                     })(read(childrenOutRef))();
                     when2(isDuplicate)(warn("Halogen: Duplicate slot address was detected during rendering, unexpected results may occur"))();
-                    modify_(slot3.set($$var2))(childrenOutRef)();
-                    return bind6(read($$var2))(renderStateX2(function(v) {
+                    modify_(slot4.set($$var2))(childrenOutRef)();
+                    return bind7(read($$var2))(renderStateX2(function(v) {
                       if (v instanceof Nothing) {
                         return $$throw("Halogen internal error: child was not initialized in renderChild");
                       }
                       ;
                       if (v instanceof Just) {
-                        return pure9(renderSpec2.renderChild(v.value0));
+                        return pure10(renderSpec2.renderChild(v.value0));
                       }
                       ;
                       throw new Error("Failed pattern match at Halogen.Aff.Driver (line 227, column 37 - line 229, column 50): " + [v.constructor.name]);
@@ -9293,7 +9601,7 @@
             };
           };
         };
-        var render2 = function(lchs) {
+        var render3 = function(lchs) {
           return function($$var2) {
             return function __do2() {
               var v = read($$var2)();
@@ -9303,7 +9611,7 @@
               write(v.children)(v.childrenIn)();
               var handler3 = function() {
                 var $70 = queueOrRun(v.pendingHandlers);
-                var $71 = evalF(render2)(v.selfRef);
+                var $71 = evalF(render3)(v.selfRef);
                 return function($72) {
                   return $70($$void5($71($72)));
                 };
@@ -9372,7 +9680,7 @@
           return unDriverStateX(function(st) {
             return function __do2() {
               cleanupSubscriptionsAndForks(st)();
-              var f = evalM(render2)(st.selfRef)(st["component"]["eval"](new Finalize(unit)));
+              var f = evalM(render3)(st.selfRef)(st["component"]["eval"](new Finalize(unit)));
               modify_(function(handlers) {
                 return {
                   initializers: handlers.initializers,
@@ -9396,7 +9704,7 @@
                   return pure13(Nothing.value);
                 }
                 ;
-                return evalQ(render2)(ref2)(q2);
+                return evalQ(render3)(ref2)(q2);
               });
             };
           };
@@ -9433,7 +9741,7 @@
                 };
               }())(i2)(component))();
               return unDriverStateX(function(st) {
-                return pure9({
+                return pure10({
                   query: evalDriver(disposed)(st.selfRef),
                   messages: sio.emitter,
                   dispose: dispose(disposed)(lchs)(dsx)
@@ -9518,7 +9826,7 @@
     };
   };
   var $$void6 = /* @__PURE__ */ $$void(functorEffect);
-  var pure10 = /* @__PURE__ */ pure(applicativeEffect);
+  var pure11 = /* @__PURE__ */ pure(applicativeEffect);
   var traverse_7 = /* @__PURE__ */ traverse_(applicativeEffect)(foldableMaybe);
   var unwrap5 = /* @__PURE__ */ unwrap();
   var when3 = /* @__PURE__ */ when(applicativeEffect);
@@ -9539,7 +9847,7 @@
           return $$void6(appendChild(v)(v2.value0));
         }
         ;
-        return pure10(unit);
+        return pure11(unit);
       };
     };
   };
@@ -9567,36 +9875,36 @@
         var buildWidget2 = function(spec) {
           var buildThunk2 = buildThunk(unwrap5)(spec);
           var $lazy_patch = $runtime_lazy9("patch", "Halogen.VDom.Driver", function() {
-            return function(st, slot3) {
+            return function(st, slot4) {
               if (st instanceof Just) {
-                if (slot3 instanceof ComponentSlot) {
+                if (slot4 instanceof ComponentSlot) {
                   halt(st.value0);
-                  return $lazy_renderComponentSlot(100)(slot3.value0);
+                  return $lazy_renderComponentSlot(100)(slot4.value0);
                 }
                 ;
-                if (slot3 instanceof ThunkSlot) {
-                  var step$prime = step(st.value0, slot3.value0);
+                if (slot4 instanceof ThunkSlot) {
+                  var step$prime = step(st.value0, slot4.value0);
                   return mkStep(new Step(extract2(step$prime), new Just(step$prime), $lazy_patch(103), done));
                 }
                 ;
-                throw new Error("Failed pattern match at Halogen.VDom.Driver (line 97, column 22 - line 103, column 79): " + [slot3.constructor.name]);
+                throw new Error("Failed pattern match at Halogen.VDom.Driver (line 97, column 22 - line 103, column 79): " + [slot4.constructor.name]);
               }
               ;
-              return $lazy_render(104)(slot3);
+              return $lazy_render(104)(slot4);
             };
           });
           var $lazy_render = $runtime_lazy9("render", "Halogen.VDom.Driver", function() {
-            return function(slot3) {
-              if (slot3 instanceof ComponentSlot) {
-                return $lazy_renderComponentSlot(86)(slot3.value0);
+            return function(slot4) {
+              if (slot4 instanceof ComponentSlot) {
+                return $lazy_renderComponentSlot(86)(slot4.value0);
               }
               ;
-              if (slot3 instanceof ThunkSlot) {
-                var step3 = buildThunk2(slot3.value0);
+              if (slot4 instanceof ThunkSlot) {
+                var step3 = buildThunk2(slot4.value0);
                 return mkStep(new Step(extract2(step3), new Just(step3), $lazy_patch(89), done));
               }
               ;
-              throw new Error("Failed pattern match at Halogen.VDom.Driver (line 84, column 7 - line 89, column 75): " + [slot3.constructor.name]);
+              throw new Error("Failed pattern match at Halogen.VDom.Driver (line 84, column 7 - line 89, column 75): " + [slot4.constructor.name]);
             };
           });
           var $lazy_renderComponentSlot = $runtime_lazy9("renderComponentSlot", "Halogen.VDom.Driver", function() {
@@ -9608,9 +9916,9 @@
             };
           });
           var patch2 = $lazy_patch(91);
-          var render2 = $lazy_render(82);
+          var render3 = $lazy_render(82);
           var renderComponentSlot = $lazy_renderComponentSlot(109);
-          return render2;
+          return render3;
         };
         var buildAttributes = buildProp(handler3);
         return {
@@ -9623,7 +9931,7 @@
   };
   var renderSpec = function(document2) {
     return function(container) {
-      var render2 = function(handler3) {
+      var render3 = function(handler3) {
         return function(child) {
           return function(v) {
             return function(v1) {
@@ -9664,7 +9972,7 @@
         };
       };
       return {
-        render: render2,
+        render: render3,
         renderChild: identity8,
         removeChild: removeChild3,
         dispose: removeChild3
@@ -9682,9 +9990,9 @@
   };
 
   // output/Main/index.js
-  var mainComponent2 = /* @__PURE__ */ mainComponent(monadAffAff);
+  var mainComponent3 = /* @__PURE__ */ mainComponent2(monadAffAff);
   var main2 = /* @__PURE__ */ runHalogenAff(/* @__PURE__ */ bind(bindAff)(awaitBody)(function(body2) {
-    return runUI2(mainComponent2)(unit)(body2);
+    return runUI2(mainComponent3)(unit)(body2);
   }));
 
   // <stdin>
