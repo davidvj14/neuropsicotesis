@@ -5,6 +5,7 @@ import Prelude
 import Affjax.RequestBody as RequestBody
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
+import Data.Argonaut (encodeJson)
 import Data.Array (foldl, replicate, snoc, updateAt, zip, range)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
@@ -20,7 +21,6 @@ import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Type.Proxy (Proxy(..))
 import Web.Event.Event (Event, preventDefault)
-import Yoga.JSON as JSON
 
 data BeckStage
   = AnxietyInstructions
@@ -116,7 +116,7 @@ handleSubmit ev = do
   depressionAnswers <- H.gets _.depressionAnswers
   let body = { anxiety: anxietyAnswers, depression: depressionAnswers }
   _ <- H.liftAff $ AX.post ResponseFormat.ignore "/beck"
-    (Just $ RequestBody.String $ JSON.writeJSON body)
+    (Just $ RequestBody.Json $ encodeJson body)
   H.raise BeckDone
 
 mkAnxietyQuestion :: forall w. String -> Int -> HH.HTML w Action
