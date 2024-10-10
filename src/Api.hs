@@ -31,7 +31,7 @@ type API = Get '[HTML] (Html ())
   :<|> "beck"
     :> Header "Cookie" String
     :> ReqBody '[JSON] BeckPostData
-    :> Post '[PlainText] ()
+    :> Post '[PlainText] String
   :<|> "public" :> Raw
 
 app :: ConnectionPool -> Application
