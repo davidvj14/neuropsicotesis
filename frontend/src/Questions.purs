@@ -5,7 +5,7 @@ import Prelude
 import Affjax.RequestBody as RequestBody
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
-import Data.Argonaut.Core (jsonSingletonObject, stringify, Json)
+import Data.Argonaut.Core (jsonSingletonObject, Json)
 import Data.Argonaut.Core as DAC
 import Data.Argonaut.Encode as DAE
 import Data.Either (Either(..))
@@ -14,8 +14,7 @@ import Data.Int (fromString)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
-import Effect.Class (class MonadEffect, liftEffect)
-import Effect.Console (log)
+import Effect.Class (class MonadEffect)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
@@ -222,7 +221,6 @@ formHandler = do
     then do
        form <- H.gets _.formData
        H.liftAff $ sendForm form
-       H.liftEffect $ log "submitting..."
        H.raise Submitted
     else do
        H.modify_ \state -> { formData: state.formData
@@ -241,11 +239,9 @@ validateCode code = do
   response <- AX.post ResponseFormat.json "/code-validation"
     (Just $ RequestBody.json (jsonSingletonObject "code" (DAC.fromString code)))
   case response of
-       Left err -> do
-          liftEffect $ log $ AX.printError err
+       Left _ -> do
           pure false
-       Right { body } -> do
-          liftEffect $ log $ stringify body
+       Right _ -> do
           pure true
 
 mkQuestion :: forall w i. String -> Array (HH.HTML w i) -> HH.HTML w i
