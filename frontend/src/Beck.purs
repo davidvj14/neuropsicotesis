@@ -125,13 +125,13 @@ mkAnxietyQuestion q index =
     [ HH.td_ [HH.text q]
     , HH.td_ 
       [ HH.input
-        [HP.type_ HP.InputRadio, HP.name (show index), HP.required true, HE.onChecked \_ -> UpdateAnxiety index 1]]
+        [HP.type_ HP.InputRadio, HP.name (show index), HP.required true, HE.onChecked \_ -> UpdateAnxiety index 0]]
+    , HH.td_ 
+      [ HH.input [HP.type_ HP.InputRadio, HP.name (show index), HE.onChecked \_ -> UpdateAnxiety index 1]]
     , HH.td_ 
       [ HH.input [HP.type_ HP.InputRadio, HP.name (show index), HE.onChecked \_ -> UpdateAnxiety index 2]]
     , HH.td_ 
       [ HH.input [HP.type_ HP.InputRadio, HP.name (show index), HE.onChecked \_ -> UpdateAnxiety index 3]]
-    , HH.td_ 
-      [ HH.input [HP.type_ HP.InputRadio, HP.name (show index), HE.onChecked \_ -> UpdateAnxiety index 4]]
     ]
 
 mkAllAnxietyQuestions :: forall w. Array (HH.HTML w Action)
