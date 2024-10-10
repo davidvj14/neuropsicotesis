@@ -15,6 +15,8 @@ import Barrat.Api
 import Servant.HTML.Lucid
 import Lucid
 import Data.ByteString.Char8 (ByteString)
+import Beck.Types (BeckPostData)
+import Beck.Api (beckHandler)
 
 type API = Get '[HTML] (Html ())
   :<|> "code-validation" :> ReqBody '[JSON] Code :> Post '[JSON] Bool
@@ -26,6 +28,10 @@ type API = Get '[HTML] (Html ())
     :> Header "Cookie" String
     :> ReqBody '[PlainText] String
     :> Post '[PlainText] String
+  :<|> "beck"
+    :> Header "Cookie" String
+    :> ReqBody '[JSON] BeckPostData
+    :> Post '[PlainText] ()
   :<|> "public" :> Raw
 
 app :: ConnectionPool -> Application
@@ -36,6 +42,7 @@ server pool = rootHandler
   :<|> validateCode
   :<|> participantHandler pool
   :<|> barratHandler pool
+  :<|> beckHandler pool
   :<|> serveDirectoryFileServer "public"
 
 rootHandler :: Handler (Html ())
