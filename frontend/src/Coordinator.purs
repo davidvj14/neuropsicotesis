@@ -2,7 +2,7 @@ module Coordinator where
 
 import Prelude
 
-import Anxiety as Anx
+import Beck as Beck
 import Barrat as Barrat
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Milliseconds(..), delay)
@@ -21,7 +21,7 @@ type State =
 data Stage 
   = Questions
   | Barrat
-  | BeckAnxiety
+  | Beck
   | Wisconsin
   | GoNoGo
   | Stroop
@@ -31,7 +31,7 @@ data Stage
 data Action 
   = HandleQuestions Q.Output
   | HandleBarrat Barrat.Output
-  | HandleBeckAnx Anx.Output
+  | HandleBeck Beck.Output
   | HandleCardSorting
   | HandleCardGame
   | HandleEnding
@@ -40,12 +40,12 @@ data Action
 type ChildSlots = 
   ( questions :: Q.Slot
   , barrat :: Barrat.Slot
-  , anxiety :: Anx.AnxietySlot
+  , beck :: Beck.BeckSlot
   )
 
 _questions = Proxy :: Proxy "questions"
 _barrat = Proxy :: Proxy "barrat"
-_anxiety = Proxy :: Proxy "anxiety"
+_beck = Proxy :: Proxy "beck"
 
 initialState :: forall i. i -> State
 initialState _ = { currentStage: Questions, fadingOutStage: Nothing }
@@ -77,7 +77,7 @@ renderCurrent stage =
     [ case stage of
         Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
         Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
-        BeckAnxiety -> HH.slot _anxiety 2 Anx.mainComponent unit HandleBeckAnx
+        Beck -> HH.slot _beck 2 Beck.mainComponent unit HandleBeck
         Wisconsin -> HH.text "Wisconsin Component"
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"
@@ -93,7 +93,7 @@ maybeRenderFadingOut (Just stage) =
     [ case stage of
         Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
         Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
-        BeckAnxiety -> HH.slot _anxiety 2 Anx.mainComponent unit HandleBeckAnx
+        Beck -> HH.slot _beck 2 Beck.mainComponent unit HandleBeck
         Wisconsin -> HH.text "Wisconsin Component"
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"
@@ -105,7 +105,7 @@ mainHandler :: forall output m. MonadAff m => Action -> H.HalogenM State Action 
 mainHandler action = do
   case action of
     HandleQuestions _ -> fadeToStage Barrat
-    HandleBarrat _ -> fadeToStage BeckAnxiety
+    HandleBarrat _ -> fadeToStage Beck
     FadeOutComplete -> do
        fadingOut <- H.gets _.fadingOutStage
        case fadingOut of

@@ -9,6 +9,9 @@
       };
     }
   };
+  var compose = function(dict) {
+    return dict.compose;
+  };
 
   // output/Control.Category/index.js
   var identity = function(dict) {
@@ -78,10 +81,10 @@
     return dict.map;
   };
   var mapFlipped = function(dictFunctor) {
-    var map110 = map(dictFunctor);
+    var map111 = map(dictFunctor);
     return function(fa) {
       return function(f) {
-        return map110(f)(fa);
+        return map111(f)(fa);
       };
     };
   };
@@ -89,10 +92,10 @@
     return map(dictFunctor)($$const(unit));
   };
   var voidLeft = function(dictFunctor) {
-    var map110 = map(dictFunctor);
+    var map111 = map(dictFunctor);
     return function(f) {
       return function(x) {
-        return map110($$const(x))(f);
+        return map111($$const(x))(f);
       };
     };
   };
@@ -1442,10 +1445,10 @@
     };
   };
   var functorExceptT = function(dictFunctor) {
-    var map110 = map(dictFunctor);
+    var map111 = map(dictFunctor);
     return {
       map: function(f) {
-        return mapExceptT(map110(map4(f)));
+        return mapExceptT(map111(map4(f)));
       }
     };
   };
@@ -1515,7 +1518,7 @@
     };
   };
   var altExceptT = function(dictSemigroup) {
-    var append6 = append(dictSemigroup);
+    var append7 = append(dictSemigroup);
     return function(dictMonad) {
       var Bind1 = dictMonad.Bind1();
       var bind9 = bind(Bind1);
@@ -1536,7 +1539,7 @@
                   }
                   ;
                   if (rn instanceof Left) {
-                    return pure15(new Left(append6(rm.value0)(rn.value0)));
+                    return pure15(new Left(append7(rm.value0)(rn.value0)));
                   }
                   ;
                   throw new Error("Failed pattern match at Control.Monad.Except.Trans (line 87, column 9 - line 89, column 49): " + [rn.constructor.name]);
@@ -1617,18 +1620,18 @@
     result[n] = i2;
     return result;
   };
-  var replicateFill = function(count, value17) {
+  var replicateFill = function(count, value18) {
     if (count < 1) {
       return [];
     }
     var result = new Array(count);
-    return result.fill(value17);
+    return result.fill(value18);
   };
-  var replicatePolyfill = function(count, value17) {
+  var replicatePolyfill = function(count, value18) {
     var result = [];
     var n = 0;
     for (var i2 = 0; i2 < count; i2++) {
-      result[n++] = value17;
+      result[n++] = value18;
     }
     return result;
   };
@@ -1845,12 +1848,12 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append6 = append(dictMonoid.Semigroup0());
+      var append7 = append(dictMonoid.Semigroup0());
       var mempty2 = mempty(dictMonoid);
       return function(f) {
         return foldr22(function(x) {
           return function(acc) {
-            return append6(f(x))(acc);
+            return append7(f(x))(acc);
           };
         })(mempty2);
       };
@@ -2079,9 +2082,9 @@
   var jsonEmptyObject = /* @__PURE__ */ id(empty);
 
   // output/Data.Argonaut.Parser/foreign.js
-  function _jsonParser(fail3, succ, s) {
+  function _jsonParser(fail3, succ2, s) {
     try {
-      return succ(JSON.parse(s));
+      return succ2(JSON.parse(s));
     } catch (e) {
       return fail3(e.message);
     }
@@ -3180,8 +3183,8 @@
       var root = EMPTY;
       function kill2(error4, par2, cb2) {
         var step3 = par2;
-        var head4 = null;
-        var tail2 = null;
+        var head5 = null;
+        var tail3 = null;
         var count = 0;
         var kills2 = {};
         var tmp, kid;
@@ -3200,15 +3203,15 @@
                   };
                 });
               }
-              if (head4 === null) {
+              if (head5 === null) {
                 break loop;
               }
-              step3 = head4._2;
-              if (tail2 === null) {
-                head4 = null;
+              step3 = head5._2;
+              if (tail3 === null) {
+                head5 = null;
               } else {
-                head4 = tail2._1;
-                tail2 = tail2._2;
+                head5 = tail3._1;
+                tail3 = tail3._2;
               }
               break;
             case MAP:
@@ -3216,10 +3219,10 @@
               break;
             case APPLY:
             case ALT:
-              if (head4) {
-                tail2 = new Aff2(CONS, head4, tail2);
+              if (head5) {
+                tail3 = new Aff2(CONS, head5, tail3);
               }
-              head4 = step3;
+              head5 = step3;
               step3 = step3._1;
               break;
           }
@@ -3235,7 +3238,7 @@
         }
         return kills2;
       }
-      function join3(result, head4, tail2) {
+      function join3(result, head5, tail3) {
         var fail3, step3, lhs, rhs, tmp, kid;
         if (util.isLeft(result)) {
           fail3 = result;
@@ -3252,38 +3255,38 @@
           if (interrupt !== null) {
             return;
           }
-          if (head4 === null) {
+          if (head5 === null) {
             cb(fail3 || step3)();
             return;
           }
-          if (head4._3 !== EMPTY) {
+          if (head5._3 !== EMPTY) {
             return;
           }
-          switch (head4.tag) {
+          switch (head5.tag) {
             case MAP:
               if (fail3 === null) {
-                head4._3 = util.right(head4._1(util.fromRight(step3)));
-                step3 = head4._3;
+                head5._3 = util.right(head5._1(util.fromRight(step3)));
+                step3 = head5._3;
               } else {
-                head4._3 = fail3;
+                head5._3 = fail3;
               }
               break;
             case APPLY:
-              lhs = head4._1._3;
-              rhs = head4._2._3;
+              lhs = head5._1._3;
+              rhs = head5._2._3;
               if (fail3) {
-                head4._3 = fail3;
+                head5._3 = fail3;
                 tmp = true;
                 kid = killId++;
-                kills[kid] = kill2(early, fail3 === lhs ? head4._2 : head4._1, function() {
+                kills[kid] = kill2(early, fail3 === lhs ? head5._2 : head5._1, function() {
                   return function() {
                     delete kills[kid];
                     if (tmp) {
                       tmp = false;
-                    } else if (tail2 === null) {
+                    } else if (tail3 === null) {
                       join3(fail3, null, null);
                     } else {
-                      join3(fail3, tail2._1, tail2._2);
+                      join3(fail3, tail3._1, tail3._2);
                     }
                   };
                 });
@@ -3295,32 +3298,32 @@
                 return;
               } else {
                 step3 = util.right(util.fromRight(lhs)(util.fromRight(rhs)));
-                head4._3 = step3;
+                head5._3 = step3;
               }
               break;
             case ALT:
-              lhs = head4._1._3;
-              rhs = head4._2._3;
+              lhs = head5._1._3;
+              rhs = head5._2._3;
               if (lhs === EMPTY && util.isLeft(rhs) || rhs === EMPTY && util.isLeft(lhs)) {
                 return;
               }
               if (lhs !== EMPTY && util.isLeft(lhs) && rhs !== EMPTY && util.isLeft(rhs)) {
                 fail3 = step3 === lhs ? rhs : lhs;
                 step3 = null;
-                head4._3 = fail3;
+                head5._3 = fail3;
               } else {
-                head4._3 = step3;
+                head5._3 = step3;
                 tmp = true;
                 kid = killId++;
-                kills[kid] = kill2(early, step3 === lhs ? head4._2 : head4._1, function() {
+                kills[kid] = kill2(early, step3 === lhs ? head5._2 : head5._1, function() {
                   return function() {
                     delete kills[kid];
                     if (tmp) {
                       tmp = false;
-                    } else if (tail2 === null) {
+                    } else if (tail3 === null) {
                       join3(step3, null, null);
                     } else {
-                      join3(step3, tail2._1, tail2._2);
+                      join3(step3, tail3._1, tail3._2);
                     }
                   };
                 });
@@ -3331,11 +3334,11 @@
               }
               break;
           }
-          if (tail2 === null) {
-            head4 = null;
+          if (tail3 === null) {
+            head5 = null;
           } else {
-            head4 = tail2._1;
-            tail2 = tail2._2;
+            head5 = tail3._1;
+            tail3 = tail3._2;
           }
         }
       }
@@ -3351,8 +3354,8 @@
       function run3() {
         var status = CONTINUE;
         var step3 = par;
-        var head4 = null;
-        var tail2 = null;
+        var head5 = null;
+        var tail3 = null;
         var tmp, fid;
         loop: while (true) {
           tmp = null;
@@ -3361,31 +3364,31 @@
             case CONTINUE:
               switch (step3.tag) {
                 case MAP:
-                  if (head4) {
-                    tail2 = new Aff2(CONS, head4, tail2);
+                  if (head5) {
+                    tail3 = new Aff2(CONS, head5, tail3);
                   }
-                  head4 = new Aff2(MAP, step3._1, EMPTY, EMPTY);
+                  head5 = new Aff2(MAP, step3._1, EMPTY, EMPTY);
                   step3 = step3._2;
                   break;
                 case APPLY:
-                  if (head4) {
-                    tail2 = new Aff2(CONS, head4, tail2);
+                  if (head5) {
+                    tail3 = new Aff2(CONS, head5, tail3);
                   }
-                  head4 = new Aff2(APPLY, EMPTY, step3._2, EMPTY);
+                  head5 = new Aff2(APPLY, EMPTY, step3._2, EMPTY);
                   step3 = step3._1;
                   break;
                 case ALT:
-                  if (head4) {
-                    tail2 = new Aff2(CONS, head4, tail2);
+                  if (head5) {
+                    tail3 = new Aff2(CONS, head5, tail3);
                   }
-                  head4 = new Aff2(ALT, EMPTY, step3._2, EMPTY);
+                  head5 = new Aff2(ALT, EMPTY, step3._2, EMPTY);
                   step3 = step3._1;
                   break;
                 default:
                   fid = fiberId++;
                   status = RETURN;
                   tmp = step3;
-                  step3 = new Aff2(FORKED, fid, new Aff2(CONS, head4, tail2), EMPTY);
+                  step3 = new Aff2(FORKED, fid, new Aff2(CONS, head5, tail3), EMPTY);
                   tmp = Fiber(util, supervisor, tmp);
                   tmp.onComplete({
                     rethrow: false,
@@ -3398,22 +3401,22 @@
               }
               break;
             case RETURN:
-              if (head4 === null) {
+              if (head5 === null) {
                 break loop;
               }
-              if (head4._1 === EMPTY) {
-                head4._1 = step3;
+              if (head5._1 === EMPTY) {
+                head5._1 = step3;
                 status = CONTINUE;
-                step3 = head4._2;
-                head4._2 = EMPTY;
+                step3 = head5._2;
+                head5._2 = EMPTY;
               } else {
-                head4._2 = step3;
-                step3 = head4;
-                if (tail2 === null) {
-                  head4 = null;
+                head5._2 = step3;
+                step3 = head5;
+                if (tail3 === null) {
+                  head5 = null;
                 } else {
-                  head4 = tail2._1;
-                  tail2 = tail2._2;
+                  head5 = tail3._1;
+                  tail3 = tail3._2;
                 }
               }
           }
@@ -3498,8 +3501,8 @@
       if (aff.tag === Aff.Pure.tag) {
         return Aff.Pure(f(aff._1));
       } else {
-        return Aff.Bind(aff, function(value17) {
-          return Aff.Pure(f(value17));
+        return Aff.Bind(aff, function(value18) {
+          return Aff.Pure(f(value18));
         });
       }
     };
@@ -3874,14 +3877,14 @@
   };
 
   // output/Foreign/foreign.js
-  function typeOf(value17) {
-    return typeof value17;
+  function typeOf(value18) {
+    return typeof value18;
   }
-  function tagOf(value17) {
-    return Object.prototype.toString.call(value17).slice(8, -1);
+  function tagOf(value18) {
+    return Object.prototype.toString.call(value18).slice(8, -1);
   }
-  var isArray = Array.isArray || function(value17) {
-    return Object.prototype.toString.call(value17) === "[object Array]";
+  var isArray = Array.isArray || function(value18) {
+    return Object.prototype.toString.call(value18) === "[object Array]";
   };
 
   // output/Data.Int/foreign.js
@@ -4001,16 +4004,16 @@
     var pure15 = pure(applicativeExceptT(dictMonad));
     var fail1 = fail(dictMonad);
     return function(tag) {
-      return function(value17) {
-        if (tagOf(value17) === tag) {
-          return pure15(unsafeFromForeign(value17));
+      return function(value18) {
+        if (tagOf(value18) === tag) {
+          return pure15(unsafeFromForeign(value18));
         }
         ;
         if (otherwise) {
-          return fail1(new TypeMismatch(tag, tagOf(value17)));
+          return fail1(new TypeMismatch(tag, tagOf(value18)));
         }
         ;
-        throw new Error("Failed pattern match at Foreign (line 123, column 1 - line 123, column 104): " + [tag.constructor.name, value17.constructor.name]);
+        throw new Error("Failed pattern match at Foreign (line 123, column 1 - line 123, column 104): " + [tag.constructor.name, value18.constructor.name]);
       };
     };
   };
@@ -5739,37 +5742,37 @@
     };
   });
   var patchKeyed = /* @__PURE__ */ $lazy_patchKeyed(217);
-  var buildWidget = function(v, build, w) {
+  var buildWidget = function(v, build2, w) {
     var res = v.buildWidget(v)(w);
     var res$prime = unStep(function(v1) {
       return mkStep(new Step(v1.value0, {
-        build,
+        build: build2,
         widget: res
       }, patchWidget, haltWidget));
     })(res);
     return res$prime;
   };
-  var buildText = function(v, build, s) {
+  var buildText = function(v, build2, s) {
     var node = createTextNode(s, v.document);
     var state3 = {
-      build,
+      build: build2,
       node,
       value: s
     };
     return mkStep(new Step(node, state3, patchText, haltText));
   };
-  var buildKeyed = function(v, build, ns1, name1, as1, ch1) {
+  var buildKeyed = function(v, build2, ns1, name1, as1, ch1) {
     var el = createElement(toNullable(ns1), name1, v.document);
     var node = toNode(el);
     var onChild = function(v1, ix, v2) {
-      var res = build(v2.value1);
+      var res = build2(v2.value1);
       insertChildIx(ix, extract2(res), node);
       return res;
     };
     var children2 = strMapWithIxE(ch1, fst, onChild);
     var attrs = v.buildAttributes(el)(as1);
     var state3 = {
-      build,
+      build: build2,
       node,
       attrs,
       ns: ns1,
@@ -5779,18 +5782,18 @@
     };
     return mkStep(new Step(node, state3, patchKeyed, haltKeyed));
   };
-  var buildElem = function(v, build, ns1, name1, as1, ch1) {
+  var buildElem = function(v, build2, ns1, name1, as1, ch1) {
     var el = createElement(toNullable(ns1), name1, v.document);
     var node = toNode(el);
     var onChild = function(ix, child) {
-      var res = build(child);
+      var res = build2(child);
       insertChildIx(ix, extract2(res), node);
       return res;
     };
     var children2 = forE2(ch1, onChild);
     var attrs = v.buildAttributes(el)(as1);
     var state3 = {
-      build,
+      build: build2,
       node,
       attrs,
       ns: ns1,
@@ -5825,8 +5828,8 @@
         throw new Error("Failed pattern match at Halogen.VDom.DOM (line 58, column 27 - line 63, column 52): " + [v.constructor.name]);
       };
     });
-    var build = $lazy_build(58);
-    return build;
+    var build2 = $lazy_build(58);
+    return build2;
   };
 
   // output/Web.Event.EventTarget/foreign.js
@@ -6743,18 +6746,18 @@
   };
   var foldFree = function(dictMonadRec) {
     var Monad0 = dictMonadRec.Monad0();
-    var map110 = map(Monad0.Bind1().Apply0().Functor0());
+    var map111 = map(Monad0.Bind1().Apply0().Functor0());
     var pure15 = pure(Monad0.Applicative0());
     var tailRecM4 = tailRecM(dictMonadRec);
     return function(k) {
       var go2 = function(f) {
         var v = toView(f);
         if (v instanceof Return) {
-          return map110(Done.create)(pure15(v.value0));
+          return map111(Done.create)(pure15(v.value0));
         }
         ;
         if (v instanceof Bind) {
-          return map110(function($199) {
+          return map111(function($199) {
             return Loop.create(v.value1($199));
           })(k(v.value0));
         }
@@ -7254,8 +7257,8 @@
   var br_ = /* @__PURE__ */ br([]);
 
   // output/Foreign.Index/foreign.js
-  function unsafeReadPropImpl(f, s, key, value17) {
-    return value17 == null ? f : s(value17[key]);
+  function unsafeReadPropImpl(f, s, key, value18) {
+    return value18 == null ? f : s(value18[key]);
   }
 
   // output/Foreign.Index/index.js
@@ -7263,8 +7266,8 @@
     var fail3 = fail(dictMonad);
     var pure15 = pure(applicativeExceptT(dictMonad));
     return function(k) {
-      return function(value17) {
-        return unsafeReadPropImpl(fail3(new TypeMismatch("object", typeOf(value17))), pure15, k, value17);
+      return function(value18) {
+        return unsafeReadPropImpl(fail3(new TypeMismatch("object", typeOf(value18))), pure15, k, value18);
       };
     };
   };
@@ -7369,9 +7372,156 @@
     };
   }();
 
-  // output/Extras/index.js
+  // output/Barrat/index.js
+  var bind3 = /* @__PURE__ */ bind(bindHalogenM);
+  var gets2 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var modify_3 = /* @__PURE__ */ modify_2(monadStateHalogenM);
   var type_4 = /* @__PURE__ */ type_3(isPropInputType);
+  var show3 = /* @__PURE__ */ show(showInt);
   var value4 = /* @__PURE__ */ value3(isPropString);
+  var discard2 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var BarratDone = /* @__PURE__ */ function() {
+    function BarratDone2() {
+    }
+    ;
+    BarratDone2.value = new BarratDone2();
+    return BarratDone2;
+  }();
+  var UpdateAnswers = /* @__PURE__ */ function() {
+    function UpdateAnswers2(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    UpdateAnswers2.create = function(value0) {
+      return function(value1) {
+        return new UpdateAnswers2(value0, value1);
+      };
+    };
+    return UpdateAnswers2;
+  }();
+  var HandleSubmit = /* @__PURE__ */ function() {
+    function HandleSubmit3(value0) {
+      this.value0 = value0;
+    }
+    ;
+    HandleSubmit3.create = function(value0) {
+      return new HandleSubmit3(value0);
+    };
+    return HandleSubmit3;
+  }();
+  var setAnswer = function(dictMonadEffect) {
+    return function(index4) {
+      return function(val) {
+        return bind3(gets2(function(v) {
+          return v.answers;
+        }))(function(arr) {
+          var v = updateAt(index4)(val)(arr);
+          if (v instanceof Nothing) {
+            return unsafeThrow("Could not update array");
+          }
+          ;
+          if (v instanceof Just) {
+            return modify_3(function(state3) {
+              var $34 = {};
+              for (var $35 in state3) {
+                if ({}.hasOwnProperty.call(state3, $35)) {
+                  $34[$35] = state3[$35];
+                }
+                ;
+              }
+              ;
+              $34.answers = v.value0;
+              return $34;
+            });
+          }
+          ;
+          throw new Error("Failed pattern match at Barrat (line 50, column 3 - line 52, column 73): " + [v.constructor.name]);
+        });
+      };
+    };
+  };
+  var questions = ["1. Planifico mis tareas con cuidado", "2. Hago las cosas sin pensarlas", "3. Casi nunca me tomo las cosas a pecho (no me perturbo con facilidad)", "4. Mis pensamientos pueden tener gran velocidad (tengo pensamientos que van muy r\xE1pido en mi mente)", "5. Planifico mis viajes con antelaci\xF3n", "6. Soy una persona con autocontrol", "7. Me concentro con facilidad (se me hace f\xE1cil concentrarme)", "8. Ahorro con regularidad", "9. Se me hace dif\xEDcil estar quieto/a durante largos per\xEDodos de tiempo", "10. Pienso las cosas cuidadosamente", "11. Planifico para tener un trabajo fijo (me esfuerzo por asegurar que tendr\xE9 dinero para pagar mis gastos)", "12. Digo las cosas sin pensarlas", "13. Me gusta pensar sobre problemas complicados (me gusta pensar sobre problemas complejos)", "14. Cambio de trabajo frecuentemente (no me quedo en el mismo trabajo durante largos per\xEDodos de tiempo)", "15. Act\xFAo impulsivamente", "16. Me aburro con facilidad tratando de resolver problemas en mi mente (me aburre pensar en algo por demasiado tiempo)", "17. Visito al m\xE9dico y al dentista con regularidad", "18. Hago las cosas en el momento que se me ocurren", "19. Soy una persona que piensa sin distraerse (puedo enfocar mi mente en una sola cosa por mucho tiempo)", "20. Cambio de vivienda a menudo (me mudo con frecuencia o no me gusta vivir en el mismo sitio por mucho tiempo)", "21. Compro cosas impulsivamente", "22. Termino lo que empiezo", "23. Camino y me muevo con rapidez", "24. Resuelvo los problemas experimentando (resuelvo los problemas empleando una posible soluci\xF3n y viendo si funciona)", "25. Gasto en efectivo o a cr\xE9dito m\xE1s de lo que gano (gasto m\xE1s de lo gano)", "26. Hablo r\xE1pido", "27. Tengo pensamientos extra\xF1os cuando estoy pensando (a veces tengo pensamientos irrelevantes cuando pienso)", "28. Me interesa m\xE1s el presente que el futuro", "29. Me siento inquieto/a en clases o charlas (me siento inquieto/a si tengo que o\xEDr a alguien hablar durante un largo per\xEDodo de tiempo)", "30. Planifico el futuro (me interesa m\xE1s el futuro que el presente)"];
+  var mkQuestion = function(q2) {
+    return function(index4) {
+      return tr([])([td_([text(q2)]), td_([input([type_4(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v) {
+        return new UpdateAnswers(index4, "1");
+      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+        return new UpdateAnswers(index4, "2");
+      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+        return new UpdateAnswers(index4, "3");
+      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+        return new UpdateAnswers(index4, "4");
+      })])])]);
+    };
+  };
+  var mkAllQuestions = /* @__PURE__ */ function() {
+    var zipped = zip(questions)(range2(0)(29));
+    var step3 = function(arr) {
+      return function(v) {
+        return snoc(arr)(mkQuestion(v.value0)(v.value1));
+      };
+    };
+    return foldl2(step3)([])(zipped);
+  }();
+  var renderBarrat = function(v) {
+    return div2([class_("container")])([form([id3("barrat_form"), onSubmit(function(ev) {
+      return new HandleSubmit(ev);
+    })])([table_([thead_([tr([])([th_([]), th_([text("Raramente o nunca")]), th_([text("Ocasionalmente")]), th_([text("A menudo")]), th_([text("Siempre o casi siempre")])])]), tbody_(mkAllQuestions)]), input([type_4(InputSubmit.value), title("Siguiente"), value4("Siguiente")])])]);
+  };
+  var initialState = function(v) {
+    return {
+      answers: replicate(30)("")
+    };
+  };
+  var handleSubmit = function(dictMonadAff) {
+    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
+    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
+    return function(ev) {
+      return discard2(liftEffect8(preventDefault(ev)))(function() {
+        return bind3(gets2(function(v) {
+          return v.answers;
+        }))(function(answers) {
+          return bind3(liftAff2(post2(ignore)("/barrat")(new Just(new $$String(joinWith(" ")(answers))))))(function() {
+            return raise(BarratDone.value);
+          });
+        });
+      });
+    };
+  };
+  var handleAction = function(dictMonadAff) {
+    var setAnswer1 = setAnswer(dictMonadAff.MonadEffect0());
+    var handleSubmit1 = handleSubmit(dictMonadAff);
+    return function(action2) {
+      if (action2 instanceof UpdateAnswers) {
+        return setAnswer1(action2.value0)(action2.value1);
+      }
+      ;
+      if (action2 instanceof HandleSubmit) {
+        return handleSubmit1(action2.value0);
+      }
+      ;
+      throw new Error("Failed pattern match at Barrat (line 43, column 3 - line 45, column 39): " + [action2.constructor.name]);
+    };
+  };
+  var barratComponent = function(dictMonadAff) {
+    return mkComponent({
+      initialState,
+      render: renderBarrat,
+      "eval": mkEval({
+        handleQuery: defaultEval.handleQuery,
+        receive: defaultEval.receive,
+        initialize: defaultEval.initialize,
+        finalize: defaultEval.finalize,
+        handleAction: handleAction(dictMonadAff)
+      })
+    });
+  };
+
+  // output/Extras/index.js
+  var type_5 = /* @__PURE__ */ type_3(isPropInputType);
+  var value5 = /* @__PURE__ */ value3(isPropString);
+  var identity8 = /* @__PURE__ */ identity(categoryFn);
   var DoneReading = /* @__PURE__ */ function() {
     function DoneReading2() {
     }
@@ -7386,29 +7536,26 @@
     ClickedDone2.value = new ClickedDone2();
     return ClickedDone2;
   }();
-  var mkInstructions = function(instructions2) {
-    return div2([class_("instructions-container")])([text(instructions2), input([type_4(InputButton.value), onClick(function(v) {
+  var mkInstructions = function(instructions) {
+    return div2([class_("instructions-container")])([text(instructions), br_, input([type_5(InputButton.value), onClick(function(v) {
       return ClickedDone.value;
-    }), value4("Continuar")])]);
+    }), value5("Continuar")])]);
   };
-  var renderInstructions = function(instructions2) {
-    return mkInstructions(instructions2);
+  var renderInstructions = function(instructions) {
+    return mkInstructions(instructions);
   };
-  var initialState = function(v) {
-    return unit;
-  };
-  var handleAction = function(dictMonadAff) {
+  var handleAction2 = function(dictMonadAff) {
     return function(v) {
       return raise(DoneReading.value);
     };
   };
   var instructionsComponent = function(dictMonadAff) {
-    var handleAction1 = handleAction(dictMonadAff);
-    return function(instructions2) {
+    var handleAction1 = handleAction2(dictMonadAff);
+    return function(instructions) {
       return mkComponent({
-        initialState,
+        initialState: identity8,
         render: function(v) {
-          return renderInstructions(instructions2);
+          return renderInstructions(instructions);
         },
         "eval": mkEval({
           handleQuery: defaultEval.handleQuery,
@@ -7445,18 +7592,167 @@
     };
   };
 
-  // output/Anxiety/index.js
-  var bind3 = /* @__PURE__ */ bind(bindHalogenM);
-  var gets2 = /* @__PURE__ */ gets(monadStateHalogenM);
-  var modify_3 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var type_5 = /* @__PURE__ */ type_3(isPropInputType);
-  var show3 = /* @__PURE__ */ show(showInt);
+  // output/Yoga.JSON/foreign.js
+  function replacer(key, value18) {
+    if (typeof value18 === "bigint") {
+      return value18.toString();
+    }
+    return value18;
+  }
+  var _unsafeStringify = (data) => JSON.stringify(data, replacer);
+
+  // output/Record/index.js
+  var get3 = function(dictIsSymbol) {
+    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+    return function() {
+      return function(l) {
+        return function(r) {
+          return unsafeGet(reflectSymbol2(l))(r);
+        };
+      };
+    };
+  };
+
+  // output/Record.Builder/foreign.js
+  function copyRecord(rec) {
+    var copy2 = {};
+    for (var key in rec) {
+      if ({}.hasOwnProperty.call(rec, key)) {
+        copy2[key] = rec[key];
+      }
+    }
+    return copy2;
+  }
+  function unsafeInsert(l) {
+    return function(a2) {
+      return function(rec) {
+        rec[l] = a2;
+        return rec;
+      };
+    };
+  }
+
+  // output/Record.Builder/index.js
+  var semigroupoidBuilder = semigroupoidFn;
+  var insert6 = function() {
+    return function() {
+      return function(dictIsSymbol) {
+        var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+        return function(l) {
+          return function(a2) {
+            return function(r1) {
+              return unsafeInsert(reflectSymbol2(l))(a2)(r1);
+            };
+          };
+        };
+      };
+    };
+  };
+  var categoryBuilder = categoryFn;
+  var build = function(v) {
+    return function(r1) {
+      return v(copyRecord(r1));
+    };
+  };
+
+  // output/Yoga.JSON/index.js
+  var identity9 = /* @__PURE__ */ identity(categoryBuilder);
+  var map16 = /* @__PURE__ */ map(functorArray);
+  var compose1 = /* @__PURE__ */ compose(semigroupoidBuilder);
+  var insert7 = /* @__PURE__ */ insert6()();
+  var writeForeignInt = {
+    writeImpl: unsafeToForeign
+  };
+  var writeForeignFieldsNilRowR = {
+    writeImplFields: function(v) {
+      return function(v1) {
+        return identity9;
+      };
+    }
+  };
+  var writeImplFields = function(dict) {
+    return dict.writeImplFields;
+  };
+  var writeForeignRecord = function() {
+    return function(dictWriteForeignFields) {
+      var writeImplFields1 = writeImplFields(dictWriteForeignFields);
+      return {
+        writeImpl: function(rec) {
+          var steps = writeImplFields1($$Proxy.value)(rec);
+          return unsafeToForeign(build(steps)({}));
+        }
+      };
+    };
+  };
+  var writeImpl = function(dict) {
+    return dict.writeImpl;
+  };
+  var writeJSON = function(dictWriteForeign) {
+    var $469 = writeImpl(dictWriteForeign);
+    return function($470) {
+      return _unsafeStringify($469($470));
+    };
+  };
+  var writeForeignArray = function(dictWriteForeign) {
+    var writeImpl5 = writeImpl(dictWriteForeign);
+    return {
+      writeImpl: function(xs) {
+        return unsafeToForeign(map16(writeImpl5)(xs));
+      }
+    };
+  };
+  var writeForeignFieldsCons = function(dictIsSymbol) {
+    var get4 = get3(dictIsSymbol)();
+    var insert42 = insert7(dictIsSymbol);
+    return function(dictWriteForeign) {
+      var writeImpl5 = writeImpl(dictWriteForeign);
+      return function(dictWriteForeignFields) {
+        var writeImplFields1 = writeImplFields(dictWriteForeignFields);
+        return function() {
+          return function() {
+            return function() {
+              return {
+                writeImplFields: function(v) {
+                  return function(rec) {
+                    var rest = writeImplFields1($$Proxy.value)(rec);
+                    var value18 = writeImpl5(get4($$Proxy.value)(rec));
+                    var result = compose1(insert42($$Proxy.value)(value18))(rest);
+                    return result;
+                  };
+                }
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+
+  // output/Beck/index.js
+  var bind4 = /* @__PURE__ */ bind(bindHalogenM);
+  var gets3 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var modify_4 = /* @__PURE__ */ modify_2(monadStateHalogenM);
+  var type_6 = /* @__PURE__ */ type_3(isPropInputType);
+  var show4 = /* @__PURE__ */ show(showInt);
   var pure6 = /* @__PURE__ */ pure(applicativeHalogenM);
-  var discard2 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var discard3 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var writeForeignArray2 = /* @__PURE__ */ writeForeignArray(writeForeignInt);
+  var writeJSON2 = /* @__PURE__ */ writeJSON(/* @__PURE__ */ writeForeignRecord()(/* @__PURE__ */ writeForeignFieldsCons({
+    reflectSymbol: function() {
+      return "anxiety";
+    }
+  })(writeForeignArray2)(/* @__PURE__ */ writeForeignFieldsCons({
+    reflectSymbol: function() {
+      return "depression";
+    }
+  })(writeForeignArray2)(writeForeignFieldsNilRowR)()()())()()()));
+  var append5 = /* @__PURE__ */ append(semigroupArray);
+  var value6 = /* @__PURE__ */ value3(isPropString);
+  var identity10 = /* @__PURE__ */ identity(categoryFn);
   var slot2 = /* @__PURE__ */ slot();
   var slot1 = /* @__PURE__ */ slot2({
     reflectSymbol: function() {
-      return "instructions";
+      return "anxietyInstructions";
     }
   })(ordInt);
   var slot22 = /* @__PURE__ */ slot2({
@@ -7464,19 +7760,39 @@
       return "anxietySlot";
     }
   })(ordInt);
-  var AnxietyDone = /* @__PURE__ */ function() {
-    function AnxietyDone2() {
+  var slot3 = /* @__PURE__ */ slot2({
+    reflectSymbol: function() {
+      return "depressionInstructions";
+    }
+  })(ordInt);
+  var slot4 = /* @__PURE__ */ slot2({
+    reflectSymbol: function() {
+      return "depressionSlot";
+    }
+  })(ordInt);
+  var BeckDone = /* @__PURE__ */ function() {
+    function BeckDone2() {
     }
     ;
-    AnxietyDone2.value = new AnxietyDone2();
-    return AnxietyDone2;
+    BeckDone2.value = new BeckDone2();
+    return BeckDone2;
   }();
-  var Instructions = /* @__PURE__ */ function() {
-    function Instructions2() {
+  var AnxietyCompleted = /* @__PURE__ */ function() {
+    function AnxietyCompleted2(value0) {
+      this.value0 = value0;
     }
     ;
-    Instructions2.value = new Instructions2();
-    return Instructions2;
+    AnxietyCompleted2.create = function(value0) {
+      return new AnxietyCompleted2(value0);
+    };
+    return AnxietyCompleted2;
+  }();
+  var AnxietyInstructions = /* @__PURE__ */ function() {
+    function AnxietyInstructions2() {
+    }
+    ;
+    AnxietyInstructions2.value = new AnxietyInstructions2();
+    return AnxietyInstructions2;
   }();
   var AnxietyForm = /* @__PURE__ */ function() {
     function AnxietyForm2() {
@@ -7485,20 +7801,47 @@
     AnxietyForm2.value = new AnxietyForm2();
     return AnxietyForm2;
   }();
-  var UpdateAnswers = /* @__PURE__ */ function() {
-    function UpdateAnswers3(value0, value1) {
+  var DepressionInstructions = /* @__PURE__ */ function() {
+    function DepressionInstructions2() {
+    }
+    ;
+    DepressionInstructions2.value = new DepressionInstructions2();
+    return DepressionInstructions2;
+  }();
+  var DepressionForm = /* @__PURE__ */ function() {
+    function DepressionForm2() {
+    }
+    ;
+    DepressionForm2.value = new DepressionForm2();
+    return DepressionForm2;
+  }();
+  var UpdateAnxiety = /* @__PURE__ */ function() {
+    function UpdateAnxiety2(value0, value1) {
       this.value0 = value0;
       this.value1 = value1;
     }
     ;
-    UpdateAnswers3.create = function(value0) {
+    UpdateAnxiety2.create = function(value0) {
       return function(value1) {
-        return new UpdateAnswers3(value0, value1);
+        return new UpdateAnxiety2(value0, value1);
       };
     };
-    return UpdateAnswers3;
+    return UpdateAnxiety2;
   }();
-  var HandleSubmit = /* @__PURE__ */ function() {
+  var UpdateDepression = /* @__PURE__ */ function() {
+    function UpdateDepression2(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    UpdateDepression2.create = function(value0) {
+      return function(value1) {
+        return new UpdateDepression2(value0, value1);
+      };
+    };
+    return UpdateDepression2;
+  }();
+  var HandleSubmit2 = /* @__PURE__ */ function() {
     function HandleSubmit3(value0) {
       this.value0 = value0;
     }
@@ -7508,15 +7851,35 @@
     };
     return HandleSubmit3;
   }();
-  var InstructionsDone = /* @__PURE__ */ function() {
-    function InstructionsDone2(value0) {
+  var AnxietyInstructionsDone = /* @__PURE__ */ function() {
+    function AnxietyInstructionsDone2(value0) {
       this.value0 = value0;
     }
     ;
-    InstructionsDone2.create = function(value0) {
-      return new InstructionsDone2(value0);
+    AnxietyInstructionsDone2.create = function(value0) {
+      return new AnxietyInstructionsDone2(value0);
     };
-    return InstructionsDone2;
+    return AnxietyInstructionsDone2;
+  }();
+  var AnxietyFormDone = /* @__PURE__ */ function() {
+    function AnxietyFormDone2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    AnxietyFormDone2.create = function(value0) {
+      return new AnxietyFormDone2(value0);
+    };
+    return AnxietyFormDone2;
+  }();
+  var DepressionInstructionsDone = /* @__PURE__ */ function() {
+    function DepressionInstructionsDone2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    DepressionInstructionsDone2.create = function(value0) {
+      return new DepressionInstructionsDone2(value0);
+    };
+    return DepressionInstructionsDone2;
   }();
   var ActionUnit = /* @__PURE__ */ function() {
     function ActionUnit2() {
@@ -7525,11 +7888,28 @@
     ActionUnit2.value = new ActionUnit2();
     return ActionUnit2;
   }();
-  var setAnswer = function(dictMonadEffect) {
+  var GoDepressionInstructions = /* @__PURE__ */ function() {
+    function GoDepressionInstructions2() {
+    }
+    ;
+    GoDepressionInstructions2.value = new GoDepressionInstructions2();
+    return GoDepressionInstructions2;
+  }();
+  var HandleAnxietyDone = /* @__PURE__ */ function() {
+    function HandleAnxietyDone2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    HandleAnxietyDone2.create = function(value0) {
+      return new HandleAnxietyDone2(value0);
+    };
+    return HandleAnxietyDone2;
+  }();
+  var setDepressionAnswer = function(dictMonadEffect) {
     return function(index4) {
       return function(val) {
-        return bind3(gets2(function(v) {
-          return v.answers;
+        return bind4(gets3(function(v) {
+          return v.depressionAnswers;
         }))(function(arr) {
           var v = updateAt(index4)(val)(arr);
           if (v instanceof Nothing) {
@@ -7537,130 +7917,357 @@
           }
           ;
           if (v instanceof Just) {
-            return modify_3(function(state3) {
-              var $56 = {};
-              for (var $57 in state3) {
-                if ({}.hasOwnProperty.call(state3, $57)) {
-                  $56[$57] = state3[$57];
+            return modify_4(function(state3) {
+              var $125 = {};
+              for (var $126 in state3) {
+                if ({}.hasOwnProperty.call(state3, $126)) {
+                  $125[$126] = state3[$126];
                 }
                 ;
               }
               ;
-              $56.answers = v.value0;
-              return $56;
+              $125.depressionAnswers = v.value0;
+              return $125;
             });
           }
           ;
-          throw new Error("Failed pattern match at Anxiety (line 68, column 3 - line 70, column 73): " + [v.constructor.name]);
+          throw new Error("Failed pattern match at Beck (line 107, column 3 - line 109, column 83): " + [v.constructor.name]);
         });
       };
     };
   };
-  var questions = ["1. Torpe o entumecido", "2. Acalorado", "3. Con temblor en las piernas", "4. Incapaz de relajarse", "5. Con temor a que ocurra lo peor", "6. Mareado, o que se le va la cabeza", "7. Con latidos del coraz\xF3n fuerte y acelerados", "8. Inestable", "9. Atemorizado o asustado", "10. Nervioso", "11. Con sensaci\xF3n de bloqueo", "12. Con temblores en las manos", "13. Inquieto, inseguro", "14. Con miedo a perder el control", "15. Con sensaci\xF3n de ahogo", "16. Con temor a morir", "17. Con miedo", "18. Con problemas digestivos", "19. Con desvanecimientos", "20. Con rubor facial", "21. Con sudores, frios o calientes"];
-  var mkQuestion = function(q2) {
+  var setAnxietyAnswer = function(dictMonadEffect) {
     return function(index4) {
-      return tr([])([td_([text(q2)]), td_([input([type_5(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v) {
-        return new UpdateAnswers(index4, "1");
-      })])]), td_([input([type_5(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
-        return new UpdateAnswers(index4, "2");
-      })])]), td_([input([type_5(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
-        return new UpdateAnswers(index4, "3");
-      })])]), td_([input([type_5(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
-        return new UpdateAnswers(index4, "4");
+      return function(val) {
+        return bind4(gets3(function(v) {
+          return v.anxietyAnswers;
+        }))(function(arr) {
+          var v = updateAt(index4)(val)(arr);
+          if (v instanceof Nothing) {
+            return unsafeThrow("Could not update array");
+          }
+          ;
+          if (v instanceof Just) {
+            return modify_4(function(state3) {
+              var $130 = {};
+              for (var $131 in state3) {
+                if ({}.hasOwnProperty.call(state3, $131)) {
+                  $130[$131] = state3[$131];
+                }
+                ;
+              }
+              ;
+              $130.anxietyAnswers = v.value0;
+              return $130;
+            });
+          }
+          ;
+          throw new Error("Failed pattern match at Beck (line 100, column 3 - line 102, column 80): " + [v.constructor.name]);
+        });
+      };
+    };
+  };
+  var mkAnxietyQuestion = function(q2) {
+    return function(index4) {
+      return tr([])([td_([text(q2)]), td_([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v) {
+        return new UpdateAnxiety(index4, 1);
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
+        return new UpdateAnxiety(index4, 2);
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
+        return new UpdateAnxiety(index4, 3);
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
+        return new UpdateAnxiety(index4, 4);
       })])])]);
     };
   };
-  var mkAllQuestions = /* @__PURE__ */ function() {
-    var zipped = zip(questions)(range2(0)(29));
+  var mainHandler = function(dictMonadEffect) {
+    return function(v) {
+      if (v instanceof AnxietyInstructionsDone) {
+        return modify_4(function(state3) {
+          var $135 = {};
+          for (var $136 in state3) {
+            if ({}.hasOwnProperty.call(state3, $136)) {
+              $135[$136] = state3[$136];
+            }
+            ;
+          }
+          ;
+          $135.stage = AnxietyForm.value;
+          return $135;
+        });
+      }
+      ;
+      if (v instanceof GoDepressionInstructions) {
+        return modify_4(function(state3) {
+          var $139 = {};
+          for (var $140 in state3) {
+            if ({}.hasOwnProperty.call(state3, $140)) {
+              $139[$140] = state3[$140];
+            }
+            ;
+          }
+          ;
+          $139.stage = DepressionInstructions.value;
+          return $139;
+        });
+      }
+      ;
+      if (v instanceof DepressionInstructionsDone) {
+        return modify_4(function(state3) {
+          var $142 = {};
+          for (var $143 in state3) {
+            if ({}.hasOwnProperty.call(state3, $143)) {
+              $142[$143] = state3[$143];
+            }
+            ;
+          }
+          ;
+          $142.stage = DepressionForm.value;
+          return $142;
+        });
+      }
+      ;
+      if (v instanceof HandleAnxietyDone && v.value0 instanceof AnxietyCompleted) {
+        return modify_4(function(state3) {
+          var $146 = {};
+          for (var $147 in state3) {
+            if ({}.hasOwnProperty.call(state3, $147)) {
+              $146[$147] = state3[$147];
+            }
+            ;
+          }
+          ;
+          $146.stage = DepressionInstructions.value;
+          $146.anxietyAnswers = v.value0.value0;
+          return $146;
+        });
+      }
+      ;
+      return pure6(unit);
+    };
+  };
+  var initialState2 = function(v) {
+    return {
+      anxietyAnswers: replicate(21)(-100 | 0),
+      depressionAnswers: replicate(21)(-100 | 0),
+      stage: AnxietyInstructions.value
+    };
+  };
+  var handleSubmit2 = function(dictMonadAff) {
+    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
+    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
+    return function(ev) {
+      return discard3(liftEffect8(preventDefault(ev)))(function() {
+        return bind4(gets3(function(v) {
+          return v.anxietyAnswers;
+        }))(function(anxietyAnswers) {
+          return bind4(gets3(function(v) {
+            return v.depressionAnswers;
+          }))(function(depressionAnswers) {
+            var body2 = {
+              anxiety: anxietyAnswers,
+              depression: depressionAnswers
+            };
+            return bind4(liftAff2(post2(ignore)("/beck")(new Just(new $$String(writeJSON2(body2))))))(function() {
+              return raise(BeckDone.value);
+            });
+          });
+        });
+      });
+    };
+  };
+  var handleAction3 = function(dictMonadAff) {
+    var MonadEffect0 = dictMonadAff.MonadEffect0();
+    var setAnxietyAnswer1 = setAnxietyAnswer(MonadEffect0);
+    var setDepressionAnswer1 = setDepressionAnswer(MonadEffect0);
+    var liftEffect8 = liftEffect(monadEffectHalogenM(MonadEffect0));
+    var handleSubmit1 = handleSubmit2(dictMonadAff);
+    return function(action2) {
+      if (action2 instanceof UpdateAnxiety) {
+        return setAnxietyAnswer1(action2.value0)(action2.value1);
+      }
+      ;
+      if (action2 instanceof UpdateDepression) {
+        return setDepressionAnswer1(action2.value0)(action2.value1);
+      }
+      ;
+      if (action2 instanceof AnxietyFormDone) {
+        return discard3(liftEffect8(preventDefault(action2.value0)))(function() {
+          return modify_4(function(state3) {
+            var $156 = {};
+            for (var $157 in state3) {
+              if ({}.hasOwnProperty.call(state3, $157)) {
+                $156[$157] = state3[$157];
+              }
+              ;
+            }
+            ;
+            $156.stage = DepressionInstructions.value;
+            return $156;
+          });
+        });
+      }
+      ;
+      if (action2 instanceof HandleSubmit2) {
+        return handleSubmit1(action2.value0);
+      }
+      ;
+      if (action2 instanceof AnxietyInstructionsDone) {
+        return modify_4(function(state3) {
+          var $161 = {};
+          for (var $162 in state3) {
+            if ({}.hasOwnProperty.call(state3, $162)) {
+              $161[$162] = state3[$162];
+            }
+            ;
+          }
+          ;
+          $161.stage = AnxietyForm.value;
+          return $161;
+        });
+      }
+      ;
+      return pure6(unit);
+    };
+  };
+  var genDepressionRadios = function(answers) {
+    return function(index4) {
+      var step3 = function(arr) {
+        return function(v) {
+          return append5(arr)([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v1) {
+            return new UpdateDepression(index4, v.value0);
+          })]), text("	" + v.value1), br_]);
+        };
+      };
+      return foldl2(step3)([])(answers);
+    };
+  };
+  var mkDepressionQuestion = function(q2) {
+    return function(index4) {
+      return div2([class_("question")])([label_([text(q2.question)]), br_, div_(genDepressionRadios(q2.answers)(index4))]);
+    };
+  };
+  var depressionQuestions = /* @__PURE__ */ function() {
+    return [{
+      question: "Tristeza",
+      answers: [new Tuple(0, "No me siento triste."), new Tuple(1, "Me siento triste gran parte del tiempo."), new Tuple(2, "Me siento triste todo el tiempo."), new Tuple(3, "Me siento tan triste o soy tan infeliz que no puedo soportarlo.")]
+    }, {
+      question: "Pesimismo",
+      answers: [new Tuple(0, "No estoy desalentado respecto a mi futuro"), new Tuple(1, "Me siento m\xE1s desalentado respecto de mi futuro que lo que sol\xEDa estarlo."), new Tuple(2, "No espero que las cosas funcionen para m\xED."), new Tuple(3, "Siento que no hay esperanza para mi futuro y que s\xF3lo puede empeorar.")]
+    }, {
+      question: "Fracaso",
+      answers: [new Tuple(0, "No me siento como un fracasado."), new Tuple(1, "He fracasado m\xE1s de lo que hubiera debido."), new Tuple(2, "Cuando miro hacia atr\xE1s, veo muchos fracasos."), new Tuple(3, "Siento que como persona soy un fracaso total.")]
+    }, {
+      question: "P\xE9rdida de placer",
+      answers: [new Tuple(0, "Obtengo tanto placer como siempre por las cosas de las que disfruto."), new Tuple(1, "No disfruto tanto las cosas como sol\xEDa hacerlo."), new Tuple(2, "Obtengo muy poco placer de las cosas que sol\xEDa disfrutar."), new Tuple(3, "No puedo obtener ning\xFAn placer de las cosas de las que sol\xEDa disfrutar.")]
+    }, {
+      question: "Sentimiento de culpa",
+      answers: [new Tuple(0, "No me siento particularmente culpable."), new Tuple(1, "Me siento culpable respecto de varias cosas que he hecho o que deber\xEDa haber hecho."), new Tuple(2, "Me siento bastante la mayor parte del tiempo."), new Tuple(3, "Me siento culpable todo el tiempo.")]
+    }, {
+      question: "Sentimiento de castigo",
+      answers: [new Tuple(0, "No siento que este siendo castigado."), new Tuple(1, "Siento que tal vez pueda ser castigado."), new Tuple(2, "Espero ser castigado."), new Tuple(3, "Siento que estoy siendo castigado.")]
+    }, {
+      question: "Disconformidad con uno mismo",
+      answers: [new Tuple(0, "Siento acerca de mi lo mismo que siempre."), new Tuple(1, "He perdido la confianza en m\xED mismo."), new Tuple(2, "Estoy decepcionado conmigo mismo."), new Tuple(3, "No me gusto a mi mismo.")]
+    }, {
+      question: "Autocr\xEDtica",
+      answers: [new Tuple(0, "No me critico ni me culpo m\xE1s de lo habitual."), new Tuple(1, "Estoy m\xE1s cr\xEDtico conmigo de lo que sol\xEDa estarlo."), new Tuple(2, "Me critico a m\xED mismo por todos mis errores."), new Tuple(3, "Me culpo a m\xED mismo por todo lo malo que sucede.")]
+    }, {
+      question: "Pensamientos o deseos suicidas",
+      answers: [new Tuple(0, "No tengo ning\xFAn pensamiento de matarme."), new Tuple(1, "He tenido pensamientos de matarme, pero no lo har\xEDa."), new Tuple(2, "Querr\xEDa matarme."), new Tuple(3, "Me matar\xEDa si tuviera la oportunidad de hacerlo.")]
+    }, {
+      question: "Llanto",
+      answers: [new Tuple(0, "No lloro m\xE1s de lo que sol\xEDa hacerlo."), new Tuple(1, "Lloro m\xE1s de lo que sol\xEDa hacerlo."), new Tuple(2, "Lloro por cualquier peque\xF1ez."), new Tuple(3, "Siento ganas de llorar, pero no puedo.")]
+    }, {
+      question: "Agitaci\xF3n",
+      answers: [new Tuple(0, "No estoy m\xE1s inquieto o tenso de lo habitual."), new Tuple(1, "Me siento m\xE1s inquieto o tenso que lo habitual."), new Tuple(2, "Estoy tan inquieto o agitado que me es dif\xEDcil quedarme quieto."), new Tuple(3, "Estoy tan inquieto o agitado que tengo que estar siempre en movimiento o haciendo algo.")]
+    }, {
+      question: "P\xE9rdida de inter\xE9s",
+      answers: [new Tuple(0, "No he perdido el inter\xE9s en otras actividades o personas."), new Tuple(1, "Estoy menos interesado que antes en otras personas o cosas."), new Tuple(2, "He perdido casi todo el inter\xE9s en otras personas o cosas."), new Tuple(3, "Me es dif\xEDcil interesarme por algo.")]
+    }, {
+      question: "Indecisi\xF3n",
+      answers: [new Tuple(0, "Tomo mis propias decisiones tan bien como siempre."), new Tuple(1, "Me resulta m\xE1s dif\xEDcil que de costumbre tomar decisiones."), new Tuple(2, "Encuentro mucha m\xE1s dificultad que antes de tomar decisiones."), new Tuple(3, "Tengo problemas para tomar cualquier decisi\xF3n.")]
+    }, {
+      question: "Desvalorizaci\xF3n",
+      answers: [new Tuple(0, "No siento que yo no sea valioso."), new Tuple(1, "No me considero a m\xED mismo tan valioso y \xFAtil como considerarme."), new Tuple(2, "Me siento menos valioso cuando me comparo con otros."), new Tuple(3, "Siento que no valgo nada.")]
+    }, {
+      question: "P\xE9rdida de energ\xEDa",
+      answers: [new Tuple(0, "Tengo tanta energ\xEDa como siempre."), new Tuple(1, "Tengo menos energ\xEDa que la que sol\xEDa tener."), new Tuple(2, "No tengo suficiente energ\xEDa para hacer demasiado."), new Tuple(3, "No tengo energ\xEDa suficiente para hacer nada.")]
+    }, {
+      question: "Cambio de h\xE1bitos de sue\xF1o",
+      answers: [new Tuple(0, "No he experimento ning\xFAn cambio en mis h\xE1bitos de sue\xF1o."), new Tuple(1, "Duermo un poco m\xE1s que lo habitual."), new Tuple(1, "Duermo un poco menos que lo habitual."), new Tuple(2, "Duermo mucho m\xE1s que lo habitual."), new Tuple(2, "Duermo mucho menos que lo habitual"), new Tuple(3, "Duermo la mayor parte del d\xEDa."), new Tuple(3, "Me despierto 1-2 horas m\xE1s temprano y no puedo volver a dormirme")]
+    }, {
+      question: "Irritabilidad",
+      answers: [new Tuple(0, "No estoy tan irritable que lo habitual."), new Tuple(1, "Estoy m\xE1s irritable que lo habitual."), new Tuple(2, "Estoy mucho m\xE1s irritable que lo habitual."), new Tuple(3, "Estoy irritable todo el tiempo.")]
+    }, {
+      question: "Cambios en apetito",
+      answers: [new Tuple(0, "No he experimentado ning\xFAn cambio en mi apetito."), new Tuple(1, "Mi apetito es un poco menor que lo habitual."), new Tuple(1, "Mi apetito es un poco mayor que lo habitual."), new Tuple(2, "Mi apetito es mucho menor que antes."), new Tuple(2, "Mi apetito es mucho es mucho mayor que lo habitual."), new Tuple(3, "No tengo apetito en absoluto."), new Tuple(3, "Quiero comer todo el d\xEDa.")]
+    }, {
+      question: "Dificultad en la concentraci\xF3n",
+      answers: [new Tuple(0, "Puedo concentrarme tan bien como siempre."), new Tuple(1, "No puedo concentrarme tan bien como habitualmente."), new Tuple(2, "Me es dif\xEDcil mantener la mente en algo por mucho tiempo."), new Tuple(3, "Encuentro que no puedo concentrarme en nada.")]
+    }, {
+      question: "Cansancio o fatiga",
+      answers: [new Tuple(0, "No estoy m\xE1s cansado o fatigado que lo habitual."), new Tuple(1, "Me fatigo o me canso m\xE1s f\xE1cilmente que lo habitual."), new Tuple(2, "Estoy demasiado fatigado o cansado para hacer muchas de las cosas que sol\xEDa hacer."), new Tuple(3, "Estoy demasiado fatigado o cansado para hacer la mayor\xEDa de las cosas que sol\xEDa hacer.")]
+    }, {
+      question: "P\xE9rdida de inter\xE9s en el sexo",
+      answers: [new Tuple(0, "No he notado ning\xFAn cambio reciente en mi inter\xE9s por el sexo."), new Tuple(1, "Estoy menos interesado en el sexo de lo que sol\xEDa estarlo."), new Tuple(2, "Estoy mucho menos interesado en el sexo."), new Tuple(3, "He perdido completamente el inter\xE9s en el sexo.")]
+    }];
+  }();
+  var mkAllDepressionQuestions = /* @__PURE__ */ function() {
+    var zipped = zip(depressionQuestions)(range2(0)(20));
     var step3 = function(arr) {
       return function(v) {
-        return snoc(arr)(mkQuestion(v.value0)(v.value1));
+        return snoc(arr)(mkDepressionQuestion(v.value0)(v.value1));
+      };
+    };
+    return foldl2(step3)([])(zipped);
+  }();
+  var renderDepression = /* @__PURE__ */ function() {
+    return div2([class_("container")])([form([id3("depression_form"), onSubmit(function(ev) {
+      return new HandleSubmit2(ev);
+    })])([div_(mkAllDepressionQuestions), input([type_6(InputSubmit.value), title("Siguiente"), value6("Siguiente")])])]);
+  }();
+  var depressionInstructions = /* @__PURE__ */ function() {
+    return "Este cuestionario consta de 21 grupos de afirmaciones, por favor, lea con atenci\xF3n cada uno de ellos cuidadosamente. Luego elija uno de cada grupo, el que mejor describa el modo en que se ha sentido las \xFAltimas 2 semanas, incluyendo el d\xEDa de hoy";
+  }();
+  var depressionComponent = function(dictMonadAff) {
+    return mkComponent({
+      initialState: identity10,
+      render: function(v) {
+        return renderDepression;
+      },
+      "eval": mkEval({
+        handleQuery: defaultEval.handleQuery,
+        receive: defaultEval.receive,
+        initialize: defaultEval.initialize,
+        finalize: defaultEval.finalize,
+        handleAction: handleAction3(dictMonadAff)
+      })
+    });
+  };
+  var anxietyQuestions = ["1. Torpe o entumecido", "2. Acalorado", "3. Con temblor en las piernas", "4. Incapaz de relajarse", "5. Con temor a que ocurra lo peor", "6. Mareado, o que se le va la cabeza", "7. Con latidos del coraz\xF3n fuerte y acelerados", "8. Inestable", "9. Atemorizado o asustado", "10. Nervioso", "11. Con sensaci\xF3n de bloqueo", "12. Con temblores en las manos", "13. Inquieto, inseguro", "14. Con miedo a perder el control", "15. Con sensaci\xF3n de ahogo", "16. Con temor a morir", "17. Con miedo", "18. Con problemas digestivos", "19. Con desvanecimientos", "20. Con rubor facial", "21. Con sudores, frios o calientes"];
+  var mkAllAnxietyQuestions = /* @__PURE__ */ function() {
+    var zipped = zip(anxietyQuestions)(range2(0)(29));
+    var step3 = function(arr) {
+      return function(v) {
+        return snoc(arr)(mkAnxietyQuestion(v.value0)(v.value1));
       };
     };
     return foldl2(step3)([])(zipped);
   }();
   var renderAnxiety = /* @__PURE__ */ function() {
     return div2([class_("container")])([form([id3("anxiety_form"), onSubmit(function(ev) {
-      return new HandleSubmit(ev);
-    })])([table_([thead_([tr([])([th_([]), th_([text("En absoluto")]), th_([text("Levemente")]), th_([text("Moderadamente")]), th_([text("Severamente")])])]), tbody_(mkAllQuestions)]), input([type_5(InputSubmit.value), title("Siguiente"), value3(isPropString)("Siguiente")])])]);
+      return new AnxietyFormDone(ev);
+    })])([table_([thead_([tr([])([th_([]), th_([text("En absoluto")]), th_([text("Levemente")]), th_([text("Moderadamente")]), th_([text("Severamente")])])]), tbody_(mkAllAnxietyQuestions)]), input([type_6(InputSubmit.value), title("Siguiente"), value6("Siguiente")])])]);
   }();
-  var mainHandler = function(dictMonadEffect) {
-    return function(v) {
-      if (v instanceof InstructionsDone) {
-        return modify_3(function(state3) {
-          var $65 = {};
-          for (var $66 in state3) {
-            if ({}.hasOwnProperty.call(state3, $66)) {
-              $65[$66] = state3[$66];
-            }
-            ;
-          }
-          ;
-          $65.stage = AnxietyForm.value;
-          return $65;
-        });
-      }
-      ;
-      return pure6(unit);
-    };
-  };
-  var instructions = /* @__PURE__ */ function() {
+  var anxietyInstructions = /* @__PURE__ */ function() {
     return "En este cuestionario hay una lista de s\xEDntomas comunes de la ansiedad. Lea cada uno de los \xEDtems atentamente, e indique cuanto le ha afectado en las \xFAltimas 2 semanas incluyendo hoy.";
   }();
-  var initialState2 = function(v) {
-    return {
-      answers: replicate(30)(""),
-      stage: Instructions.value
-    };
-  };
-  var handleSubmit = function(dictMonadAff) {
-    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
-    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
-    return function(ev) {
-      return discard2(liftEffect8(preventDefault(ev)))(function() {
-        return bind3(gets2(function(v) {
-          return v.answers;
-        }))(function(answers) {
-          return bind3(liftAff2(post2(ignore)("/anxiety")(new Just(new $$String(joinWith(" ")(answers))))))(function() {
-            return raise(AnxietyDone.value);
-          });
-        });
-      });
-    };
-  };
-  var handleAction2 = function(dictMonadAff) {
-    var setAnswer1 = setAnswer(dictMonadAff.MonadEffect0());
-    var handleSubmit1 = handleSubmit(dictMonadAff);
-    return function(action2) {
-      if (action2 instanceof UpdateAnswers) {
-        return setAnswer1(action2.value0)(action2.value1);
-      }
-      ;
-      if (action2 instanceof HandleSubmit) {
-        return handleSubmit1(action2.value0);
-      }
-      ;
-      if (action2 instanceof InstructionsDone) {
-        return modify_3(function(state3) {
-          var $73 = {};
-          for (var $74 in state3) {
-            if ({}.hasOwnProperty.call(state3, $74)) {
-              $73[$74] = state3[$74];
-            }
-            ;
-          }
-          ;
-          $73.stage = AnxietyForm.value;
-          return $73;
-        });
-      }
-      ;
-      return pure6(unit);
-    };
-  };
   var anxietyComponent = function(dictMonadAff) {
+    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
+    var handleAction1 = handleAction3(dictMonadAff);
     return mkComponent({
-      initialState: initialState2,
+      initialState: identity10,
       render: function(v) {
         return renderAnxiety;
       },
@@ -7669,31 +8276,58 @@
         receive: defaultEval.receive,
         initialize: defaultEval.initialize,
         finalize: defaultEval.finalize,
-        handleAction: handleAction2(dictMonadAff)
+        handleAction: function(action2) {
+          if (action2 instanceof AnxietyFormDone) {
+            return discard3(liftEffect8(preventDefault(action2.value0)))(function() {
+              return bind4(gets3(function(v1) {
+                return v1.anxietyAnswers;
+              }))(function(anxAns) {
+                return raise(new AnxietyCompleted(anxAns));
+              });
+            });
+          }
+          ;
+          return handleAction1(action2);
+        }
       })
     });
   };
-  var _instructions = /* @__PURE__ */ function() {
+  var _depressionSlot = /* @__PURE__ */ function() {
+    return $$Proxy.value;
+  }();
+  var _depressionInstructions = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
   var _anxietySlot = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
+  var _anxietyInstructions = /* @__PURE__ */ function() {
+    return $$Proxy.value;
+  }();
   var render = function(dictMonadAff) {
     var instructionsComponent2 = instructionsComponent(dictMonadAff);
     var anxietyComponent1 = anxietyComponent(dictMonadAff);
+    var depressionComponent1 = depressionComponent(dictMonadAff);
     return function(state3) {
-      if (state3.stage instanceof Instructions) {
-        return slot1(_instructions)(0)(instructionsComponent2(instructions))(unit)(InstructionsDone.create);
+      if (state3.stage instanceof AnxietyInstructions) {
+        return slot1(_anxietyInstructions)(30)(instructionsComponent2(anxietyInstructions))(state3)(AnxietyInstructionsDone.create);
       }
       ;
       if (state3.stage instanceof AnxietyForm) {
-        return slot22(_anxietySlot)(1)(anxietyComponent1)(unit)(function(v) {
+        return slot22(_anxietySlot)(31)(anxietyComponent1)(state3)(HandleAnxietyDone.create);
+      }
+      ;
+      if (state3.stage instanceof DepressionInstructions) {
+        return slot3(_depressionInstructions)(32)(instructionsComponent2(depressionInstructions))(state3)(DepressionInstructionsDone.create);
+      }
+      ;
+      if (state3.stage instanceof DepressionForm) {
+        return slot4(_depressionSlot)(33)(depressionComponent1)(state3)(function(v) {
           return ActionUnit.value;
         });
       }
       ;
-      throw new Error("Failed pattern match at Anxiety (line 132, column 16 - line 134, column 81): " + [state3.stage.constructor.name]);
+      throw new Error("Failed pattern match at Beck (line 144, column 16 - line 148, column 92): " + [state3.stage.constructor.name]);
     };
   };
   var mainComponent = function(dictMonadAff) {
@@ -7706,152 +8340,6 @@
         initialize: defaultEval.initialize,
         finalize: defaultEval.finalize,
         handleAction: mainHandler(dictMonadAff.MonadEffect0())
-      })
-    });
-  };
-
-  // output/Barrat/index.js
-  var bind4 = /* @__PURE__ */ bind(bindHalogenM);
-  var gets3 = /* @__PURE__ */ gets(monadStateHalogenM);
-  var modify_4 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var type_6 = /* @__PURE__ */ type_3(isPropInputType);
-  var show4 = /* @__PURE__ */ show(showInt);
-  var value5 = /* @__PURE__ */ value3(isPropString);
-  var discard3 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
-  var BarratDone = /* @__PURE__ */ function() {
-    function BarratDone2() {
-    }
-    ;
-    BarratDone2.value = new BarratDone2();
-    return BarratDone2;
-  }();
-  var UpdateAnswers2 = /* @__PURE__ */ function() {
-    function UpdateAnswers3(value0, value1) {
-      this.value0 = value0;
-      this.value1 = value1;
-    }
-    ;
-    UpdateAnswers3.create = function(value0) {
-      return function(value1) {
-        return new UpdateAnswers3(value0, value1);
-      };
-    };
-    return UpdateAnswers3;
-  }();
-  var HandleSubmit2 = /* @__PURE__ */ function() {
-    function HandleSubmit3(value0) {
-      this.value0 = value0;
-    }
-    ;
-    HandleSubmit3.create = function(value0) {
-      return new HandleSubmit3(value0);
-    };
-    return HandleSubmit3;
-  }();
-  var setAnswer2 = function(dictMonadEffect) {
-    return function(index4) {
-      return function(val) {
-        return bind4(gets3(function(v) {
-          return v.answers;
-        }))(function(arr) {
-          var v = updateAt(index4)(val)(arr);
-          if (v instanceof Nothing) {
-            return unsafeThrow("Could not update array");
-          }
-          ;
-          if (v instanceof Just) {
-            return modify_4(function(state3) {
-              var $34 = {};
-              for (var $35 in state3) {
-                if ({}.hasOwnProperty.call(state3, $35)) {
-                  $34[$35] = state3[$35];
-                }
-                ;
-              }
-              ;
-              $34.answers = v.value0;
-              return $34;
-            });
-          }
-          ;
-          throw new Error("Failed pattern match at Barrat (line 50, column 3 - line 52, column 73): " + [v.constructor.name]);
-        });
-      };
-    };
-  };
-  var questions2 = ["1. Planifico mis tareas con cuidado", "2. Hago las cosas sin pensarlas", "3. Casi nunca me tomo las cosas a pecho (no me perturbo con facilidad)", "4. Mis pensamientos pueden tener gran velocidad (tengo pensamientos que van muy r\xE1pido en mi mente)", "5. Planifico mis viajes con antelaci\xF3n", "6. Soy una persona con autocontrol", "7. Me concentro con facilidad (se me hace f\xE1cil concentrarme)", "8. Ahorro con regularidad", "9. Se me hace dif\xEDcil estar quieto/a durante largos per\xEDodos de tiempo", "10. Pienso las cosas cuidadosamente", "11. Planifico para tener un trabajo fijo (me esfuerzo por asegurar que tendr\xE9 dinero para pagar mis gastos)", "12. Digo las cosas sin pensarlas", "13. Me gusta pensar sobre problemas complicados (me gusta pensar sobre problemas complejos)", "14. Cambio de trabajo frecuentemente (no me quedo en el mismo trabajo durante largos per\xEDodos de tiempo)", "15. Act\xFAo impulsivamente", "16. Me aburro con facilidad tratando de resolver problemas en mi mente (me aburre pensar en algo por demasiado tiempo)", "17. Visito al m\xE9dico y al dentista con regularidad", "18. Hago las cosas en el momento que se me ocurren", "19. Soy una persona que piensa sin distraerse (puedo enfocar mi mente en una sola cosa por mucho tiempo)", "20. Cambio de vivienda a menudo (me mudo con frecuencia o no me gusta vivir en el mismo sitio por mucho tiempo)", "21. Compro cosas impulsivamente", "22. Termino lo que empiezo", "23. Camino y me muevo con rapidez", "24. Resuelvo los problemas experimentando (resuelvo los problemas empleando una posible soluci\xF3n y viendo si funciona)", "25. Gasto en efectivo o a cr\xE9dito m\xE1s de lo que gano (gasto m\xE1s de lo gano)", "26. Hablo r\xE1pido", "27. Tengo pensamientos extra\xF1os cuando estoy pensando (a veces tengo pensamientos irrelevantes cuando pienso)", "28. Me interesa m\xE1s el presente que el futuro", "29. Me siento inquieto/a en clases o charlas (me siento inquieto/a si tengo que o\xEDr a alguien hablar durante un largo per\xEDodo de tiempo)", "30. Planifico el futuro (me interesa m\xE1s el futuro que el presente)"];
-  var mkQuestion2 = function(q2) {
-    return function(index4) {
-      return tr([])([td_([text(q2)]), td_([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v) {
-        return new UpdateAnswers2(index4, "1");
-      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
-        return new UpdateAnswers2(index4, "2");
-      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
-        return new UpdateAnswers2(index4, "3");
-      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
-        return new UpdateAnswers2(index4, "4");
-      })])])]);
-    };
-  };
-  var mkAllQuestions2 = /* @__PURE__ */ function() {
-    var zipped = zip(questions2)(range2(0)(29));
-    var step3 = function(arr) {
-      return function(v) {
-        return snoc(arr)(mkQuestion2(v.value0)(v.value1));
-      };
-    };
-    return foldl2(step3)([])(zipped);
-  }();
-  var renderBarrat = function(v) {
-    return div2([class_("container")])([form([id3("barrat_form"), onSubmit(function(ev) {
-      return new HandleSubmit2(ev);
-    })])([table_([thead_([tr([])([th_([]), th_([text("Raramente o nunca")]), th_([text("Ocasionalmente")]), th_([text("A menudo")]), th_([text("Siempre o casi siempre")])])]), tbody_(mkAllQuestions2)]), input([type_6(InputSubmit.value), title("Siguiente"), value5("Siguiente")])])]);
-  };
-  var initialState3 = function(v) {
-    return {
-      answers: replicate(30)("")
-    };
-  };
-  var handleSubmit2 = function(dictMonadAff) {
-    var liftEffect8 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
-    var liftAff2 = liftAff(monadAffHalogenM(dictMonadAff));
-    return function(ev) {
-      return discard3(liftEffect8(preventDefault(ev)))(function() {
-        return bind4(gets3(function(v) {
-          return v.answers;
-        }))(function(answers) {
-          return bind4(liftAff2(post2(ignore)("/barrat")(new Just(new $$String(joinWith(" ")(answers))))))(function() {
-            return raise(BarratDone.value);
-          });
-        });
-      });
-    };
-  };
-  var handleAction3 = function(dictMonadAff) {
-    var setAnswer1 = setAnswer2(dictMonadAff.MonadEffect0());
-    var handleSubmit1 = handleSubmit2(dictMonadAff);
-    return function(action2) {
-      if (action2 instanceof UpdateAnswers2) {
-        return setAnswer1(action2.value0)(action2.value1);
-      }
-      ;
-      if (action2 instanceof HandleSubmit2) {
-        return handleSubmit1(action2.value0);
-      }
-      ;
-      throw new Error("Failed pattern match at Barrat (line 43, column 3 - line 45, column 39): " + [action2.constructor.name]);
-    };
-  };
-  var barratComponent = function(dictMonadAff) {
-    return mkComponent({
-      initialState: initialState3,
-      render: renderBarrat,
-      "eval": mkEval({
-        handleQuery: defaultEval.handleQuery,
-        receive: defaultEval.receive,
-        initialize: defaultEval.initialize,
-        finalize: defaultEval.finalize,
-        handleAction: handleAction3(dictMonadAff)
       })
     });
   };
@@ -7881,18 +8369,6 @@
     return id(toNumber($53));
   };
   var encodeBoolean = id;
-
-  // output/Record/index.js
-  var get3 = function(dictIsSymbol) {
-    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
-    return function() {
-      return function(l) {
-        return function(r) {
-          return unsafeGet(reflectSymbol2(l))(r);
-        };
-      };
-    };
-  };
 
   // output/Data.Argonaut.Encode.Class/index.js
   var gEncodeJsonNil = {
@@ -7973,9 +8449,9 @@
   var bind12 = /* @__PURE__ */ bind(bindHalogenM);
   var gets4 = /* @__PURE__ */ gets(monadStateHalogenM);
   var modify_5 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var append5 = /* @__PURE__ */ append(semigroupArray);
+  var append6 = /* @__PURE__ */ append(semigroupArray);
   var type_7 = /* @__PURE__ */ type_3(isPropInputType);
-  var value6 = /* @__PURE__ */ value3(isPropString);
+  var value7 = /* @__PURE__ */ value3(isPropString);
   var gEncodeJsonCons2 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
   var gEncodeJsonCons1 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJString));
   var gEncodeJsonCons22 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJBoolean);
@@ -8367,20 +8843,20 @@
       };
     };
   };
-  var mkQuestion3 = function(label5) {
+  var mkQuestion2 = function(label5) {
     return function(innerHtml) {
-      return div2([class_("question")])(append5([label_([text(label5)]), br_])(append5(innerHtml)([br_])));
+      return div2([class_("question")])(append6([label_([text(label5)]), br_])(append6(innerHtml)([br_])));
     };
   };
   var sexQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("Sexo")([input([type_7(InputRadio.value), id3("sex"), required2(true), value6("0"), onChecked(function(v) {
+    return mkQuestion2("Sexo")([input([type_7(InputRadio.value), id3("sex"), required2(true), value7("0"), onChecked(function(v) {
       return new UpdateForm("sex", "0");
-    })]), text("Masculino"), br_, input([type_7(InputRadio.value), id3("sex"), required2(true), value6("1"), onChecked(function(v) {
+    })]), text("Masculino"), br_, input([type_7(InputRadio.value), id3("sex"), required2(true), value7("1"), onChecked(function(v) {
       return new UpdateForm("sex", "1");
     })]), text("Femenino")]);
   }();
   var shortageQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFEn tu vida viviste carencia econ\xF3mica, social o emocional?")([input([type_7(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
+    return mkQuestion2("\xBFEn tu vida viviste carencia econ\xF3mica, social o emocional?")([input([type_7(InputCheckbox.value), name4("shortage"), onChecked(function(c) {
       return new UpdateForm("shortage", function() {
         if (c) {
           return "1";
@@ -8415,37 +8891,37 @@
     })]), text("Ninguna")]);
   }();
   var majorQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("Carrera")([input([type_7(InputText.value), id3("major"), required2(true), onValueInput(function(val) {
+    return mkQuestion2("Carrera")([input([type_7(InputText.value), id3("major"), required2(true), onValueInput(function(val) {
       return new UpdateForm("major", val);
     })])]);
   }();
   var lossQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFHas vivido alguna p\xE9rdida importante recientemente?")([small_([text("Alg\xFAn familiar, mascota, trabajo, etc.")]), input([type_7(InputRadio.value), id3("loss_yes"), name4("loss"), value6("1"), required2(true), onChecked(function(v) {
+    return mkQuestion2("\xBFHas vivido alguna p\xE9rdida importante recientemente?")([small_([text("Alg\xFAn familiar, mascota, trabajo, etc.")]), input([type_7(InputRadio.value), id3("loss_yes"), name4("loss"), value7("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("loss", "1"), new ShowQuestion("loss", true)]);
-    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("loss_no"), name4("loss"), value6("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("loss_no"), name4("loss"), value7("0"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("loss", "0"), new ShowQuestion("disorder", false)]);
     })]), text("No")]);
   }();
   var injuryTreatedQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFFue tratado el traumatismo?")([input([type_7(InputRadio.value), id3("treated_yes"), name4("treated"), value6("1"), required2(true), onChecked(function(v) {
+    return mkQuestion2("\xBFFue tratado el traumatismo?")([input([type_7(InputRadio.value), id3("treated_yes"), name4("treated"), value7("1"), required2(true), onChecked(function(v) {
       return new UpdateForm("injuryTreated", "1");
-    })]), text("S\xED"), input([type_7(InputRadio.value), id3("treated_no"), name4("treated"), value6("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), input([type_7(InputRadio.value), id3("treated_no"), name4("treated"), value7("0"), required2(true), onChecked(function(v) {
       return new UpdateForm("injuryTreated", "0");
     })]), text("No")]);
   }();
   var injuryQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFHas presentado alg\xFAn golpe en la cabeza importante?")([small_([text("Por el cual te hayan hecho una tomograf\xEDa y que haya generado alg\xFAn traumatismo en el cerebro")]), input([type_7(InputRadio.value), id3("injury_yes"), name4("injury"), value6("1"), required2(true), onChecked(function(v) {
+    return mkQuestion2("\xBFHas presentado alg\xFAn golpe en la cabeza importante?")([small_([text("Por el cual te hayan hecho una tomograf\xEDa y que haya generado alg\xFAn traumatismo en el cerebro")]), input([type_7(InputRadio.value), id3("injury_yes"), name4("injury"), value7("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("injury", "1"), new ShowQuestion("injury", true)]);
-    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("injury_no"), name4("injury"), value6("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("injury_no"), name4("injury"), value7("0"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("injury", "0"), new ShowQuestion("injury", false)]);
     })]), text("No")]);
   }();
   var injuryLocationQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFEn d\xF3nde se ubic\xF3 el golpe?")([input([type_7(InputText.value), id3("injury_location_input"), name4("injury_location"), required2(true), onValueChange(function(val) {
+    return mkQuestion2("\xBFEn d\xF3nde se ubic\xF3 el golpe?")([input([type_7(InputText.value), id3("injury_location_input"), name4("injury_location"), required2(true), onValueChange(function(val) {
       return new UpdateForm("injuryLocation", val);
     })])]);
   }();
-  var initialState4 = function(v) {
+  var initialState3 = function(v) {
     return {
       formData: {
         age: -1 | 0,
@@ -8620,26 +9096,26 @@
     };
   };
   var drugsQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFConsumes drogas?")([input([type_7(InputRadio.value), id3("drugs_yes"), required2(true), onChecked(function(v) {
+    return mkQuestion2("\xBFConsumes drogas?")([input([type_7(InputRadio.value), id3("drugs_yes"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("drugs", "1"), new ShowQuestion("drugsFreq", false)]);
     })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("drugs_no"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("drugs", "0"), new ShowQuestion("drugsFreq", false)]);
     })]), text("No")]);
   }();
   var disorderQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("Tienes alg\xFAn diagn\xF3stico psiqui\xE1trico o neurol\xF3gico?")([small_([text("Dicho diagn\xF3stico debe de haber sido designado por un profesional de la salud, puede ser diagn\xF3stico de ansiedad, depresi\xF3n, bipolaridad tipo I o II, TDA-H, autismo, alguna enfermedad neurodegenerativa, etc.")]), input([type_7(InputRadio.value), id3("disorder_yes"), name4("disorder"), value6("1"), required2(true), onChecked(function(v) {
+    return mkQuestion2("Tienes alg\xFAn diagn\xF3stico psiqui\xE1trico o neurol\xF3gico?")([small_([text("Dicho diagn\xF3stico debe de haber sido designado por un profesional de la salud, puede ser diagn\xF3stico de ansiedad, depresi\xF3n, bipolaridad tipo I o II, TDA-H, autismo, alguna enfermedad neurodegenerativa, etc.")]), input([type_7(InputRadio.value), id3("disorder_yes"), name4("disorder"), value7("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("disorder", "1"), new ShowQuestion("disorder", true)]);
-    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("disorder_no"), name4("disorder"), value6("0"), required2(true), onChecked(function(v) {
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("disorder_no"), name4("disorder"), value7("0"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("disorder", "0"), new ShowQuestion("disorder", false)]);
     })]), text("No")]);
   }();
   var disorderInputQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFCu\xE1l es tu diagn\xF3stico?")([input([type_7(InputText.value), id3("disorder_input"), name4("disorder"), required2(true), onValueChange(function(val) {
+    return mkQuestion2("\xBFCu\xE1l es tu diagn\xF3stico?")([input([type_7(InputText.value), id3("disorder_input"), name4("disorder"), required2(true), onValueChange(function(val) {
       return new UpdateForm("disorderInput", val);
     })])]);
   }();
   var codeVerification = function(isBad) {
-    return mkQuestion3("Ingresa aqu\xED el c\xF3digo que te proporcion\xF3 la persona que est\xE1 aplicando la prueba")([input([type_7(InputText.value), id3("code"), required2(true), onValueInput(function(val) {
+    return mkQuestion2("Ingresa aqu\xED el c\xF3digo que te proporcion\xF3 la persona que est\xE1 aplicando la prueba")([input([type_7(InputText.value), id3("code"), required2(true), onValueInput(function(val) {
       return new UpdateCode(val);
     })]), function() {
       if (isBad) {
@@ -8650,17 +9126,17 @@
     }()]);
   };
   var alcoholQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("\xBFConsumes alcohol?")([input([type_7(InputRadio.value), id3("alcohol_yes"), name4("alcohol"), required2(true), onChecked(function(v) {
+    return mkQuestion2("\xBFConsumes alcohol?")([input([type_7(InputRadio.value), id3("alcohol_yes"), name4("alcohol"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("alcohol", "1"), new ShowQuestion("alcoholFreq", true)]);
     })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("alcohol_no"), name4("alcohol"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("alcohol", "0"), new ShowQuestion("alcoholFreq", false)]);
     })]), text("No")]);
   }();
-  var alcoholFreqQuestion = /* @__PURE__ */ mkQuestion3("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
+  var alcoholFreqQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
     return new UpdateForm("alcoholFreq", value1);
-  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value6("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value6("0")])([/* @__PURE__ */ text("Todos los d\xEDas")]), /* @__PURE__ */ option([/* @__PURE__ */ value6("1")])([/* @__PURE__ */ text("Una vez a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value6("2")])([/* @__PURE__ */ text("Cada dos semanas")]), /* @__PURE__ */ option([/* @__PURE__ */ value6("3")])([/* @__PURE__ */ text("Una vez al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value6("4")])([/* @__PURE__ */ text("De manera espor\xE1dica")])])]);
+  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("Todos los d\xEDas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("Una vez a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("Cada dos semanas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("Una vez al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("4")])([/* @__PURE__ */ text("De manera espor\xE1dica")])])]);
   var ageQuestion = /* @__PURE__ */ function() {
-    return mkQuestion3("Edad")([input([type_7(InputNumber.value), id3("age"), required2(true), onValueInput(function(val) {
+    return mkQuestion2("Edad")([input([type_7(InputNumber.value), id3("age"), required2(true), onValueInput(function(val) {
       return new UpdateForm("age", val);
     })])]);
   }();
@@ -8668,7 +9144,7 @@
     return input([type_7(InputText.value), name4("abuseOther"), required2(true)]);
   }();
   var abuseQuestion = function(other) {
-    return mkQuestion3("\xBFEn tu vida viviste alg\xFAn tipo de abuso?")([input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
+    return mkQuestion2("\xBFEn tu vida viviste alg\xFAn tipo de abuso?")([input([type_7(InputCheckbox.value), name4("abuse"), onChecked(function(c) {
       return new UpdateForm("abuse", function() {
         if (c) {
           return "1";
@@ -8759,12 +9235,12 @@
       }
       ;
       return div_([]);
-    }(), abuseQuestion(state3.conditionalDivs.abuseOther), shortageQuestion, lossQuestion, codeVerification(state3.conditionalDivs.badCode), input([type_7(InputSubmit.value), title("Siguiente"), value6("Siguiente")])])]);
+    }(), abuseQuestion(state3.conditionalDivs.abuseOther), shortageQuestion, lossQuestion, codeVerification(state3.conditionalDivs.badCode), input([type_7(InputSubmit.value), title("Siguiente"), value7("Siguiente")])])]);
   };
   var renderQuestions = renderQuestionsForm;
   var questionsComponent = function(dictMonadAff) {
     return mkComponent({
-      initialState: initialState4,
+      initialState: initialState3,
       render: renderQuestions,
       "eval": mkEval({
         handleQuery: defaultEval.handleQuery,
@@ -8782,20 +9258,20 @@
   var modify_6 = /* @__PURE__ */ modify_2(monadStateHalogenM);
   var pure8 = /* @__PURE__ */ pure(applicativeHalogenM);
   var discard5 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
-  var slot3 = /* @__PURE__ */ slot();
-  var slot12 = /* @__PURE__ */ slot3({
+  var slot5 = /* @__PURE__ */ slot();
+  var slot12 = /* @__PURE__ */ slot5({
     reflectSymbol: function() {
       return "questions";
     }
   })(ordInt);
-  var slot23 = /* @__PURE__ */ slot3({
+  var slot23 = /* @__PURE__ */ slot5({
     reflectSymbol: function() {
       return "barrat";
     }
   })(ordInt);
-  var slot32 = /* @__PURE__ */ slot3({
+  var slot32 = /* @__PURE__ */ slot5({
     reflectSymbol: function() {
-      return "anxiety";
+      return "beck";
     }
   })(ordInt);
   var Questions = /* @__PURE__ */ function() {
@@ -8812,12 +9288,12 @@
     Barrat2.value = new Barrat2();
     return Barrat2;
   }();
-  var BeckAnxiety = /* @__PURE__ */ function() {
-    function BeckAnxiety2() {
+  var Beck = /* @__PURE__ */ function() {
+    function Beck2() {
     }
     ;
-    BeckAnxiety2.value = new BeckAnxiety2();
-    return BeckAnxiety2;
+    Beck2.value = new Beck2();
+    return Beck2;
   }();
   var Wisconsin = /* @__PURE__ */ function() {
     function Wisconsin2() {
@@ -8874,15 +9350,15 @@
     };
     return HandleBarrat2;
   }();
-  var HandleBeckAnx = /* @__PURE__ */ function() {
-    function HandleBeckAnx2(value0) {
+  var HandleBeck = /* @__PURE__ */ function() {
+    function HandleBeck2(value0) {
       this.value0 = value0;
     }
     ;
-    HandleBeckAnx2.create = function(value0) {
-      return new HandleBeckAnx2(value0);
+    HandleBeck2.create = function(value0) {
+      return new HandleBeck2(value0);
     };
-    return HandleBeckAnx2;
+    return HandleBeck2;
   }();
   var FadeOutComplete = /* @__PURE__ */ function() {
     function FadeOutComplete2() {
@@ -8891,7 +9367,7 @@
     FadeOutComplete2.value = new FadeOutComplete2();
     return FadeOutComplete2;
   }();
-  var initialState5 = function(v) {
+  var initialState4 = function(v) {
     return {
       currentStage: Questions.value,
       fadingOutStage: Nothing.value
@@ -8904,7 +9380,7 @@
       }
       ;
       if (action2 instanceof HandleBarrat) {
-        return fadeToStage(dictMonadAff)(BeckAnxiety.value);
+        return fadeToStage(dictMonadAff)(Beck.value);
       }
       ;
       if (action2 instanceof FadeOutComplete) {
@@ -8987,10 +9463,10 @@
   var _questions = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
-  var _barrat = /* @__PURE__ */ function() {
+  var _beck = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
-  var _anxiety = /* @__PURE__ */ function() {
+  var _barrat = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
   var maybeRenderFadingOut = function(dictMonadAff) {
@@ -9012,8 +9488,8 @@
             return slot23(_barrat)(1)(barratComponent2)(unit)(HandleBarrat.create);
           }
           ;
-          if (v.value0 instanceof BeckAnxiety) {
-            return slot32(_anxiety)(2)(mainComponent1)(unit)(HandleBeckAnx.create);
+          if (v.value0 instanceof Beck) {
+            return slot32(_beck)(2)(mainComponent1)(unit)(HandleBeck.create);
           }
           ;
           if (v.value0 instanceof Wisconsin) {
@@ -9057,8 +9533,8 @@
           return slot23(_barrat)(1)(barratComponent2)(unit)(HandleBarrat.create);
         }
         ;
-        if (stage instanceof BeckAnxiety) {
-          return slot32(_anxiety)(2)(mainComponent1)(unit)(HandleBeckAnx.create);
+        if (stage instanceof Beck) {
+          return slot32(_beck)(2)(mainComponent1)(unit)(HandleBeck.create);
         }
         ;
         if (stage instanceof Wisconsin) {
@@ -9094,7 +9570,7 @@
   };
   var mainComponent2 = function(dictMonadAff) {
     return mkComponent({
-      initialState: initialState5,
+      initialState: initialState4,
       render: render2(dictMonadAff),
       "eval": mkEval({
         handleQuery: defaultEval.handleQuery,
@@ -9138,7 +9614,7 @@
     Complete2.value = new Complete2();
     return Complete2;
   }();
-  var parse = function(v) {
+  var parse2 = function(v) {
     if (v === "loading") {
       return new Just(Loading.value);
     }
@@ -9155,14 +9631,14 @@
   };
 
   // output/Web.HTML.HTMLDocument/index.js
-  var map16 = /* @__PURE__ */ map(functorEffect);
+  var map17 = /* @__PURE__ */ map(functorEffect);
   var toParentNode = unsafeCoerce2;
   var toDocument = unsafeCoerce2;
   var readyState = function(doc) {
-    return map16(function() {
+    return map17(function() {
       var $4 = fromMaybe(Loading.value);
       return function($5) {
-        return $4(parse($5));
+        return $4(parse2($5));
       };
     }())(function() {
       return _readyState(doc);
@@ -9170,10 +9646,10 @@
   };
 
   // output/Web.HTML.HTMLElement/foreign.js
-  function _read(nothing, just, value17) {
-    var tag = Object.prototype.toString.call(value17);
+  function _read(nothing, just, value18) {
+    var tag = Object.prototype.toString.call(value18);
     if (tag.indexOf("[object HTML") === 0 && tag.indexOf("Element]") === tag.length - 8) {
-      return just(value17);
+      return just(value18);
     } else {
       return nothing;
     }
@@ -9203,7 +9679,7 @@
   var pure9 = /* @__PURE__ */ pure(applicativeAff);
   var bindFlipped1 = /* @__PURE__ */ bindFlipped(bindMaybe);
   var pure12 = /* @__PURE__ */ pure(applicativeEffect);
-  var map17 = /* @__PURE__ */ map(functorEffect);
+  var map18 = /* @__PURE__ */ map(functorEffect);
   var discard6 = /* @__PURE__ */ discard(discardUnit);
   var throwError2 = /* @__PURE__ */ throwError(monadThrowAff);
   var selectElement = function(query2) {
@@ -9221,7 +9697,7 @@
     return function __do2() {
       var rs = bindFlipped6(readyState)(bindFlipped6(document)(windowImpl))();
       if (rs instanceof Loading) {
-        var et = map17(toEventTarget)(windowImpl)();
+        var et = map18(toEventTarget)(windowImpl)();
         var listener = eventListener(function(v) {
           return callback(new Right(unit));
         })();
@@ -9324,7 +9800,7 @@
   // output/Halogen.Aff.Driver.Eval/index.js
   var traverse_5 = /* @__PURE__ */ traverse_(applicativeEffect)(foldableMaybe);
   var bindFlipped7 = /* @__PURE__ */ bindFlipped(bindMaybe);
-  var lookup5 = /* @__PURE__ */ lookup2(ordSubscriptionId);
+  var lookup6 = /* @__PURE__ */ lookup2(ordSubscriptionId);
   var bind13 = /* @__PURE__ */ bind(bindAff);
   var liftEffect5 = /* @__PURE__ */ liftEffect(monadEffectAff);
   var discard7 = /* @__PURE__ */ discard(discardUnit);
@@ -9334,12 +9810,12 @@
   var fork3 = /* @__PURE__ */ fork(monadForkAff);
   var parSequence_2 = /* @__PURE__ */ parSequence_(parallelAff)(applicativeParAff)(foldableList);
   var pure10 = /* @__PURE__ */ pure(applicativeAff);
-  var map18 = /* @__PURE__ */ map(functorCoyoneda);
+  var map19 = /* @__PURE__ */ map(functorCoyoneda);
   var parallel3 = /* @__PURE__ */ parallel(parallelAff);
-  var map19 = /* @__PURE__ */ map(functorAff);
+  var map110 = /* @__PURE__ */ map(functorAff);
   var sequential2 = /* @__PURE__ */ sequential(parallelAff);
   var map22 = /* @__PURE__ */ map(functorMaybe);
-  var insert6 = /* @__PURE__ */ insert2(ordSubscriptionId);
+  var insert8 = /* @__PURE__ */ insert2(ordSubscriptionId);
   var retractFreeAp2 = /* @__PURE__ */ retractFreeAp(applicativeParAff);
   var $$delete4 = /* @__PURE__ */ $$delete2(ordForkId);
   var unlessM2 = /* @__PURE__ */ unlessM(monadEffect);
@@ -9354,7 +9830,7 @@
       return function __do2() {
         var v = read(ref2)();
         var subs = read(v.subscriptions)();
-        return traverse_5(unsubscribe)(bindFlipped7(lookup5(sid))(subs))();
+        return traverse_5(unsubscribe)(bindFlipped7(lookup6(sid))(subs))();
       };
     };
   };
@@ -9408,7 +9884,7 @@
     return function(ref2) {
       return function(q2) {
         return bind13(liftEffect5(read(ref2)))(function(v) {
-          return evalM(render3)(ref2)(v["component"]["eval"](new Query(map18(Just.create)(liftCoyoneda(q2)), $$const(Nothing.value))));
+          return evalM(render3)(ref2)(v["component"]["eval"](new Query(map19(Just.create)(liftCoyoneda(q2)), $$const(Nothing.value))));
         });
       };
     };
@@ -9427,7 +9903,7 @@
                     })(dsx);
                   }));
                 };
-                return map19(v2.value2)(sequential2(v2.value0(applicativeParAff)(evalChild)(v1.children)));
+                return map110(v2.value2)(sequential2(v2.value0(applicativeParAff)(evalChild)(v1.children)));
               })(cqb);
             });
           };
@@ -9476,7 +9952,7 @@
                   return handleAff(evalF(render3)(ref2)(new Action(act)));
                 })))(function(finalize) {
                   return bind13(liftEffect5(read(ref2)))(function(v2) {
-                    return discard12(liftEffect5(modify_(map22(insert6(sid)(finalize)))(v2.subscriptions)))(function() {
+                    return discard12(liftEffect5(modify_(map22(insert8(sid)(finalize)))(v2.subscriptions)))(function() {
                       return pure10(v1.value1(sid));
                     });
                   });
@@ -9714,9 +10190,9 @@
           return function(handler3) {
             return function(childrenInRef) {
               return function(childrenOutRef) {
-                return unComponentSlot(function(slot4) {
+                return unComponentSlot(function(slot6) {
                   return function __do2() {
-                    var childrenIn = map20(slot4.pop)(read(childrenInRef))();
+                    var childrenIn = map20(slot6.pop)(read(childrenInRef))();
                     var $$var2 = function() {
                       if (childrenIn instanceof Just) {
                         write(childrenIn.value0.value1)(childrenInRef)();
@@ -9726,10 +10202,10 @@
                             flip(write)(st.handlerRef)(function() {
                               var $65 = maybe(pure13(unit))(handler3);
                               return function($66) {
-                                return $65(slot4.output($66));
+                                return $65(slot6.output($66));
                               };
                             }())();
-                            return handleAff(evalM(render3)(st.selfRef)(st["component"]["eval"](new Receive(slot4.input, unit))))();
+                            return handleAff(evalM(render3)(st.selfRef)(st["component"]["eval"](new Receive(slot6.input, unit))))();
                           };
                         })(dsx)();
                         return childrenIn.value0.value0;
@@ -9739,18 +10215,18 @@
                         return runComponent(lchs)(function() {
                           var $67 = maybe(pure13(unit))(handler3);
                           return function($68) {
-                            return $67(slot4.output($68));
+                            return $67(slot6.output($68));
                           };
-                        }())(slot4.input)(slot4.component)();
+                        }())(slot6.input)(slot6.component)();
                       }
                       ;
                       throw new Error("Failed pattern match at Halogen.Aff.Driver (line 213, column 14 - line 222, column 98): " + [childrenIn.constructor.name]);
                     }();
                     var isDuplicate = map20(function($69) {
-                      return isJust(slot4.get($69));
+                      return isJust(slot6.get($69));
                     })(read(childrenOutRef))();
                     when2(isDuplicate)(warn("Halogen: Duplicate slot address was detected during rendering, unexpected results may occur"))();
-                    modify_(slot4.set($$var2))(childrenOutRef)();
+                    modify_(slot6.set($$var2))(childrenOutRef)();
                     return bind8(read($$var2))(renderStateX2(function(v) {
                       if (v instanceof Nothing) {
                         return $$throw("Halogen internal error: child was not initialized in renderChild");
@@ -9997,8 +10473,8 @@
   var traverse_7 = /* @__PURE__ */ traverse_(applicativeEffect)(foldableMaybe);
   var unwrap5 = /* @__PURE__ */ unwrap();
   var when3 = /* @__PURE__ */ when(applicativeEffect);
-  var not2 = /* @__PURE__ */ not(/* @__PURE__ */ heytingAlgebraFunction(/* @__PURE__ */ heytingAlgebraFunction(heytingAlgebraBoolean)));
-  var identity8 = /* @__PURE__ */ identity(categoryFn);
+  var not3 = /* @__PURE__ */ not(/* @__PURE__ */ heytingAlgebraFunction(/* @__PURE__ */ heytingAlgebraFunction(heytingAlgebraBoolean)));
+  var identity11 = /* @__PURE__ */ identity(categoryFn);
   var bind15 = /* @__PURE__ */ bind(bindAff);
   var liftEffect7 = /* @__PURE__ */ liftEffect(monadEffectAff);
   var map23 = /* @__PURE__ */ map(functorEffect);
@@ -10042,36 +10518,36 @@
         var buildWidget2 = function(spec) {
           var buildThunk2 = buildThunk(unwrap5)(spec);
           var $lazy_patch = $runtime_lazy9("patch", "Halogen.VDom.Driver", function() {
-            return function(st, slot4) {
+            return function(st, slot6) {
               if (st instanceof Just) {
-                if (slot4 instanceof ComponentSlot) {
+                if (slot6 instanceof ComponentSlot) {
                   halt(st.value0);
-                  return $lazy_renderComponentSlot(100)(slot4.value0);
+                  return $lazy_renderComponentSlot(100)(slot6.value0);
                 }
                 ;
-                if (slot4 instanceof ThunkSlot) {
-                  var step$prime = step(st.value0, slot4.value0);
+                if (slot6 instanceof ThunkSlot) {
+                  var step$prime = step(st.value0, slot6.value0);
                   return mkStep(new Step(extract2(step$prime), new Just(step$prime), $lazy_patch(103), done));
                 }
                 ;
-                throw new Error("Failed pattern match at Halogen.VDom.Driver (line 97, column 22 - line 103, column 79): " + [slot4.constructor.name]);
+                throw new Error("Failed pattern match at Halogen.VDom.Driver (line 97, column 22 - line 103, column 79): " + [slot6.constructor.name]);
               }
               ;
-              return $lazy_render(104)(slot4);
+              return $lazy_render(104)(slot6);
             };
           });
           var $lazy_render = $runtime_lazy9("render", "Halogen.VDom.Driver", function() {
-            return function(slot4) {
-              if (slot4 instanceof ComponentSlot) {
-                return $lazy_renderComponentSlot(86)(slot4.value0);
+            return function(slot6) {
+              if (slot6 instanceof ComponentSlot) {
+                return $lazy_renderComponentSlot(86)(slot6.value0);
               }
               ;
-              if (slot4 instanceof ThunkSlot) {
-                var step3 = buildThunk2(slot4.value0);
+              if (slot6 instanceof ThunkSlot) {
+                var step3 = buildThunk2(slot6.value0);
                 return mkStep(new Step(extract2(step3), new Just(step3), $lazy_patch(89), done));
               }
               ;
-              throw new Error("Failed pattern match at Halogen.VDom.Driver (line 84, column 7 - line 89, column 75): " + [slot4.constructor.name]);
+              throw new Error("Failed pattern match at Halogen.VDom.Driver (line 84, column 7 - line 89, column 75): " + [slot6.constructor.name]);
             };
           });
           var $lazy_renderComponentSlot = $runtime_lazy9("renderComponentSlot", "Halogen.VDom.Driver", function() {
@@ -10124,7 +10600,7 @@
                   var nextSib = nextSibling(v1.value0.node)();
                   var machine$prime = step(v1.value0.machine, v);
                   var newNode = extract2(machine$prime);
-                  when3(not2(unsafeRefEq)(v1.value0.node)(newNode))(substInParent(newNode)(nextSib)(parent2))();
+                  when3(not3(unsafeRefEq)(v1.value0.node)(newNode))(substInParent(newNode)(nextSib)(parent2))();
                   return {
                     machine: machine$prime,
                     node: newNode,
@@ -10140,7 +10616,7 @@
       };
       return {
         render: render3,
-        renderChild: identity8,
+        renderChild: identity11,
         removeChild: removeChild3,
         dispose: removeChild3
       };

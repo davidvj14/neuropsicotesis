@@ -10,15 +10,11 @@ import Halogen.HTML.Properties as HP
 
 data InstructionsOutput = DoneReading
 data Action = ClickedDone
-type State = Unit
-
-initialState :: forall i. i -> State
-initialState _ = unit
 
 instructionsComponent :: forall input query m. MonadAff m => String -> H.Component query input InstructionsOutput m
 instructionsComponent instructions = 
   H.mkComponent
-    { initialState
+    { initialState: identity
     , render: (\_ -> renderInstructions instructions)
     , eval: H.mkEval $ H.defaultEval 
       { handleAction = handleAction }
@@ -27,7 +23,7 @@ instructionsComponent instructions =
 renderInstructions :: forall m. String -> H.ComponentHTML Action () m
 renderInstructions instructions = mkInstructions instructions
 
-handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action () InstructionsOutput m Unit
+handleAction :: forall input m. MonadAff m => Action -> H.HalogenM input Action () InstructionsOutput m Unit
 handleAction _ = H.raise DoneReading
 
 mkInstructions :: forall w. String -> HH.HTML w Action
