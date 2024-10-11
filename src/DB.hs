@@ -26,6 +26,9 @@ Participantes
     major String
     alcohol Bool
     alcoholFrequency Int Maybe
+    smoke Bool
+    smokingYears Double Maybe
+    smokingIntensity Double Maybe
     drugs Bool
     drugsFrequency Int Maybe
     disorder Bool
