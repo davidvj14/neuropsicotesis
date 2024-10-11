@@ -116,14 +116,11 @@ questionsComponent :: forall input query m. MonadAff m => H.Component query inpu
 questionsComponent =
   H.mkComponent
     { initialState
-    , render: renderQuestions
+    , render: renderQuestionsForm
     , eval: H.mkEval $ H.defaultEval 
         { handleAction = eventHandler
         }
     }
-
-renderQuestions :: forall m. State -> H.ComponentHTML Action () m
-renderQuestions = renderQuestionsForm
 
 renderQuestionsForm :: forall m. State -> H.ComponentHTML Action () m
 renderQuestionsForm state = 
