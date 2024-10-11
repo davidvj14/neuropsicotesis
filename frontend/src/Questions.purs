@@ -10,7 +10,8 @@ import Data.Argonaut.Core as DAC
 import Data.Argonaut.Encode as DAE
 import Data.Either (Either(..))
 import Data.Foldable (traverse_)
-import Data.Int (fromString)
+import Data.Int as I
+import Data.Number as N
 import Data.Maybe (Maybe(..), fromMaybe)
 import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
@@ -33,6 +34,10 @@ type FormData =
   , major :: String
   , alcohol :: Boolean
   , alcoholFreq :: Maybe Int
+  , alcoholIntensity :: Maybe Int
+  , smoke :: Boolean
+  , smokingYears :: Maybe Number
+  , smokeIntensity :: Maybe Number
   , drugs :: Boolean
   , drugsFreq :: Maybe Int
   , disorder :: Boolean
@@ -51,6 +56,7 @@ formToJSON = DAE.encodeJson
 
 type ConditionalDivs =
   { alcoholFreq :: Boolean
+  , smokeFreq :: Boolean
   , drugsFreq :: Boolean
   , disorder :: Boolean
   , injury :: Boolean
@@ -70,8 +76,6 @@ data Output = Submitted
 
 type Slot = forall query. H.Slot query Output Int
 
---data Query a = GetState (State -> a)
-
 initialState :: forall i. i -> State
 initialState _ =
   { formData:
@@ -80,6 +84,10 @@ initialState _ =
       , major: ""
       , alcohol: false
       , alcoholFreq: Nothing
+      , alcoholIntensity: Nothing
+      , smoke: false
+      , smokingYears: Nothing
+      , smokeIntensity: Nothing
       , drugs: false
       , drugsFreq: Nothing
       , disorder: false
@@ -94,6 +102,7 @@ initialState _ =
     }
     , conditionalDivs: 
       { alcoholFreq: false
+      , smokeFreq: false
       , drugsFreq: false
       , disorder: false
       , injury: false
@@ -132,10 +141,14 @@ renderQuestionsForm state =
         , sexQuestion
         , majorQuestion
         , alcoholQuestion
-        , if state.conditionalDivs.alcoholFreq then alcoholFreqQuestion else HH.div_[]
+        , if state.conditionalDivs.alcoholFreq then alcoholFreqQuestion else HH.div_ []
+        , if state.conditionalDivs.alcoholFreq then alcoholIntensityQuestion else HH.div_ []
+        , smokeQuestion
+        , if state.conditionalDivs.smokeFreq then smokeYearsQuestion else HH.div_ []
+        , if state.conditionalDivs.smokeFreq then smokeIntensityQuestion else HH.div_ []
         , drugsQuestion
         , disorderQuestion
-        , if state.conditionalDivs.disorder then disorderInputQuestion else HH.div_[]
+        , if state.conditionalDivs.disorder then disorderInputQuestion else HH.div_ []
         , injuryQuestion
         , if state.conditionalDivs.injury then injuryLocationQuestion else HH.div_ []
         , if state.conditionalDivs.injury then injuryTreatedQuestion else HH.div_ []
@@ -161,32 +174,29 @@ eventHandler = case _ of
   CompositeAction actions -> traverse_ eventHandler actions
   _ -> H.raise Submitted
 
-{-
-handleQuery :: forall a m. MonadEffect m => Query a -> H.HalogenM State Action () Output m (Maybe a)
-handleQuery = case _ of
-  GetState reply -> do
-    state <- H.get
-    pure $ Just (reply state)
-    -}
 updateForm :: forall m. MonadEffect m => String -> String -> H.HalogenM State Action () Output m Unit
 updateForm key value = do
   formData <- H.gets _.formData
   H.modify_ \state -> { formData: (case key of
-             "age" -> formData { age = fromMaybe (-1) $ fromString value}
-             "sex" -> formData { sex = fromMaybe (-1) $ fromString value}
+             "age" -> formData { age = fromMaybe (-1) $ I.fromString value}
+             "sex" -> formData { sex = fromMaybe (-1) $ I.fromString value}
              "major" -> formData { major = value }
              "alcohol" -> formData { alcohol = value == "1" }
-             "alcohol_freq" -> formData { alcoholFreq = Just $ fromMaybe (-1) $ fromString value }
+             "alcohol_freq" -> formData { alcoholFreq = Just $ fromMaybe (-1) $ I.fromString value }
+             "alcohol_int" -> formData { alcoholIntensity = Just $ fromMaybe (-1) $ I.fromString value }
+             "smoke" -> formData { smoke = value == "1" }
+             "smoke_years" -> formData { smokingYears = Just $ fromMaybe (-1.0) $ N.fromString value }
+             "smoke_intensity" -> formData { smokeIntensity = Just $ fromMaybe (-1.0) $ N.fromString value }
              "drugs" -> formData { drugs = value == "1" }
-             "drugs_freq" -> formData { drugsFreq = Just $ fromMaybe (-1) $ fromString value }
+             "drugs_freq" -> formData { drugsFreq = Just $ fromMaybe (-1) $ I.fromString value }
              "disorder" -> formData { disorder = value == "1" }
              "disorderInput" -> formData { disorderInput = Just value }
              "injury" -> formData { injury = value == "1" }
              "injuryLocation" -> formData { injuryLocation = Just value }
              "injuryTreated" -> formData { injuryTreated = Just $ value == "1" }
-             "abuse" -> formData { abuse = formData.abuse + (fromMaybe (0) $ fromString value) }
+             "abuse" -> formData { abuse = formData.abuse + (fromMaybe (0) $ I.fromString value) }
              "abuseOther" -> formData { abuseOther = Just value }
-             "shortage" -> formData { shortage = formData.shortage + (fromMaybe (0) $ fromString value) }
+             "shortage" -> formData { shortage = formData.shortage + (fromMaybe (0) $ I.fromString value) }
              _ -> formData)
              , conditionalDivs: state.conditionalDivs
              , code: state.code
@@ -198,6 +208,7 @@ showQuestion key shouldShow = H.modify_ \state ->
   , conditionalDivs: (
     case key of
          "alcoholFreq" -> state.conditionalDivs { alcoholFreq = shouldShow }
+         "smokeDetails" -> state.conditionalDivs { smokeFreq = shouldShow }
          "drugsFreq" -> state.conditionalDivs { drugsFreq = shouldShow }
          "disorder" -> state.conditionalDivs { disorder = shouldShow }
          "injury" -> state.conditionalDivs { injury = shouldShow }
@@ -265,7 +276,7 @@ sexQuestion :: forall w. HH.HTML w Action
 sexQuestion = mkQuestion "Sexo"
   [ HH.input
     [ HP.type_ HP.InputRadio 
-    , HP.id "sex"
+    , HP.name "sex"
     , HP.required true
     , HP.value "0"
     , HE.onChecked \_ -> UpdateForm "sex" "0"
@@ -274,7 +285,7 @@ sexQuestion = mkQuestion "Sexo"
   , HH.br_
   , HH.input
     [ HP.type_ HP.InputRadio 
-    , HP.id "sex"
+    , HP.name "sex"
     , HP.required true
     , HP.value "1"
     , HE.onChecked \_ -> UpdateForm "sex" "1"
@@ -322,31 +333,100 @@ alcoholQuestion = mkQuestion "¿Consumes alcohol?"
 alcoholFreqQuestion :: forall w. HH.HTML w Action
 alcoholFreqQuestion = mkQuestion "¿Con qué frecuencia consumes? (Sin importar la cantidad)"
   [ HH.select
-      [ HP.id "alcohol"
-      , HE.onValueChange \value -> UpdateForm "alcoholFreq" value
+    [ HP.id "alcohol"
+    , HE.onValueChange \value -> UpdateForm "alcoholFreq" value
+    , HP.required true
+    ]
+    [ HH.option
+      [ HP.disabled true, HP.selected true, HP.value "" ]
+      [HH.text "Seleccionar frecuencia"]
+    , HH.option
+      [ HP.value "0" ]
+      [HH.text "Una o menos veces al mes"]
+    , HH.option
+      [ HP.value "1" ]
+      [HH.text "De 2 a 4 veces al mes"]
+    , HH.option
+      [ HP.value "2" ]
+      [HH.text "De 2 a 3 veces a la semana"]
+    , HH.option
+      [ HP.value "3" ]
+      [HH.text "4 o más veces a la semana"]
+    ]
+  ]
+
+alcoholIntensityQuestion :: forall w. HH.HTML w Action
+alcoholIntensityQuestion = mkQuestion "¿Cuántas bebidas alcohólicas sueles tomar en un día de consumo?"
+  [ HH.select
+      [ HP.id "alcoholIntensity"
+      , HE.onValueChange \value -> UpdateForm "alcoholIntensity" value
       , HP.required true
       ]
       [ HH.option
-          [ HP.disabled true, HP.selected true, HP.value "" ]
-          [HH.text "Seleccionar frecuencia"]
+        [ HP.disabled true, HP.selected true, HP.value "" ]
+        [HH.text "Seleccionar cantidad"]
       , HH.option
-          [ HP.value "0" ]
-          [HH.text "Todos los días"]
+        [ HP.value "0" ]
+        [HH.text "1 o 2"]
       , HH.option
-          [ HP.value "1" ]
-          [HH.text "Una vez a la semana"]
+        [ HP.value "1" ]
+        [HH.text "3 o 4"]
       , HH.option
-          [ HP.value "2" ]
-          [HH.text "Cada dos semanas"]
+        [ HP.value "2" ]
+        [HH.text "5 o 6"]
       , HH.option
-          [ HP.value "3" ]
-          [HH.text "Una vez al mes"]
-      , HH.option
-          [ HP.value "4" ]
-          [HH.text "De manera esporádica"]
+        [ HP.value "3" ]
+        [HH.text "7 o más"]
       ]
-
   ]
+
+smokeQuestion :: forall w. HH.HTML w Action
+smokeQuestion = mkQuestion "¿Fumas?"
+  [ HH.input 
+    [ HP.type_ HP.InputRadio
+    , HP.id "smoke_yes"
+    , HP.name "smoke"
+    , HP.required true
+    , HE.onChecked \_ -> CompositeAction
+      [ UpdateForm "smoke" "1"
+      , ShowQuestion "smokeFreq" true 
+      ]
+    ]
+  , HH.text "Sí"
+  , HH.br_
+  , HH.input 
+    [ HP.type_ HP.InputRadio
+    , HP.id "smoke_no"
+    , HP.name "smoke"
+    , HP.required true
+    , HE.onChecked \_ -> CompositeAction
+      [ UpdateForm "smoke" "0"
+      , ShowQuestion "smokeFreq" false 
+      ]
+    ]
+  , HH.text "No"
+  ]
+
+smokeYearsQuestion :: forall w. HH.HTML w Action
+smokeYearsQuestion = mkQuestion "¿Cuántos años llevas fumando?"
+  [ HH.input 
+    [ HP.type_ HP.InputNumber
+    , HP.name "smoke_years"
+    , HP.step $ HP.Step 0.01
+    , HE.onValueChange \val -> UpdateForm "smoke_years" val
+    ]
+  ]
+
+smokeIntensityQuestion :: forall w. HH.HTML w Action
+smokeIntensityQuestion = mkQuestion "¿Cuántos cigarros fumas aproximadamente en un día?"
+  [ HH.input
+    [ HP.type_ HP.InputNumber
+    , HP.name "smoke_intensity"
+    , HP.step $ HP.Step 0.01
+    , HE.onValueChange \val -> UpdateForm "smoke_intensity" val
+    ]
+  ]
+
 
 drugsQuestion :: forall w. HH.HTML w Action
 drugsQuestion = mkQuestion "¿Consumes drogas?"
@@ -469,7 +549,11 @@ injuryQuestion = mkQuestion "¿Has presentado algún golpe en la cabeza importan
 
 injuryLocationQuestion :: forall w. HH.HTML w Action
 injuryLocationQuestion = mkQuestion "¿En dónde se ubicó el golpe?"
-  [ HH.input
+  [ HH.small_
+    [ HH.text $ "A nivel de la frente, cerca de la oreja, en la nuca o en la coronilla, " <>
+        "o en dado caso a nivel frontal, parietal, occipital o temporal, también mencionar " <>
+        "si fue del lado izquierdo o derecho" ]
+  , HH.input
       [ HP.type_ HP.InputText
       , HP.id "injury_location_input"
       , HP.name "injury_location"
@@ -596,8 +680,7 @@ shortageQuestion = mkQuestion "¿En tu vida viviste carencia económica, social 
 lossQuestion :: forall w. HH.HTML w Action
 lossQuestion = mkQuestion "¿Has vivido alguna pérdida importante recientemente?" 
   [ HH.small_
-      [HH.text $ "Algún familiar, mascota, trabajo, etc."
-      ]
+      [ HH.text $ "Algún familiar, mascota, trabajo, etc." ]
   , HH.input
       [ HP.type_ HP.InputRadio 
       , HP.id "loss_yes"
