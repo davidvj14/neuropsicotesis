@@ -44,7 +44,7 @@ Beck
     p_id ParticipantesId
     anxiexyScore Int
     anxietyAnswers [Int]
-    depressionScore
+    depressionScore Int
     depressionAnswers [Int]
     Primary p_id
     deriving Show

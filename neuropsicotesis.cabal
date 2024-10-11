@@ -28,6 +28,8 @@ library
       Api
       Barrat.Api
       Barrat.Types
+      Beck.Api
+      Beck.Types
       Config
       DB
       Lib

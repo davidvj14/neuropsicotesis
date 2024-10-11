@@ -28,6 +28,7 @@ to generate this file without the comments in this block.
   , "halogen-vdom"
   , "integers"
   , "maybe"
+  , "numbers"
   , "prelude"
   , "record"
   , "strings"
