@@ -91,9 +91,9 @@ maybeRenderFadingOut (Just stage) =
   HH.div
     [ HP.class_ $ H.ClassName "fade-out"]
     [ case stage of
-        Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
-        Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
-        Beck -> HH.slot _beck 2 Beck.mainComponent unit HandleBeck
+        Questions -> HH.slot _questions 10 Q.questionsComponent unit HandleQuestions
+        Barrat -> HH.slot _barrat 11 Barrat.barratComponent unit HandleBarrat
+        Beck -> HH.slot _beck 12 Beck.mainComponent unit HandleBeck
         Wisconsin -> HH.text "Wisconsin Component"
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"

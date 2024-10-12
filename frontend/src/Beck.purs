@@ -142,9 +142,11 @@ mkAllAnxietyQuestions = foldl step [] zipped
 
 render :: forall m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
 render state = case state.stage of
-  AnxietyInstructions -> HH.slot _anxietyInstructions 30 (instructionsComponent anxietyInstructions) state AnxietyInstructionsDone
+  AnxietyInstructions ->
+    HH.slot _anxietyInstructions 30 (instructionsComponent anxietyInstructions) state AnxietyInstructionsDone
   AnxietyForm -> HH.slot _anxietySlot 31 anxietyComponent state HandleAnxietyDone
-  DepressionInstructions -> HH.slot _depressionInstructions 32 (instructionsComponent depressionInstructions) state DepressionInstructionsDone
+  DepressionInstructions ->
+    HH.slot _depressionInstructions 32 (instructionsComponent depressionInstructions) state DepressionInstructionsDone
   DepressionForm -> HH.slot _depressionSlot 33 depressionComponent state (\_ -> ActionUnit)
 
 renderAnxiety :: forall m.  H.ComponentHTML Action ChildSlots m

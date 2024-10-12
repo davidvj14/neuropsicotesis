@@ -24,7 +24,8 @@ renderInstructions :: forall m. String -> H.ComponentHTML Action () m
 renderInstructions instructions = mkInstructions instructions
 
 handleAction :: forall input m. MonadAff m => Action -> H.HalogenM input Action () InstructionsOutput m Unit
-handleAction _ = H.raise DoneReading
+handleAction _ = do
+  H.raise DoneReading
 
 mkInstructions :: forall w. String -> HH.HTML w Action
 mkInstructions instructions = 
