@@ -34,7 +34,7 @@ type FormData =
   , sex :: Int
   , major :: String
   , alcohol :: Boolean
-  , alcoholFreq :: Maybe Int
+  , alcoholFrequency :: Maybe Int
   , alcoholIntensity :: Maybe Int
   , smoke :: Boolean
   , smokingYears :: Maybe Number
@@ -56,7 +56,7 @@ formToJSON :: FormData -> Json
 formToJSON = DAE.encodeJson
 
 type ConditionalDivs =
-  { alcoholFreq :: Boolean
+  { alcoholFrequency :: Boolean
   , smokeFreq :: Boolean
   , drugsFreq :: Boolean
   , disorder :: Boolean
@@ -84,7 +84,7 @@ initialState _ =
       , sex: -1
       , major: ""
       , alcohol: false
-      , alcoholFreq: Nothing
+      , alcoholFrequency: Nothing
       , alcoholIntensity: Nothing
       , smoke: false
       , smokingYears: Nothing
@@ -102,7 +102,7 @@ initialState _ =
       , loss: false
     }
     , conditionalDivs: 
-      { alcoholFreq: false
+      { alcoholFrequency: false
       , smokeFreq: false
       , drugsFreq: false
       , disorder: false
@@ -139,8 +139,8 @@ renderQuestionsForm state =
         , sexQuestion
         , majorQuestion
         , alcoholQuestion
-        , if state.conditionalDivs.alcoholFreq then alcoholFreqQuestion else HH.div_ []
-        , if state.conditionalDivs.alcoholFreq then alcoholIntensityQuestion else HH.div_ []
+        , if state.conditionalDivs.alcoholFrequency then alcoholFrequencyQuestion else HH.div_ []
+        , if state.conditionalDivs.alcoholFrequency then alcoholIntensityQuestion else HH.div_ []
         , smokeQuestion
         , if state.conditionalDivs.smokeFreq then smokeYearsQuestion else HH.div_ []
         , if state.conditionalDivs.smokeFreq then smokeIntensityQuestion else HH.div_ []
@@ -182,7 +182,7 @@ updateForm key value = do
              "sex" -> formData { sex = fromMaybe (-1) $ I.fromString value}
              "major" -> formData { major = value }
              "alcohol" -> formData { alcohol = value == "1" }
-             "alcohol_freq" -> formData { alcoholFreq = Just $ fromMaybe (-1) $ I.fromString value }
+             "alcohol_freq" -> formData { alcoholFrequency = Just $ fromMaybe (-1) $ I.fromString value }
              "alcohol_int" -> formData { alcoholIntensity = Just $ fromMaybe (-1) $ I.fromString value }
              "smoke" -> formData { smoke = value == "1" }
              "smoke_years" -> formData { smokingYears = Just $ fromMaybe (-1.0) $ N.fromString value }
@@ -207,7 +207,7 @@ showQuestion key shouldShow = H.modify_ \state ->
   { formData: state.formData
   , conditionalDivs: (
     case key of
-         "alcoholFreq" -> state.conditionalDivs { alcoholFreq = shouldShow }
+         "alcoholFrequency" -> state.conditionalDivs { alcoholFrequency = shouldShow }
          "smokeFreq" -> state.conditionalDivs { smokeFreq = shouldShow }
          "drugsFreq" -> state.conditionalDivs { drugsFreq = shouldShow }
          "disorder" -> state.conditionalDivs { disorder = shouldShow }
@@ -312,7 +312,7 @@ alcoholQuestion = mkQuestion "¿Consumes alcohol?"
     , HP.required true
     , HE.onChecked \_ -> CompositeAction
       [ UpdateForm "alcohol" "1"
-      , ShowQuestion "alcoholFreq" true 
+      , ShowQuestion "alcoholFrequency" true 
       ]
     ]
   , HH.text "Sí"
@@ -324,17 +324,17 @@ alcoholQuestion = mkQuestion "¿Consumes alcohol?"
     , HP.required true
     , HE.onChecked \_ -> CompositeAction
       [ UpdateForm "alcohol" "0"
-      , ShowQuestion "alcoholFreq" false 
+      , ShowQuestion "alcoholFrequency" false 
       ]
     ]
   , HH.text "No"
   ]
 
-alcoholFreqQuestion :: forall w. HH.HTML w Action
-alcoholFreqQuestion = mkQuestion "¿Con qué frecuencia consumes? (Sin importar la cantidad)"
+alcoholFrequencyQuestion :: forall w. HH.HTML w Action
+alcoholFrequencyQuestion = mkQuestion "¿Con qué frecuencia consumes? (Sin importar la cantidad)"
   [ HH.select
     [ HP.id "alcohol"
-    , HE.onValueChange \value -> UpdateForm "alcoholFreq" value
+    , HE.onValueChange \value -> UpdateForm "alcoholFrequency" value
     , HP.required true
     ]
     [ HH.option
