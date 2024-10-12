@@ -56,8 +56,8 @@ _barratForm = Proxy :: Proxy "barratForm"
 
 render :: forall m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
 render state = case state.stage of
-  BarratInstructions -> HH.slot _barratInstructions 10 (instructionsComponent instructions) unit BarratInstructionsDone
-  BarratForm -> HH.slot _barratForm 11 barratFormComponent unit HandleBarratDone
+  BarratInstructions -> HH.slot _barratInstructions 20 (instructionsComponent instructions) unit BarratInstructionsDone
+  BarratForm -> HH.slot _barratForm 21 barratFormComponent unit HandleBarratDone
 
 barratComponent :: forall query input m. MonadAff m => H.Component query input Output m
 barratComponent =
