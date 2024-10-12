@@ -182,13 +182,13 @@ updateForm key value = do
              "sex" -> formData { sex = fromMaybe (-1) $ I.fromString value}
              "major" -> formData { major = value }
              "alcohol" -> formData { alcohol = value == "1" }
-             "alcohol_freq" -> formData { alcoholFrequency = Just $ fromMaybe (-1) $ I.fromString value }
-             "alcohol_int" -> formData { alcoholIntensity = Just $ fromMaybe (-1) $ I.fromString value }
+             "alcoholFrequency" -> formData { alcoholFrequency = Just $ fromMaybe (-1) $ I.fromString value }
+             "alcoholIntensity" -> formData { alcoholIntensity = Just $ fromMaybe (-1) $ I.fromString value }
              "smoke" -> formData { smoke = value == "1" }
-             "smoke_years" -> formData { smokingYears = Just $ fromMaybe (-1.0) $ N.fromString value }
-             "smoke_intensity" -> formData { smokingIntensity = Just $ fromMaybe (-1.0) $ N.fromString value }
+             "smokingYears" -> formData { smokingYears = Just $ fromMaybe (-1.0) $ N.fromString value }
+             "smokingIntensity" -> formData { smokingIntensity = Just $ fromMaybe (-1.0) $ N.fromString value }
              "drugs" -> formData { drugs = value == "1" }
-             "drugs_freq" -> formData { drugsFrequency = Just $ fromMaybe (-1) $ I.fromString value }
+             "drugsFrequency" -> formData { drugsFrequency = Just $ fromMaybe (-1) $ I.fromString value }
              "disorder" -> formData { disorder = value == "1" }
              "disorderInput" -> formData { disorderInput = Just value }
              "injury" -> formData { injury = value == "1" }
@@ -413,7 +413,7 @@ smokeYearsQuestion = mkQuestion "¿Cuántos años llevas fumando?"
     [ HP.type_ HP.InputNumber
     , HP.name "smoke_years"
     , HP.step $ HP.Step 0.01
-    , HE.onValueChange \val -> UpdateForm "smoke_years" val
+    , HE.onValueChange \val -> UpdateForm "smokingYears" val
     ]
   ]
 
@@ -423,7 +423,7 @@ smokingIntensityQuestion = mkQuestion "¿Cuántos cigarros fumas aproximadamente
     [ HP.type_ HP.InputNumber
     , HP.name "smoke_intensity"
     , HP.step $ HP.Step 0.01
-    , HE.onValueChange \val -> UpdateForm "smoke_intensity" val
+    , HE.onValueChange \val -> UpdateForm "smokingIntensity" val
     ]
   ]
 
