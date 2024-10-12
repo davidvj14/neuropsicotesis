@@ -11,11 +11,12 @@ import Data.Argonaut.Encode as DAE
 import Data.Either (Either(..))
 import Data.Foldable (traverse_)
 import Data.Int as I
-import Data.Number as N
 import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Number as N
 import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
+import Effect.Class.Console (log)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
@@ -175,6 +176,7 @@ eventHandler = case _ of
 updateForm :: forall m. MonadEffect m => String -> String -> H.HalogenM State Action () Output m Unit
 updateForm key value = do
   formData <- H.gets _.formData
+  H.liftEffect $ log $ "value: " <> value
   H.modify_ \state -> { formData: (case key of
              "age" -> formData { age = fromMaybe (-1) $ I.fromString value}
              "sex" -> formData { sex = fromMaybe (-1) $ I.fromString value}
@@ -457,7 +459,7 @@ drugsFreqQuestion :: forall w. HH.HTML w Action
 drugsFreqQuestion = mkQuestion "¿Con qué frecuencia consumes? (Sin importar la cantidad)"
   [ HH.select
       [ HP.id "drugs"
-      , HE.onValueChange \value -> UpdateForm "drugsFreq" value
+      , HE.onValueChange \val -> UpdateForm "drugsFreq" val
       , HP.required true
       ]
       [ HH.option
