@@ -144,6 +144,7 @@ renderQuestionsForm state =
         , if state.conditionalDivs.smokeFreq then smokeYearsQuestion else HH.div_ []
         , if state.conditionalDivs.smokeFreq then smokeIntensityQuestion else HH.div_ []
         , drugsQuestion
+        , if state.conditionalDivs.drugsFreq then drugsFreqQuestion else HH.div_ []
         , disorderQuestion
         , if state.conditionalDivs.disorder then disorderInputQuestion else HH.div_ []
         , injuryQuestion
@@ -429,6 +430,7 @@ drugsQuestion :: forall w. HH.HTML w Action
 drugsQuestion = mkQuestion "¿Consumes drogas?"
   [ HH.input 
     [ HP.type_ HP.InputRadio
+    , HP.name "drugs"
     , HP.id "drugs_yes"
     , HP.required true
     , HE.onChecked \_ -> CompositeAction
@@ -440,6 +442,7 @@ drugsQuestion = mkQuestion "¿Consumes drogas?"
   , HH.br_
   , HH.input 
     [ HP.type_ HP.InputRadio
+    , HP.name "drugs"
     , HP.id "drugs_no"
     , HP.required true
     , HE.onChecked \_ -> CompositeAction
