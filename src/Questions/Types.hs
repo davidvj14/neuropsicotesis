@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
@@ -15,22 +16,26 @@ instance FromJSON Code
 
 data ParticipantForm
   = ParticipantForm
-  { age :: Int,
-    sex :: Int,
-    major :: String,
-    alcohol :: Bool,
-    alcoholFrequency :: Maybe Int,
-    drugs :: Bool,
-    drugsFrequency :: Maybe Int,
-    disorder :: Bool,
-    disorderInput :: Maybe String,
-    injury :: Bool,
-    injuryTreated :: Maybe Bool,
-    injuryLocation :: Maybe String,
-    abuse :: Int,
-    abuseOther :: Maybe String,
-    shortage :: Int,
-    loss :: Bool
+  { age :: Int
+  , sex :: Int
+  , major :: String
+  , alcohol :: Bool
+  , alcoholFrequency :: Maybe Int
+  , alcoholIntensity :: Maybe Int
+  , smoke :: Bool
+  , smokingYears :: Maybe Double
+  , smokingIntensity :: Maybe Double
+  , drugs :: Bool
+  , drugsFrequency :: Maybe Int
+  , disorder :: Bool
+  , disorderInput :: Maybe String
+  , injury :: Bool
+  , injuryTreated :: Maybe Bool
+  , injuryLocation :: Maybe String
+  , abuse :: Int
+  , abuseOther :: Maybe String
+  , shortage :: Int
+  , loss :: Bool
   }
   deriving (Show, Generic, ToJSON)
 
@@ -39,37 +44,25 @@ instance FromJSON ParticipantForm
 participantFromForm :: ParticipantForm -> String -> Participantes
 participantFromForm pForm addr = participante
   where
-    participante = Participantes { participantesShortage=pShortage
-                                 , participantesSex=pSex
-                                 , participantesMajor=pMajor
-                                 , participantesLoss=pLoss
-                                 , participantesIpAddr=addr
-                                 , participantesInjuryTreated=pInjuryTreated
-                                 , participantesInjuryLocation=pInjuryLocation
-                                 , participantesInjury=pInjury
-                                 , participantesDrugsFrequency=pDrugsFreq
-                                 , participantesDrugs=pDrugs
-                                 , participantesDisorder=pDisorder
-                                 , participantesDisorderInput=pDisorderInput
-                                 , participantesAlcoholFrequency=pAlcoholFreq
-                                 , participantesAlcohol=pAlcohol
-                                 , participantesAge=pAge
-                                 , participantesAbuseOther=pAbuseOther
-                                 , participantesAbuse=pAbuse
+    participante = Participantes { participantesShortage = pForm.shortage
+                                 , participantesSex = pForm.sex
+                                 , participantesMajor = pForm.major
+                                 , participantesLoss = pForm.loss
+                                 , participantesIpAddr = addr
+                                 , participantesInjuryTreated = pForm.injuryTreated
+                                 , participantesInjuryLocation = pForm.injuryLocation
+                                 , participantesInjury = pForm.injury
+                                 , participantesDrugsFrequency =pForm.drugsFrequency
+                                 , participantesDrugs = pForm.drugs
+                                 , participantesDisorder = pForm.disorder
+                                 , participantesDisorderInput = pForm.disorderInput
+                                 , participantesAlcoholFrequency = pForm.alcoholFrequency
+                                 , participantesAlcoholIntensity = pForm.alcoholIntensity
+                                 , participantesAlcohol = pForm.alcohol
+                                 , participantesSmoke = pForm.smoke
+                                 , participantesSmokingYears = pForm.smokingYears
+                                 , participantesSmokingIntensity = pForm.smokingIntensity
+                                 , participantesAge = pForm.age
+                                 , participantesAbuseOther = pForm.abuseOther
+                                 , participantesAbuse = pForm.abuse
                                  }
-    pAge = age pForm
-    pSex = sex pForm
-    pMajor = major pForm
-    pAlcohol = alcohol pForm
-    pAlcoholFreq = alcoholFrequency pForm
-    pDrugs = drugs pForm
-    pDrugsFreq = drugsFrequency pForm
-    pDisorder = disorder pForm
-    pDisorderInput = disorderInput pForm
-    pInjury = injury pForm
-    pInjuryTreated = injuryTreated pForm
-    pInjuryLocation = injuryLocation pForm
-    pAbuse = abuse pForm
-    pAbuseOther = abuseOther pForm
-    pShortage = shortage pForm
-    pLoss = loss pForm
