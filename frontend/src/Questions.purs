@@ -205,7 +205,7 @@ showQuestion key shouldShow = H.modify_ \state ->
   , conditionalDivs: (
     case key of
          "alcoholFreq" -> state.conditionalDivs { alcoholFreq = shouldShow }
-         "smokeDetails" -> state.conditionalDivs { smokeFreq = shouldShow }
+         "smokeFreq" -> state.conditionalDivs { smokeFreq = shouldShow }
          "drugsFreq" -> state.conditionalDivs { drugsFreq = shouldShow }
          "disorder" -> state.conditionalDivs { disorder = shouldShow }
          "injury" -> state.conditionalDivs { injury = shouldShow }
