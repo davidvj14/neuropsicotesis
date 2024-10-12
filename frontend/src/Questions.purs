@@ -176,7 +176,7 @@ eventHandler = case _ of
 updateForm :: forall m. MonadEffect m => String -> String -> H.HalogenM State Action () Output m Unit
 updateForm key value = do
   formData <- H.gets _.formData
-  H.liftEffect $ log $ "value: " <> value
+  H.liftEffect $ log $ key <> " : " <> value
   H.modify_ \state -> { formData: (case key of
              "age" -> formData { age = fromMaybe (-1) $ I.fromString value}
              "sex" -> formData { sex = fromMaybe (-1) $ I.fromString value}
