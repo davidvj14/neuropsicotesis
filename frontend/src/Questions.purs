@@ -645,7 +645,11 @@ abuseQuestion other = mkQuestion "¿En tu vida viviste algún tipo de abuso?"
 abuseQuestionOther :: forall w. HH.HTML w Action
 abuseQuestionOther = 
   HH.input 
-    [ HP.type_ HP.InputText, HP.name "abuseOther", HP.required true ]
+    [ HP.type_ HP.InputText
+    , HP.name "abuseOther"
+    , HP.required true
+    , HE.onValueChange \val -> UpdateForm "abuseOther" val
+    ]
   
 
 shortageQuestion :: forall w. HH.HTML w Action
