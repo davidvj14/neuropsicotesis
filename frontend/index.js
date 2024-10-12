@@ -1488,7 +1488,7 @@
     };
   };
   var altExceptT = function(dictSemigroup) {
-    var append7 = append(dictSemigroup);
+    var append6 = append(dictSemigroup);
     return function(dictMonad) {
       var Bind1 = dictMonad.Bind1();
       var bind9 = bind(Bind1);
@@ -1509,7 +1509,7 @@
                   }
                   ;
                   if (rn instanceof Left) {
-                    return pure15(new Left(append7(rm.value0)(rn.value0)));
+                    return pure15(new Left(append6(rm.value0)(rn.value0)));
                   }
                   ;
                   throw new Error("Failed pattern match at Control.Monad.Except.Trans (line 87, column 9 - line 89, column 49): " + [rn.constructor.name]);
@@ -1818,12 +1818,12 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append7 = append(dictMonoid.Semigroup0());
+      var append6 = append(dictMonoid.Semigroup0());
       var mempty2 = mempty(dictMonoid);
       return function(f) {
         return foldr22(function(x) {
           return function(acc) {
-            return append7(f(x))(acc);
+            return append6(f(x))(acc);
           };
         })(mempty2);
       };
@@ -4900,7 +4900,7 @@
     },
     foldMap: function(dictMonoid) {
       var mempty2 = mempty(dictMonoid);
-      var append12 = append(dictMonoid.Semigroup0());
+      var append13 = append(dictMonoid.Semigroup0());
       return function(f) {
         var go2 = function(v) {
           if (v instanceof Leaf) {
@@ -4908,7 +4908,7 @@
           }
           ;
           if (v instanceof Node) {
-            return append12(go2(v.value4))(append12(f(v.value3))(go2(v.value5)));
+            return append13(go2(v.value4))(append13(f(v.value3))(go2(v.value5)));
           }
           ;
           throw new Error("Failed pattern match at Data.Map.Internal (line 181, column 10 - line 184, column 28): " + [v.constructor.name]);
@@ -8273,13 +8273,35 @@
     });
   };
 
+  // output/Effect.Console/foreign.js
+  var log2 = function(s) {
+    return function() {
+      console.log(s);
+    };
+  };
+  var warn = function(s) {
+    return function() {
+      console.warn(s);
+    };
+  };
+
+  // output/Effect.Class.Console/index.js
+  var log3 = function(dictMonadEffect) {
+    var $67 = liftEffect(dictMonadEffect);
+    return function($68) {
+      return $67(log2($68));
+    };
+  };
+
   // output/Questions/index.js
   var bind5 = /* @__PURE__ */ bind(bindAff);
   var pure7 = /* @__PURE__ */ pure(applicativeAff);
   var bind12 = /* @__PURE__ */ bind(bindHalogenM);
   var gets4 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var discard4 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var log4 = /* @__PURE__ */ log3(monadEffectEffect);
   var modify_5 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var append6 = /* @__PURE__ */ append(semigroupArray);
+  var append12 = /* @__PURE__ */ append(semigroupArray);
   var type_7 = /* @__PURE__ */ type_3(isPropInputType);
   var value7 = /* @__PURE__ */ value3(isPropString);
   var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
@@ -8287,7 +8309,6 @@
   var gEncodeJsonCons22 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJBoolean);
   var gEncodeJsonCons32 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonInt));
   var gEncodeJsonCons4 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJNumber));
-  var discard4 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
   var traverse_4 = /* @__PURE__ */ traverse_(applicativeHalogenM)(foldableArray);
   var Submitted = /* @__PURE__ */ function() {
     function Submitted2() {
@@ -8366,266 +8387,269 @@
     });
   };
   var updateForm = function(dictMonadEffect) {
+    var liftEffect7 = liftEffect(monadEffectHalogenM(dictMonadEffect));
     return function(key) {
       return function(value1) {
         return bind12(gets4(function(v) {
           return v.formData;
         }))(function(formData) {
-          return modify_5(function(state3) {
-            return {
-              formData: function() {
-                if (key === "age") {
-                  var $179 = {};
-                  for (var $180 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $180)) {
-                      $179[$180] = formData[$180];
+          return discard4(liftEffect7(log4(key + (" : " + value1))))(function() {
+            return modify_5(function(state3) {
+              return {
+                formData: function() {
+                  if (key === "age") {
+                    var $182 = {};
+                    for (var $183 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $183)) {
+                        $182[$183] = formData[$183];
+                      }
+                      ;
                     }
                     ;
+                    $182.age = fromMaybe(-1 | 0)(fromString2(value1));
+                    return $182;
                   }
                   ;
-                  $179.age = fromMaybe(-1 | 0)(fromString2(value1));
-                  return $179;
-                }
-                ;
-                if (key === "sex") {
-                  var $182 = {};
-                  for (var $183 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $183)) {
-                      $182[$183] = formData[$183];
+                  if (key === "sex") {
+                    var $185 = {};
+                    for (var $186 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $186)) {
+                        $185[$186] = formData[$186];
+                      }
+                      ;
                     }
                     ;
+                    $185.sex = fromMaybe(-1 | 0)(fromString2(value1));
+                    return $185;
                   }
                   ;
-                  $182.sex = fromMaybe(-1 | 0)(fromString2(value1));
-                  return $182;
-                }
-                ;
-                if (key === "major") {
-                  var $185 = {};
-                  for (var $186 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $186)) {
-                      $185[$186] = formData[$186];
+                  if (key === "major") {
+                    var $188 = {};
+                    for (var $189 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $189)) {
+                        $188[$189] = formData[$189];
+                      }
+                      ;
                     }
                     ;
+                    $188.major = value1;
+                    return $188;
                   }
                   ;
-                  $185.major = value1;
-                  return $185;
-                }
-                ;
-                if (key === "alcohol") {
-                  var $188 = {};
-                  for (var $189 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $189)) {
-                      $188[$189] = formData[$189];
+                  if (key === "alcohol") {
+                    var $191 = {};
+                    for (var $192 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $192)) {
+                        $191[$192] = formData[$192];
+                      }
+                      ;
                     }
                     ;
+                    $191.alcohol = value1 === "1";
+                    return $191;
                   }
                   ;
-                  $188.alcohol = value1 === "1";
-                  return $188;
-                }
-                ;
-                if (key === "alcohol_freq") {
-                  var $191 = {};
-                  for (var $192 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $192)) {
-                      $191[$192] = formData[$192];
+                  if (key === "alcoholFrequency") {
+                    var $194 = {};
+                    for (var $195 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $195)) {
+                        $194[$195] = formData[$195];
+                      }
+                      ;
                     }
                     ;
+                    $194.alcoholFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                    return $194;
                   }
                   ;
-                  $191.alcoholFreq = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
-                  return $191;
-                }
-                ;
-                if (key === "alcohol_int") {
-                  var $194 = {};
-                  for (var $195 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $195)) {
-                      $194[$195] = formData[$195];
+                  if (key === "alcoholIntensity") {
+                    var $197 = {};
+                    for (var $198 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $198)) {
+                        $197[$198] = formData[$198];
+                      }
+                      ;
                     }
                     ;
+                    $197.alcoholIntensity = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                    return $197;
                   }
                   ;
-                  $194.alcoholIntensity = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
-                  return $194;
-                }
-                ;
-                if (key === "smoke") {
-                  var $197 = {};
-                  for (var $198 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $198)) {
-                      $197[$198] = formData[$198];
+                  if (key === "smoke") {
+                    var $200 = {};
+                    for (var $201 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $201)) {
+                        $200[$201] = formData[$201];
+                      }
+                      ;
                     }
                     ;
+                    $200.smoke = value1 === "1";
+                    return $200;
                   }
                   ;
-                  $197.smoke = value1 === "1";
-                  return $197;
-                }
-                ;
-                if (key === "smoke_years") {
-                  var $200 = {};
-                  for (var $201 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $201)) {
-                      $200[$201] = formData[$201];
+                  if (key === "smokingYears") {
+                    var $203 = {};
+                    for (var $204 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $204)) {
+                        $203[$204] = formData[$204];
+                      }
+                      ;
                     }
                     ;
+                    $203.smokingYears = new Just(fromMaybe(-1)(fromString(value1)));
+                    return $203;
                   }
                   ;
-                  $200.smokingYears = new Just(fromMaybe(-1)(fromString(value1)));
-                  return $200;
-                }
-                ;
-                if (key === "smoke_intensity") {
-                  var $203 = {};
-                  for (var $204 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $204)) {
-                      $203[$204] = formData[$204];
+                  if (key === "smokingIntensity") {
+                    var $206 = {};
+                    for (var $207 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $207)) {
+                        $206[$207] = formData[$207];
+                      }
+                      ;
                     }
                     ;
+                    $206.smokingIntensity = new Just(fromMaybe(-1)(fromString(value1)));
+                    return $206;
                   }
                   ;
-                  $203.smokeIntensity = new Just(fromMaybe(-1)(fromString(value1)));
-                  return $203;
-                }
-                ;
-                if (key === "drugs") {
-                  var $206 = {};
-                  for (var $207 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $207)) {
-                      $206[$207] = formData[$207];
+                  if (key === "drugs") {
+                    var $209 = {};
+                    for (var $210 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $210)) {
+                        $209[$210] = formData[$210];
+                      }
+                      ;
                     }
                     ;
+                    $209.drugs = value1 === "1";
+                    return $209;
                   }
                   ;
-                  $206.drugs = value1 === "1";
-                  return $206;
-                }
-                ;
-                if (key === "drugs_freq") {
-                  var $209 = {};
-                  for (var $210 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $210)) {
-                      $209[$210] = formData[$210];
+                  if (key === "drugsFrequency") {
+                    var $212 = {};
+                    for (var $213 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $213)) {
+                        $212[$213] = formData[$213];
+                      }
+                      ;
                     }
                     ;
+                    $212.drugsFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                    return $212;
                   }
                   ;
-                  $209.drugsFreq = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
-                  return $209;
-                }
-                ;
-                if (key === "disorder") {
-                  var $212 = {};
-                  for (var $213 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $213)) {
-                      $212[$213] = formData[$213];
+                  if (key === "disorder") {
+                    var $215 = {};
+                    for (var $216 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $216)) {
+                        $215[$216] = formData[$216];
+                      }
+                      ;
                     }
                     ;
+                    $215.disorder = value1 === "1";
+                    return $215;
                   }
                   ;
-                  $212.disorder = value1 === "1";
-                  return $212;
-                }
-                ;
-                if (key === "disorderInput") {
-                  var $215 = {};
-                  for (var $216 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $216)) {
-                      $215[$216] = formData[$216];
+                  if (key === "disorderInput") {
+                    var $218 = {};
+                    for (var $219 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $219)) {
+                        $218[$219] = formData[$219];
+                      }
+                      ;
                     }
                     ;
+                    $218.disorderInput = new Just(value1);
+                    return $218;
                   }
                   ;
-                  $215.disorderInput = new Just(value1);
-                  return $215;
-                }
-                ;
-                if (key === "injury") {
-                  var $218 = {};
-                  for (var $219 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $219)) {
-                      $218[$219] = formData[$219];
+                  if (key === "injury") {
+                    var $221 = {};
+                    for (var $222 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $222)) {
+                        $221[$222] = formData[$222];
+                      }
+                      ;
                     }
                     ;
+                    $221.injury = value1 === "1";
+                    return $221;
                   }
                   ;
-                  $218.injury = value1 === "1";
-                  return $218;
-                }
-                ;
-                if (key === "injuryLocation") {
-                  var $221 = {};
-                  for (var $222 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $222)) {
-                      $221[$222] = formData[$222];
+                  if (key === "injuryLocation") {
+                    var $224 = {};
+                    for (var $225 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $225)) {
+                        $224[$225] = formData[$225];
+                      }
+                      ;
                     }
                     ;
+                    $224.injuryLocation = new Just(value1);
+                    return $224;
                   }
                   ;
-                  $221.injuryLocation = new Just(value1);
-                  return $221;
-                }
-                ;
-                if (key === "injuryTreated") {
-                  var $224 = {};
-                  for (var $225 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $225)) {
-                      $224[$225] = formData[$225];
+                  if (key === "injuryTreated") {
+                    var $227 = {};
+                    for (var $228 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $228)) {
+                        $227[$228] = formData[$228];
+                      }
+                      ;
                     }
                     ;
+                    $227.injuryTreated = new Just(value1 === "1");
+                    return $227;
                   }
                   ;
-                  $224.injuryTreated = new Just(value1 === "1");
-                  return $224;
-                }
-                ;
-                if (key === "abuse") {
-                  var $227 = {};
-                  for (var $228 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $228)) {
-                      $227[$228] = formData[$228];
+                  if (key === "abuse") {
+                    var $230 = {};
+                    for (var $231 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $231)) {
+                        $230[$231] = formData[$231];
+                      }
+                      ;
                     }
                     ;
+                    $230.abuse = formData.abuse + fromMaybe(0)(fromString2(value1)) | 0;
+                    return $230;
                   }
                   ;
-                  $227.abuse = formData.abuse + fromMaybe(0)(fromString2(value1)) | 0;
-                  return $227;
-                }
-                ;
-                if (key === "abuseOther") {
-                  var $230 = {};
-                  for (var $231 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $231)) {
-                      $230[$231] = formData[$231];
+                  if (key === "abuseOther") {
+                    var $233 = {};
+                    for (var $234 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $234)) {
+                        $233[$234] = formData[$234];
+                      }
+                      ;
                     }
                     ;
+                    $233.abuseOther = new Just(value1);
+                    return $233;
                   }
                   ;
-                  $230.abuseOther = new Just(value1);
-                  return $230;
-                }
-                ;
-                if (key === "shortage") {
-                  var $233 = {};
-                  for (var $234 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $234)) {
-                      $233[$234] = formData[$234];
+                  if (key === "shortage") {
+                    var $236 = {};
+                    for (var $237 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $237)) {
+                        $236[$237] = formData[$237];
+                      }
+                      ;
                     }
                     ;
+                    $236.shortage = formData.shortage + fromMaybe(0)(fromString2(value1)) | 0;
+                    return $236;
                   }
                   ;
-                  $233.shortage = formData.shortage + fromMaybe(0)(fromString2(value1)) | 0;
-                  return $233;
-                }
-                ;
-                return formData;
-              }(),
-              conditionalDivs: state3.conditionalDivs,
-              code: state3.code
-            };
+                  return formData;
+                }(),
+                conditionalDivs: state3.conditionalDivs,
+                code: state3.code
+              };
+            });
           });
         });
       };
@@ -8649,20 +8673,7 @@
           return {
             formData: state3.formData,
             conditionalDivs: function() {
-              if (key === "alcoholFreq") {
-                var $237 = {};
-                for (var $238 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $238)) {
-                    $237[$238] = state3["conditionalDivs"][$238];
-                  }
-                  ;
-                }
-                ;
-                $237.alcoholFreq = shouldShow;
-                return $237;
-              }
-              ;
-              if (key === "smokeDetails") {
+              if (key === "alcoholFrequency") {
                 var $240 = {};
                 for (var $241 in state3.conditionalDivs) {
                   if ({}.hasOwnProperty.call(state3.conditionalDivs, $241)) {
@@ -8671,11 +8682,11 @@
                   ;
                 }
                 ;
-                $240.smokeFreq = shouldShow;
+                $240.alcoholFrequency = shouldShow;
                 return $240;
               }
               ;
-              if (key === "drugsFreq") {
+              if (key === "smokeFreq") {
                 var $243 = {};
                 for (var $244 in state3.conditionalDivs) {
                   if ({}.hasOwnProperty.call(state3.conditionalDivs, $244)) {
@@ -8684,11 +8695,11 @@
                   ;
                 }
                 ;
-                $243.drugsFreq = shouldShow;
+                $243.smokeFreq = shouldShow;
                 return $243;
               }
               ;
-              if (key === "disorder") {
+              if (key === "drugsFrequency") {
                 var $246 = {};
                 for (var $247 in state3.conditionalDivs) {
                   if ({}.hasOwnProperty.call(state3.conditionalDivs, $247)) {
@@ -8697,11 +8708,11 @@
                   ;
                 }
                 ;
-                $246.disorder = shouldShow;
+                $246.drugsFrequency = shouldShow;
                 return $246;
               }
               ;
-              if (key === "injury") {
+              if (key === "disorder") {
                 var $249 = {};
                 for (var $250 in state3.conditionalDivs) {
                   if ({}.hasOwnProperty.call(state3.conditionalDivs, $250)) {
@@ -8710,11 +8721,11 @@
                   ;
                 }
                 ;
-                $249.injury = shouldShow;
+                $249.disorder = shouldShow;
                 return $249;
               }
               ;
-              if (key === "abuseOther") {
+              if (key === "injury") {
                 var $252 = {};
                 for (var $253 in state3.conditionalDivs) {
                   if ({}.hasOwnProperty.call(state3.conditionalDivs, $253)) {
@@ -8723,8 +8734,21 @@
                   ;
                 }
                 ;
-                $252.abuseOther = shouldShow;
+                $252.injury = shouldShow;
                 return $252;
+              }
+              ;
+              if (key === "abuseOther") {
+                var $255 = {};
+                for (var $256 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $256)) {
+                    $255[$256] = state3["conditionalDivs"][$256];
+                  }
+                  ;
+                }
+                ;
+                $255.abuseOther = shouldShow;
+                return $255;
               }
               ;
               return state3.conditionalDivs;
@@ -8737,7 +8761,7 @@
   };
   var mkQuestion2 = function(label5) {
     return function(innerHtml) {
-      return div2([class_("question")])(append6([label_([text(label5)]), br_])(append6(innerHtml)([br_])));
+      return div2([class_("question")])(append12([label_([text(label5)]), br_])(append12(innerHtml)([br_])));
     };
   };
   var sexQuestion = /* @__PURE__ */ function() {
@@ -8782,11 +8806,6 @@
       }());
     })]), text("Ninguna")]);
   }();
-  var smokeIntensityQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFCu\xE1ntos cigarros fumas aproximadamente en un d\xEDa?")([input([type_7(InputNumber.value), name4("smoke_intensity"), step3(new Step(0.01)), onValueChange(function(val) {
-      return new UpdateForm("smoke_intensity", val);
-    })])]);
-  }();
   var smokeQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("\xBFFumas?")([input([type_7(InputRadio.value), id3("smoke_yes"), name4("smoke"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("smoke", "1"), new ShowQuestion("smokeFreq", true)]);
@@ -8796,7 +8815,12 @@
   }();
   var smokeYearsQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("\xBFCu\xE1ntos a\xF1os llevas fumando?")([input([type_7(InputNumber.value), name4("smoke_years"), step3(new Step(0.01)), onValueChange(function(val) {
-      return new UpdateForm("smoke_years", val);
+      return new UpdateForm("smokingYears", val);
+    })])]);
+  }();
+  var smokingIntensityQuestion = /* @__PURE__ */ function() {
+    return mkQuestion2("\xBFCu\xE1ntos cigarros fumas aproximadamente en un d\xEDa?")([input([type_7(InputNumber.value), name4("smoke_intensity"), step3(new Step(0.01)), onValueChange(function(val) {
+      return new UpdateForm("smokingIntensity", val);
     })])]);
   }();
   var majorQuestion = /* @__PURE__ */ function() {
@@ -8837,13 +8861,13 @@
         sex: -1 | 0,
         major: "",
         alcohol: false,
-        alcoholFreq: Nothing.value,
+        alcoholFrequency: Nothing.value,
         alcoholIntensity: Nothing.value,
         smoke: false,
         smokingYears: Nothing.value,
-        smokeIntensity: Nothing.value,
+        smokingIntensity: Nothing.value,
         drugs: false,
-        drugsFreq: Nothing.value,
+        drugsFrequency: Nothing.value,
         disorder: false,
         disorderInput: Nothing.value,
         injury: false,
@@ -8855,9 +8879,9 @@
         loss: false
       },
       conditionalDivs: {
-        alcoholFreq: false,
+        alcoholFrequency: false,
         smokeFreq: false,
-        drugsFreq: false,
+        drugsFrequency: false,
         disorder: false,
         injury: false,
         abuseOther: false,
@@ -8872,7 +8896,7 @@
     }
   })())({
     reflectSymbol: function() {
-      return "smokeIntensity";
+      return "smokingIntensity";
     }
   })())({
     reflectSymbol: function() {
@@ -8908,7 +8932,7 @@
     }
   })())({
     reflectSymbol: function() {
-      return "drugsFreq";
+      return "drugsFrequency";
     }
   })())({
     reflectSymbol: function() {
@@ -8928,7 +8952,7 @@
     }
   })())({
     reflectSymbol: function() {
-      return "alcoholFreq";
+      return "alcoholFrequency";
     }
   })())({
     reflectSymbol: function() {
@@ -8972,16 +8996,16 @@
           return {
             formData: state3.formData,
             conditionalDivs: function() {
-              var $260 = {};
-              for (var $261 in state3.conditionalDivs) {
-                if ({}.hasOwnProperty.call(state3.conditionalDivs, $261)) {
-                  $260[$261] = state3["conditionalDivs"][$261];
+              var $263 = {};
+              for (var $264 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $264)) {
+                  $263[$264] = state3["conditionalDivs"][$264];
                 }
                 ;
               }
               ;
-              $260.badCode = true;
-              return $260;
+              $263.badCode = true;
+              return $263;
             }(),
             code: state3.code
           };
@@ -9023,12 +9047,15 @@
     };
   };
   var drugsQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFConsumes drogas?")([input([type_7(InputRadio.value), id3("drugs_yes"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("drugs", "1"), new ShowQuestion("drugsFreq", false)]);
-    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("drugs_no"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("drugs", "0"), new ShowQuestion("drugsFreq", false)]);
+    return mkQuestion2("\xBFConsumes drogas?")([input([type_7(InputRadio.value), name4("drugs"), id3("drugs_yes"), required2(true), onChecked(function(v) {
+      return new CompositeAction([new UpdateForm("drugs", "1"), new ShowQuestion("drugsFrequency", true)]);
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), name4("drugs"), id3("drugs_no"), required2(true), onChecked(function(v) {
+      return new CompositeAction([new UpdateForm("drugs", "0"), new ShowQuestion("drugsFrequency", false)]);
     })]), text("No")]);
   }();
+  var drugsFrequencyQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("drugs"), /* @__PURE__ */ onValueChange(function(val) {
+    return new UpdateForm("drugsFrequency", val);
+  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("Todos los d\xEDas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("Una vez a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("Cada dos semanas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("Una vez al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("4")])([/* @__PURE__ */ text("De manera espor\xE1dica")])])]);
   var disorderQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("Tienes alg\xFAn diagn\xF3stico psiqui\xE1trico o neurol\xF3gico?")([small_([text("Dicho diagn\xF3stico debe de haber sido designado por un profesional de la salud, puede ser diagn\xF3stico de ansiedad, depresi\xF3n, bipolaridad tipo I o II, TDA-H, autismo, alguna enfermedad neurodegenerativa, etc.")]), input([type_7(InputRadio.value), id3("disorder_yes"), name4("disorder"), value7("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("disorder", "1"), new ShowQuestion("disorder", true)]);
@@ -9054,16 +9081,16 @@
   };
   var alcoholQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("\xBFConsumes alcohol?")([input([type_7(InputRadio.value), id3("alcohol_yes"), name4("alcohol"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("alcohol", "1"), new ShowQuestion("alcoholFreq", true)]);
+      return new CompositeAction([new UpdateForm("alcohol", "1"), new ShowQuestion("alcoholFrequency", true)]);
     })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("alcohol_no"), name4("alcohol"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("alcohol", "0"), new ShowQuestion("alcoholFreq", false)]);
+      return new CompositeAction([new UpdateForm("alcohol", "0"), new ShowQuestion("alcoholFrequency", false)]);
     })]), text("No")]);
   }();
   var alcoholIntensityQuestion = /* @__PURE__ */ mkQuestion2("\xBFCu\xE1ntas bebidas alcoh\xF3licas sueles tomar en un d\xEDa de consumo?")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcoholIntensity"), /* @__PURE__ */ onValueChange(function(value1) {
     return new UpdateForm("alcoholIntensity", value1);
   }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar cantidad")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("1 o 2")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("3 o 4")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("5 o 6")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("7 o m\xE1s")])])]);
-  var alcoholFreqQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
-    return new UpdateForm("alcoholFreq", value1);
+  var alcoholFrequencyQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
+    return new UpdateForm("alcoholFrequency", value1);
   }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("Una o menos veces al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("De 2 a 4 veces al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("De 2 a 3 veces a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("4 o m\xE1s veces a la semana")])])]);
   var ageQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("Edad")([input([type_7(InputNumber.value), id3("age"), required2(true), onValueInput(function(val) {
@@ -9142,13 +9169,13 @@
     return div2([class_("container")])([h1_([text("Evaluaci\xF3n neuropsicol\xF3gica")]), h3_([text("Hola, muchas gracias por tomarte el tiempo para participar, por favor contesta con sinceridad, se te asignar\xE1 un n\xFAmero de participante por lo que tus respuestas ser\xE1n an\xF3nimas.")]), form([id3("participant_form"), onSubmit(function(ev) {
       return new SendForm(ev);
     })])([ageQuestion, sexQuestion, majorQuestion, alcoholQuestion, function() {
-      if (state3.conditionalDivs.alcoholFreq) {
-        return alcoholFreqQuestion;
+      if (state3.conditionalDivs.alcoholFrequency) {
+        return alcoholFrequencyQuestion;
       }
       ;
       return div_([]);
     }(), function() {
-      if (state3.conditionalDivs.alcoholFreq) {
+      if (state3.conditionalDivs.alcoholFrequency) {
         return alcoholIntensityQuestion;
       }
       ;
@@ -9161,11 +9188,17 @@
       return div_([]);
     }(), function() {
       if (state3.conditionalDivs.smokeFreq) {
-        return smokeIntensityQuestion;
+        return smokingIntensityQuestion;
       }
       ;
       return div_([]);
-    }(), drugsQuestion, disorderQuestion, function() {
+    }(), drugsQuestion, function() {
+      if (state3.conditionalDivs.drugsFrequency) {
+        return drugsFrequencyQuestion;
+      }
+      ;
+      return div_([]);
+    }(), disorderQuestion, function() {
       if (state3.conditionalDivs.disorder) {
         return disorderInputQuestion;
       }
@@ -9185,11 +9218,10 @@
       return div_([]);
     }(), abuseQuestion(state3.conditionalDivs.abuseOther), shortageQuestion, lossQuestion, codeVerification(state3.conditionalDivs.badCode), input([type_7(InputSubmit.value), title("Siguiente"), value7("Siguiente")])])]);
   };
-  var renderQuestions = renderQuestionsForm;
   var questionsComponent = function(dictMonadAff) {
     return mkComponent({
       initialState: initialState3,
-      render: renderQuestions,
+      render: renderQuestionsForm,
       "eval": mkEval({
         handleQuery: defaultEval.handleQuery,
         receive: defaultEval.receive,
@@ -9677,13 +9709,6 @@
   };
   var fork = function(dict) {
     return dict.fork;
-  };
-
-  // output/Effect.Console/foreign.js
-  var warn = function(s) {
-    return function() {
-      console.warn(s);
-    };
   };
 
   // output/Halogen.Aff.Driver.State/index.js

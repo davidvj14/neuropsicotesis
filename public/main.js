@@ -320,8 +320,15 @@
   var showIntImpl = function(n) {
     return n.toString();
   };
+  var showNumberImpl = function(n) {
+    var str = n.toString();
+    return isNaN(str + ".0") ? str : str + ".0";
+  };
 
   // output/Data.Show/index.js
+  var showNumber = {
+    show: showNumberImpl
+  };
   var showInt = {
     show: showIntImpl
   };
@@ -1481,7 +1488,7 @@
     };
   };
   var altExceptT = function(dictSemigroup) {
-    var append7 = append(dictSemigroup);
+    var append6 = append(dictSemigroup);
     return function(dictMonad) {
       var Bind1 = dictMonad.Bind1();
       var bind9 = bind(Bind1);
@@ -1502,7 +1509,7 @@
                   }
                   ;
                   if (rn instanceof Left) {
-                    return pure15(new Left(append7(rm.value0)(rn.value0)));
+                    return pure15(new Left(append6(rm.value0)(rn.value0)));
                   }
                   ;
                   throw new Error("Failed pattern match at Control.Monad.Except.Trans (line 87, column 9 - line 89, column 49): " + [rn.constructor.name]);
@@ -1573,12 +1580,12 @@
 
   // output/Data.Array/foreign.js
   var rangeImpl = function(start2, end) {
-    var step3 = start2 > end ? -1 : 1;
-    var result = new Array(step3 * (end - start2) + 1);
+    var step4 = start2 > end ? -1 : 1;
+    var result = new Array(step4 * (end - start2) + 1);
     var i2 = start2, n = 0;
     while (i2 !== end) {
       result[n++] = i2;
-      i2 += step3;
+      i2 += step4;
     }
     result[n] = i2;
     return result;
@@ -1811,12 +1818,12 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append7 = append(dictMonoid.Semigroup0());
+      var append6 = append(dictMonoid.Semigroup0());
       var mempty2 = mempty(dictMonoid);
       return function(f) {
         return foldr22(function(x) {
           return function(acc) {
-            return append7(f(x))(acc);
+            return append6(f(x))(acc);
           };
         })(mempty2);
       };
@@ -2796,7 +2803,7 @@
     function Fiber(util, supervisor, aff) {
       var runTick = 0;
       var status = SUSPENDED;
-      var step3 = aff;
+      var step4 = aff;
       var fail3 = null;
       var interrupt = null;
       var bhead = null;
@@ -2816,7 +2823,7 @@
             case STEP_BIND:
               status = CONTINUE;
               try {
-                step3 = bhead(step3);
+                step4 = bhead(step4);
                 if (btail === null) {
                   bhead = null;
                 } else {
@@ -2826,47 +2833,47 @@
               } catch (e) {
                 status = RETURN;
                 fail3 = util.left(e);
-                step3 = null;
+                step4 = null;
               }
               break;
             case STEP_RESULT:
-              if (util.isLeft(step3)) {
+              if (util.isLeft(step4)) {
                 status = RETURN;
-                fail3 = step3;
-                step3 = null;
+                fail3 = step4;
+                step4 = null;
               } else if (bhead === null) {
                 status = RETURN;
               } else {
                 status = STEP_BIND;
-                step3 = util.fromRight(step3);
+                step4 = util.fromRight(step4);
               }
               break;
             case CONTINUE:
-              switch (step3.tag) {
+              switch (step4.tag) {
                 case BIND:
                   if (bhead) {
                     btail = new Aff2(CONS, bhead, btail);
                   }
-                  bhead = step3._2;
+                  bhead = step4._2;
                   status = CONTINUE;
-                  step3 = step3._1;
+                  step4 = step4._1;
                   break;
                 case PURE:
                   if (bhead === null) {
                     status = RETURN;
-                    step3 = util.right(step3._1);
+                    step4 = util.right(step4._1);
                   } else {
                     status = STEP_BIND;
-                    step3 = step3._1;
+                    step4 = step4._1;
                   }
                   break;
                 case SYNC:
                   status = STEP_RESULT;
-                  step3 = runSync(util.left, util.right, step3._1);
+                  step4 = runSync(util.left, util.right, step4._1);
                   break;
                 case ASYNC:
                   status = PENDING;
-                  step3 = runAsync(util.left, step3._1, function(result2) {
+                  step4 = runAsync(util.left, step4._1, function(result2) {
                     return function() {
                       if (runTick !== localRunTick) {
                         return;
@@ -2877,7 +2884,7 @@
                           return;
                         }
                         status = STEP_RESULT;
-                        step3 = result2;
+                        step4 = result2;
                         run3(runTick);
                       });
                     };
@@ -2885,50 +2892,50 @@
                   return;
                 case THROW:
                   status = RETURN;
-                  fail3 = util.left(step3._1);
-                  step3 = null;
+                  fail3 = util.left(step4._1);
+                  step4 = null;
                   break;
                 // Enqueue the Catch so that we can call the error handler later on
                 // in case of an exception.
                 case CATCH:
                   if (bhead === null) {
-                    attempts = new Aff2(CONS, step3, attempts, interrupt);
+                    attempts = new Aff2(CONS, step4, attempts, interrupt);
                   } else {
-                    attempts = new Aff2(CONS, step3, new Aff2(CONS, new Aff2(RESUME, bhead, btail), attempts, interrupt), interrupt);
+                    attempts = new Aff2(CONS, step4, new Aff2(CONS, new Aff2(RESUME, bhead, btail), attempts, interrupt), interrupt);
                   }
                   bhead = null;
                   btail = null;
                   status = CONTINUE;
-                  step3 = step3._1;
+                  step4 = step4._1;
                   break;
                 // Enqueue the Bracket so that we can call the appropriate handlers
                 // after resource acquisition.
                 case BRACKET:
                   bracketCount++;
                   if (bhead === null) {
-                    attempts = new Aff2(CONS, step3, attempts, interrupt);
+                    attempts = new Aff2(CONS, step4, attempts, interrupt);
                   } else {
-                    attempts = new Aff2(CONS, step3, new Aff2(CONS, new Aff2(RESUME, bhead, btail), attempts, interrupt), interrupt);
+                    attempts = new Aff2(CONS, step4, new Aff2(CONS, new Aff2(RESUME, bhead, btail), attempts, interrupt), interrupt);
                   }
                   bhead = null;
                   btail = null;
                   status = CONTINUE;
-                  step3 = step3._1;
+                  step4 = step4._1;
                   break;
                 case FORK:
                   status = STEP_RESULT;
-                  tmp = Fiber(util, supervisor, step3._2);
+                  tmp = Fiber(util, supervisor, step4._2);
                   if (supervisor) {
                     supervisor.register(tmp);
                   }
-                  if (step3._1) {
+                  if (step4._1) {
                     tmp.run();
                   }
-                  step3 = util.right(tmp);
+                  step4 = util.right(tmp);
                   break;
                 case SEQ:
                   status = CONTINUE;
-                  step3 = sequential3(util, supervisor, step3._1);
+                  step4 = sequential3(util, supervisor, step4._1);
                   break;
               }
               break;
@@ -2937,7 +2944,7 @@
               btail = null;
               if (attempts === null) {
                 status = COMPLETED;
-                step3 = interrupt || fail3 || step3;
+                step4 = interrupt || fail3 || step4;
               } else {
                 tmp = attempts._3;
                 attempt = attempts._1;
@@ -2951,7 +2958,7 @@
                       status = RETURN;
                     } else if (fail3) {
                       status = CONTINUE;
-                      step3 = attempt._2(util.fromLeft(fail3));
+                      step4 = attempt._2(util.fromLeft(fail3));
                       fail3 = null;
                     }
                     break;
@@ -2963,7 +2970,7 @@
                       bhead = attempt._1;
                       btail = attempt._2;
                       status = STEP_BIND;
-                      step3 = util.fromRight(step3);
+                      step4 = util.fromRight(step4);
                     }
                     break;
                   // If we have a bracket, we should enqueue the handlers,
@@ -2973,39 +2980,39 @@
                   case BRACKET:
                     bracketCount--;
                     if (fail3 === null) {
-                      result = util.fromRight(step3);
+                      result = util.fromRight(step4);
                       attempts = new Aff2(CONS, new Aff2(RELEASE, attempt._2, result), attempts, tmp);
                       if (interrupt === tmp || bracketCount > 0) {
                         status = CONTINUE;
-                        step3 = attempt._3(result);
+                        step4 = attempt._3(result);
                       }
                     }
                     break;
                   // Enqueue the appropriate handler. We increase the bracket count
                   // because it should not be cancelled.
                   case RELEASE:
-                    attempts = new Aff2(CONS, new Aff2(FINALIZED, step3, fail3), attempts, interrupt);
+                    attempts = new Aff2(CONS, new Aff2(FINALIZED, step4, fail3), attempts, interrupt);
                     status = CONTINUE;
                     if (interrupt && interrupt !== tmp && bracketCount === 0) {
-                      step3 = attempt._1.killed(util.fromLeft(interrupt))(attempt._2);
+                      step4 = attempt._1.killed(util.fromLeft(interrupt))(attempt._2);
                     } else if (fail3) {
-                      step3 = attempt._1.failed(util.fromLeft(fail3))(attempt._2);
+                      step4 = attempt._1.failed(util.fromLeft(fail3))(attempt._2);
                     } else {
-                      step3 = attempt._1.completed(util.fromRight(step3))(attempt._2);
+                      step4 = attempt._1.completed(util.fromRight(step4))(attempt._2);
                     }
                     fail3 = null;
                     bracketCount++;
                     break;
                   case FINALIZER:
                     bracketCount++;
-                    attempts = new Aff2(CONS, new Aff2(FINALIZED, step3, fail3), attempts, interrupt);
+                    attempts = new Aff2(CONS, new Aff2(FINALIZED, step4, fail3), attempts, interrupt);
                     status = CONTINUE;
-                    step3 = attempt._1;
+                    step4 = attempt._1;
                     break;
                   case FINALIZED:
                     bracketCount--;
                     status = RETURN;
-                    step3 = attempt._1;
+                    step4 = attempt._1;
                     fail3 = attempt._2;
                     break;
                 }
@@ -3015,7 +3022,7 @@
               for (var k in joins) {
                 if (joins.hasOwnProperty(k)) {
                   rethrow = rethrow && joins[k].rethrow;
-                  runEff(joins[k].handler(step3));
+                  runEff(joins[k].handler(step4));
                 }
               }
               joins = null;
@@ -3023,10 +3030,10 @@
                 setTimeout(function() {
                   throw util.fromLeft(fail3);
                 }, 0);
-              } else if (util.isLeft(step3) && rethrow) {
+              } else if (util.isLeft(step4) && rethrow) {
                 setTimeout(function() {
                   if (rethrow) {
-                    throw util.fromLeft(step3);
+                    throw util.fromLeft(step4);
                   }
                 }, 0);
               }
@@ -3043,7 +3050,7 @@
         return function() {
           if (status === COMPLETED) {
             rethrow = rethrow && join4.rethrow;
-            join4.handler(step3)();
+            join4.handler(step4)();
             return function() {
             };
           }
@@ -3074,7 +3081,7 @@
             case SUSPENDED:
               interrupt = util.left(error4);
               status = COMPLETED;
-              step3 = interrupt;
+              step4 = interrupt;
               run3(runTick);
               break;
             case PENDING:
@@ -3083,10 +3090,10 @@
               }
               if (bracketCount === 0) {
                 if (status === PENDING) {
-                  attempts = new Aff2(CONS, new Aff2(FINALIZER, step3(error4)), attempts, interrupt);
+                  attempts = new Aff2(CONS, new Aff2(FINALIZER, step4(error4)), attempts, interrupt);
                 }
                 status = RETURN;
-                step3 = null;
+                step4 = null;
                 fail3 = null;
                 run3(++runTick);
               }
@@ -3097,7 +3104,7 @@
               }
               if (bracketCount === 0) {
                 status = RETURN;
-                step3 = null;
+                step4 = null;
                 fail3 = null;
               }
           }
@@ -3145,7 +3152,7 @@
       var interrupt = null;
       var root = EMPTY;
       function kill2(error4, par2, cb2) {
-        var step3 = par2;
+        var step4 = par2;
         var head4 = null;
         var tail2 = null;
         var count = 0;
@@ -3153,10 +3160,10 @@
         var tmp, kid;
         loop: while (true) {
           tmp = null;
-          switch (step3.tag) {
+          switch (step4.tag) {
             case FORKED:
-              if (step3._3 === EMPTY) {
-                tmp = fibers[step3._1];
+              if (step4._3 === EMPTY) {
+                tmp = fibers[step4._1];
                 kills2[count++] = tmp.kill(error4, function(result) {
                   return function() {
                     count--;
@@ -3169,7 +3176,7 @@
               if (head4 === null) {
                 break loop;
               }
-              step3 = head4._2;
+              step4 = head4._2;
               if (tail2 === null) {
                 head4 = null;
               } else {
@@ -3178,15 +3185,15 @@
               }
               break;
             case MAP:
-              step3 = step3._2;
+              step4 = step4._2;
               break;
             case APPLY:
             case ALT:
               if (head4) {
                 tail2 = new Aff2(CONS, head4, tail2);
               }
-              head4 = step3;
-              step3 = step3._1;
+              head4 = step4;
+              step4 = step4._1;
               break;
           }
         }
@@ -3202,12 +3209,12 @@
         return kills2;
       }
       function join3(result, head4, tail2) {
-        var fail3, step3, lhs, rhs, tmp, kid;
+        var fail3, step4, lhs, rhs, tmp, kid;
         if (util.isLeft(result)) {
           fail3 = result;
-          step3 = null;
+          step4 = null;
         } else {
-          step3 = result;
+          step4 = result;
           fail3 = null;
         }
         loop: while (true) {
@@ -3219,7 +3226,7 @@
             return;
           }
           if (head4 === null) {
-            cb(fail3 || step3)();
+            cb(fail3 || step4)();
             return;
           }
           if (head4._3 !== EMPTY) {
@@ -3228,8 +3235,8 @@
           switch (head4.tag) {
             case MAP:
               if (fail3 === null) {
-                head4._3 = util.right(head4._1(util.fromRight(step3)));
-                step3 = head4._3;
+                head4._3 = util.right(head4._1(util.fromRight(step4)));
+                step4 = head4._3;
               } else {
                 head4._3 = fail3;
               }
@@ -3260,8 +3267,8 @@
               } else if (lhs === EMPTY || rhs === EMPTY) {
                 return;
               } else {
-                step3 = util.right(util.fromRight(lhs)(util.fromRight(rhs)));
-                head4._3 = step3;
+                step4 = util.right(util.fromRight(lhs)(util.fromRight(rhs)));
+                head4._3 = step4;
               }
               break;
             case ALT:
@@ -3271,22 +3278,22 @@
                 return;
               }
               if (lhs !== EMPTY && util.isLeft(lhs) && rhs !== EMPTY && util.isLeft(rhs)) {
-                fail3 = step3 === lhs ? rhs : lhs;
-                step3 = null;
+                fail3 = step4 === lhs ? rhs : lhs;
+                step4 = null;
                 head4._3 = fail3;
               } else {
-                head4._3 = step3;
+                head4._3 = step4;
                 tmp = true;
                 kid = killId++;
-                kills[kid] = kill2(early, step3 === lhs ? head4._2 : head4._1, function() {
+                kills[kid] = kill2(early, step4 === lhs ? head4._2 : head4._1, function() {
                   return function() {
                     delete kills[kid];
                     if (tmp) {
                       tmp = false;
                     } else if (tail2 === null) {
-                      join3(step3, null, null);
+                      join3(step4, null, null);
                     } else {
-                      join3(step3, tail2._1, tail2._2);
+                      join3(step4, tail2._1, tail2._2);
                     }
                   };
                 });
@@ -3316,7 +3323,7 @@
       }
       function run3() {
         var status = CONTINUE;
-        var step3 = par;
+        var step4 = par;
         var head4 = null;
         var tail2 = null;
         var tmp, fid;
@@ -3325,37 +3332,37 @@
           fid = null;
           switch (status) {
             case CONTINUE:
-              switch (step3.tag) {
+              switch (step4.tag) {
                 case MAP:
                   if (head4) {
                     tail2 = new Aff2(CONS, head4, tail2);
                   }
-                  head4 = new Aff2(MAP, step3._1, EMPTY, EMPTY);
-                  step3 = step3._2;
+                  head4 = new Aff2(MAP, step4._1, EMPTY, EMPTY);
+                  step4 = step4._2;
                   break;
                 case APPLY:
                   if (head4) {
                     tail2 = new Aff2(CONS, head4, tail2);
                   }
-                  head4 = new Aff2(APPLY, EMPTY, step3._2, EMPTY);
-                  step3 = step3._1;
+                  head4 = new Aff2(APPLY, EMPTY, step4._2, EMPTY);
+                  step4 = step4._1;
                   break;
                 case ALT:
                   if (head4) {
                     tail2 = new Aff2(CONS, head4, tail2);
                   }
-                  head4 = new Aff2(ALT, EMPTY, step3._2, EMPTY);
-                  step3 = step3._1;
+                  head4 = new Aff2(ALT, EMPTY, step4._2, EMPTY);
+                  step4 = step4._1;
                   break;
                 default:
                   fid = fiberId++;
                   status = RETURN;
-                  tmp = step3;
-                  step3 = new Aff2(FORKED, fid, new Aff2(CONS, head4, tail2), EMPTY);
+                  tmp = step4;
+                  step4 = new Aff2(FORKED, fid, new Aff2(CONS, head4, tail2), EMPTY);
                   tmp = Fiber(util, supervisor, tmp);
                   tmp.onComplete({
                     rethrow: false,
-                    handler: resolve(step3)
+                    handler: resolve(step4)
                   })();
                   fibers[fid] = tmp;
                   if (supervisor) {
@@ -3368,13 +3375,13 @@
                 break loop;
               }
               if (head4._1 === EMPTY) {
-                head4._1 = step3;
+                head4._1 = step4;
                 status = CONTINUE;
-                step3 = head4._2;
+                step4 = head4._2;
                 head4._2 = EMPTY;
               } else {
-                head4._2 = step3;
-                step3 = head4;
+                head4._2 = step4;
+                step4 = head4;
                 if (tail2 === null) {
                   head4 = null;
                 } else {
@@ -3384,7 +3391,7 @@
               }
           }
         }
-        root = step3;
+        root = step4;
         for (fid = 0; fid < fiberId; fid++) {
           fibers[fid].run();
         }
@@ -3878,11 +3885,27 @@
     };
   };
 
+  // output/Data.Number/foreign.js
+  var isFiniteImpl = isFinite;
+  function fromStringImpl(str, isFinite2, just, nothing) {
+    var num = parseFloat(str);
+    if (isFinite2(num)) {
+      return just(num);
+    } else {
+      return nothing;
+    }
+  }
+
+  // output/Data.Number/index.js
+  var fromString = function(str) {
+    return fromStringImpl(str, isFiniteImpl, Just.create, Nothing.value);
+  };
+
   // output/Data.Int/index.js
   var fromStringAs = /* @__PURE__ */ function() {
     return fromStringAsImpl(Just.create)(Nothing.value);
   }();
-  var fromString = /* @__PURE__ */ fromStringAs(10);
+  var fromString2 = /* @__PURE__ */ fromStringAs(10);
 
   // output/Foreign/index.js
   var ForeignError = /* @__PURE__ */ function() {
@@ -4877,7 +4900,7 @@
     },
     foldMap: function(dictMonoid) {
       var mempty2 = mempty(dictMonoid);
-      var append12 = append(dictMonoid.Semigroup0());
+      var append13 = append(dictMonoid.Semigroup0());
       return function(f) {
         var go2 = function(v) {
           if (v instanceof Leaf) {
@@ -4885,7 +4908,7 @@
           }
           ;
           if (v instanceof Node) {
-            return append12(go2(v.value4))(append12(f(v.value3))(go2(v.value5)));
+            return append13(go2(v.value4))(append13(f(v.value3))(go2(v.value5)));
           }
           ;
           throw new Error("Failed pattern match at Data.Map.Internal (line 181, column 10 - line 184, column 28): " + [v.constructor.name]);
@@ -5050,6 +5073,37 @@
   };
   var empty4 = empty3;
 
+  // output/DOM.HTML.Indexed.StepValue/index.js
+  var show2 = /* @__PURE__ */ show(showNumber);
+  var Any = /* @__PURE__ */ function() {
+    function Any2() {
+    }
+    ;
+    Any2.value = new Any2();
+    return Any2;
+  }();
+  var Step = /* @__PURE__ */ function() {
+    function Step3(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Step3.create = function(value0) {
+      return new Step3(value0);
+    };
+    return Step3;
+  }();
+  var renderStepValue = function(v) {
+    if (v instanceof Any) {
+      return "any";
+    }
+    ;
+    if (v instanceof Step) {
+      return show2(v.value0);
+    }
+    ;
+    throw new Error("Failed pattern match at DOM.HTML.Indexed.StepValue (line 13, column 19 - line 15, column 19): " + [v.constructor.name]);
+  };
+
   // output/Halogen.Query.Input/index.js
   var RefUpdate = /* @__PURE__ */ function() {
     function RefUpdate2(value0, value1) {
@@ -5076,7 +5130,7 @@
   }();
 
   // output/Halogen.VDom.Machine/index.js
-  var Step = /* @__PURE__ */ function() {
+  var Step2 = /* @__PURE__ */ function() {
     function Step3(value0, value1, value22, value32) {
       this.value0 = value0;
       this.value1 = value1;
@@ -5453,7 +5507,7 @@
       if (vdom instanceof Widget) {
         var res = step(state3.widget, vdom.value0);
         var res$prime = unStep(function(v) {
-          return mkStep(new Step(v.value0, {
+          return mkStep(new Step2(v.value0, {
             build: state3.build,
             widget: res
           }, $lazy_patchWidget(296), haltWidget));
@@ -5478,7 +5532,7 @@
       ;
       if (vdom instanceof Text) {
         if (state3.value === vdom.value0) {
-          return mkStep(new Step(state3.node, state3, $lazy_patchText(85), haltText));
+          return mkStep(new Step2(state3.node, state3, $lazy_patchText(85), haltText));
         }
         ;
         if (otherwise) {
@@ -5488,7 +5542,7 @@
             value: vdom.value0
           };
           setTextContent(vdom.value0, state3.node);
-          return mkStep(new Step(state3.node, nextState, $lazy_patchText(89), haltText));
+          return mkStep(new Step2(state3.node, nextState, $lazy_patchText(89), haltText));
         }
         ;
       }
@@ -5547,7 +5601,7 @@
             name: vdom.value1,
             children: state3.children
           };
-          return mkStep(new Step(state3.node, nextState, $lazy_patchElem(149), haltElem));
+          return mkStep(new Step2(state3.node, nextState, $lazy_patchElem(149), haltElem));
         }
         ;
         var onThis = function(v2, s) {
@@ -5573,7 +5627,7 @@
           name: vdom.value1,
           children: children2
         };
-        return mkStep(new Step(state3.node, nextState, $lazy_patchElem(172), haltElem));
+        return mkStep(new Step2(state3.node, nextState, $lazy_patchElem(172), haltElem));
       }
       ;
       haltElem(state3);
@@ -5600,7 +5654,7 @@
             children: state3.children,
             length: 0
           };
-          return mkStep(new Step(state3.node, nextState, $lazy_patchKeyed(237), haltKeyed));
+          return mkStep(new Step2(state3.node, nextState, $lazy_patchKeyed(237), haltKeyed));
         }
         ;
         var onThis = function(v2, s) {
@@ -5627,7 +5681,7 @@
           children: children2,
           length: v
         };
-        return mkStep(new Step(state3.node, nextState, $lazy_patchKeyed(261), haltKeyed));
+        return mkStep(new Step2(state3.node, nextState, $lazy_patchKeyed(261), haltKeyed));
       }
       ;
       haltKeyed(state3);
@@ -5638,7 +5692,7 @@
   var buildWidget = function(v, build, w) {
     var res = v.buildWidget(v)(w);
     var res$prime = unStep(function(v1) {
-      return mkStep(new Step(v1.value0, {
+      return mkStep(new Step2(v1.value0, {
         build,
         widget: res
       }, patchWidget, haltWidget));
@@ -5652,7 +5706,7 @@
       node,
       value: s
     };
-    return mkStep(new Step(node, state3, patchText, haltText));
+    return mkStep(new Step2(node, state3, patchText, haltText));
   };
   var buildKeyed = function(v, build, ns1, name1, as1, ch1) {
     var el = createElement(toNullable(ns1), name1, v.document);
@@ -5673,7 +5727,7 @@
       children: children2,
       length: length(ch1)
     };
-    return mkStep(new Step(node, state3, patchKeyed, haltKeyed));
+    return mkStep(new Step2(node, state3, patchKeyed, haltKeyed));
   };
   var buildElem = function(v, build, ns1, name1, as1, ch1) {
     var el = createElement(toNullable(ns1), name1, v.document);
@@ -5693,7 +5747,7 @@
       name: name1,
       children: children2
     };
-    return mkStep(new Step(node, state3, patchElem, haltElem));
+    return mkStep(new Step2(node, state3, patchElem, haltElem));
   };
   var buildVDom = function(spec) {
     var $lazy_build = $runtime_lazy5("build", "Halogen.VDom.DOM", function() {
@@ -6021,7 +6075,7 @@
             events: unsafeFreeze2(events),
             props
           };
-          return mkStep(new Step(unit, nextState, $lazy_patchProp(100), haltProp));
+          return mkStep(new Step2(unit, nextState, $lazy_patchProp(100), haltProp));
         };
       });
       var patchProp = $lazy_patchProp(87);
@@ -6032,7 +6086,7 @@
           events: unsafeFreeze2(events),
           props: ps1$prime
         };
-        return mkStep(new Step(unit, state3, patchProp, haltProp));
+        return mkStep(new Step2(unit, state3, patchProp, haltProp));
       };
       return renderProp;
     };
@@ -6062,6 +6116,11 @@
   };
   var isPropString = {
     toPropValue: propFromString
+  };
+  var isPropStepValue = {
+    toPropValue: function($36) {
+      return propFromString(renderStepValue($36));
+    }
   };
   var isPropInputType = {
     toPropValue: function($45) {
@@ -6988,11 +7047,11 @@
       return function(state3, t2) {
         var $48 = unsafeEqThunk(state3.thunk, t2);
         if ($48) {
-          return mkStep(new Step(extract2(state3.vdom), state3, $lazy_patchThunk(112), haltThunk));
+          return mkStep(new Step2(extract2(state3.vdom), state3, $lazy_patchThunk(112), haltThunk));
         }
         ;
         var vdom = step(state3.vdom, toVDom(runThunk(t2)));
-        return mkStep(new Step(extract2(vdom), {
+        return mkStep(new Step2(extract2(vdom), {
           vdom,
           thunk: t2
         }, $lazy_patchThunk(115), haltThunk));
@@ -7002,7 +7061,7 @@
     var renderThunk = function(spec) {
       return function(t) {
         var vdom = buildVDom(spec)(toVDom(runThunk(t)));
-        return mkStep(new Step(extract2(vdom), {
+        return mkStep(new Step2(extract2(vdom), {
           thunk: t,
           vdom
         }, patchThunk, haltThunk));
@@ -7248,6 +7307,7 @@
   var prop22 = /* @__PURE__ */ prop2(isPropString);
   var required2 = /* @__PURE__ */ prop1("required");
   var selected = /* @__PURE__ */ prop1("selected");
+  var step3 = /* @__PURE__ */ prop2(isPropStepValue)("step");
   var title = /* @__PURE__ */ prop22("title");
   var type_3 = function(dictIsProp) {
     return prop2(dictIsProp)("type");
@@ -7270,7 +7330,7 @@
   var gets2 = /* @__PURE__ */ gets(monadStateHalogenM);
   var modify_3 = /* @__PURE__ */ modify_2(monadStateHalogenM);
   var type_4 = /* @__PURE__ */ type_3(isPropInputType);
-  var show2 = /* @__PURE__ */ show(showInt);
+  var show3 = /* @__PURE__ */ show(showInt);
   var value4 = /* @__PURE__ */ value3(isPropString);
   var discard2 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
   var BarratDone = /* @__PURE__ */ function() {
@@ -7337,25 +7397,25 @@
   var questions = ["1. Planifico mis tareas con cuidado", "2. Hago las cosas sin pensarlas", "3. Casi nunca me tomo las cosas a pecho (no me perturbo con facilidad)", "4. Mis pensamientos pueden tener gran velocidad (tengo pensamientos que van muy r\xE1pido en mi mente)", "5. Planifico mis viajes con antelaci\xF3n", "6. Soy una persona con autocontrol", "7. Me concentro con facilidad (se me hace f\xE1cil concentrarme)", "8. Ahorro con regularidad", "9. Se me hace dif\xEDcil estar quieto/a durante largos per\xEDodos de tiempo", "10. Pienso las cosas cuidadosamente", "11. Planifico para tener un trabajo fijo (me esfuerzo por asegurar que tendr\xE9 dinero para pagar mis gastos)", "12. Digo las cosas sin pensarlas", "13. Me gusta pensar sobre problemas complicados (me gusta pensar sobre problemas complejos)", "14. Cambio de trabajo frecuentemente (no me quedo en el mismo trabajo durante largos per\xEDodos de tiempo)", "15. Act\xFAo impulsivamente", "16. Me aburro con facilidad tratando de resolver problemas en mi mente (me aburre pensar en algo por demasiado tiempo)", "17. Visito al m\xE9dico y al dentista con regularidad", "18. Hago las cosas en el momento que se me ocurren", "19. Soy una persona que piensa sin distraerse (puedo enfocar mi mente en una sola cosa por mucho tiempo)", "20. Cambio de vivienda a menudo (me mudo con frecuencia o no me gusta vivir en el mismo sitio por mucho tiempo)", "21. Compro cosas impulsivamente", "22. Termino lo que empiezo", "23. Camino y me muevo con rapidez", "24. Resuelvo los problemas experimentando (resuelvo los problemas empleando una posible soluci\xF3n y viendo si funciona)", "25. Gasto en efectivo o a cr\xE9dito m\xE1s de lo que gano (gasto m\xE1s de lo gano)", "26. Hablo r\xE1pido", "27. Tengo pensamientos extra\xF1os cuando estoy pensando (a veces tengo pensamientos irrelevantes cuando pienso)", "28. Me interesa m\xE1s el presente que el futuro", "29. Me siento inquieto/a en clases o charlas (me siento inquieto/a si tengo que o\xEDr a alguien hablar durante un largo per\xEDodo de tiempo)", "30. Planifico el futuro (me interesa m\xE1s el futuro que el presente)"];
   var mkQuestion = function(q2) {
     return function(index4) {
-      return tr([])([td_([text(q2)]), td_([input([type_4(InputRadio.value), name4(show2(index4)), required2(true), onChecked(function(v) {
+      return tr([])([td_([text(q2)]), td_([input([type_4(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v) {
         return new UpdateAnswers(index4, "1");
-      })])]), td_([input([type_4(InputRadio.value), name4(show2(index4)), onChecked(function(v) {
+      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
         return new UpdateAnswers(index4, "2");
-      })])]), td_([input([type_4(InputRadio.value), name4(show2(index4)), onChecked(function(v) {
+      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
         return new UpdateAnswers(index4, "3");
-      })])]), td_([input([type_4(InputRadio.value), name4(show2(index4)), onChecked(function(v) {
+      })])]), td_([input([type_4(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
         return new UpdateAnswers(index4, "4");
       })])])]);
     };
   };
   var mkAllQuestions = /* @__PURE__ */ function() {
     var zipped = zip(questions)(range2(0)(29));
-    var step3 = function(arr) {
+    var step4 = function(arr) {
       return function(v) {
         return snoc(arr)(mkQuestion(v.value0)(v.value1));
       };
     };
-    return foldl2(step3)([])(zipped);
+    return foldl2(step4)([])(zipped);
   }();
   var renderBarrat = function(v) {
     return div2([class_("container")])([form([id3("barrat_form"), onSubmit(function(ev) {
@@ -7420,6 +7480,7 @@
   // output/Data.Argonaut.Encode.Encoders/index.js
   var map15 = /* @__PURE__ */ map(functorArray);
   var encodeString = id;
+  var encodeNumber = id;
   var encodeMaybe = function(encoder) {
     return function(v) {
       if (v instanceof Nothing) {
@@ -7479,6 +7540,9 @@
   };
   var encodeJsonJString = {
     encodeJson: encodeString
+  };
+  var encodeJsonJNumber = {
+    encodeJson: encodeNumber
   };
   var encodeJsonJBoolean = {
     encodeJson: encodeBoolean
@@ -7598,7 +7662,7 @@
   var gets3 = /* @__PURE__ */ gets(monadStateHalogenM);
   var modify_4 = /* @__PURE__ */ modify_2(monadStateHalogenM);
   var type_6 = /* @__PURE__ */ type_3(isPropInputType);
-  var show3 = /* @__PURE__ */ show(showInt);
+  var show4 = /* @__PURE__ */ show(showInt);
   var pure6 = /* @__PURE__ */ pure(applicativeHalogenM);
   var discard3 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
   var gEncodeJsonCons2 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonArray(encodeJsonInt));
@@ -7834,13 +7898,13 @@
   };
   var mkAnxietyQuestion = function(q2) {
     return function(index4) {
-      return tr([])([td_([text(q2)]), td_([input([type_6(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v) {
+      return tr([])([td_([text(q2)]), td_([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v) {
         return new UpdateAnxiety(index4, 0);
-      })])]), td_([input([type_6(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
         return new UpdateAnxiety(index4, 1);
-      })])]), td_([input([type_6(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
         return new UpdateAnxiety(index4, 2);
-      })])]), td_([input([type_6(InputRadio.value), name4(show3(index4)), onChecked(function(v) {
+      })])]), td_([input([type_6(InputRadio.value), name4(show4(index4)), onChecked(function(v) {
         return new UpdateAnxiety(index4, 3);
       })])])]);
     };
@@ -7997,14 +8061,14 @@
   };
   var genDepressionRadios = function(answers) {
     return function(index4) {
-      var step3 = function(arr) {
+      var step4 = function(arr) {
         return function(v) {
-          return append5(arr)([input([type_6(InputRadio.value), name4(show3(index4)), required2(true), onChecked(function(v1) {
+          return append5(arr)([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v1) {
             return new UpdateDepression(index4, v.value0);
           })]), text("    " + v.value1), br_]);
         };
       };
-      return foldl2(step3)([])(answers);
+      return foldl2(step4)([])(answers);
     };
   };
   var mkDepressionQuestion = function(q2) {
@@ -8080,12 +8144,12 @@
   }();
   var mkAllDepressionQuestions = /* @__PURE__ */ function() {
     var zipped = zip(depressionQuestions)(range2(0)(20));
-    var step3 = function(arr) {
+    var step4 = function(arr) {
       return function(v) {
         return snoc(arr)(mkDepressionQuestion(v.value0)(v.value1));
       };
     };
-    return foldl2(step3)([])(zipped);
+    return foldl2(step4)([])(zipped);
   }();
   var renderDepression = /* @__PURE__ */ function() {
     return div2([class_("container")])([form([id3("depression_form"), onSubmit(function(ev) {
@@ -8113,12 +8177,12 @@
   var anxietyQuestions = ["1. Torpe o entumecido", "2. Acalorado", "3. Con temblor en las piernas", "4. Incapaz de relajarse", "5. Con temor a que ocurra lo peor", "6. Mareado, o que se le va la cabeza", "7. Con latidos del coraz\xF3n fuerte y acelerados", "8. Inestable", "9. Atemorizado o asustado", "10. Nervioso", "11. Con sensaci\xF3n de bloqueo", "12. Con temblores en las manos", "13. Inquieto, inseguro", "14. Con miedo a perder el control", "15. Con sensaci\xF3n de ahogo", "16. Con temor a morir", "17. Con miedo", "18. Con problemas digestivos", "19. Con desvanecimientos", "20. Con rubor facial", "21. Con sudores, frios o calientes"];
   var mkAllAnxietyQuestions = /* @__PURE__ */ function() {
     var zipped = zip(anxietyQuestions)(range2(0)(29));
-    var step3 = function(arr) {
+    var step4 = function(arr) {
       return function(v) {
         return snoc(arr)(mkAnxietyQuestion(v.value0)(v.value1));
       };
     };
-    return foldl2(step3)([])(zipped);
+    return foldl2(step4)([])(zipped);
   }();
   var renderAnxiety = /* @__PURE__ */ function() {
     return div2([class_("container")])([form([id3("anxiety_form"), onSubmit(function(ev) {
@@ -8209,20 +8273,42 @@
     });
   };
 
+  // output/Effect.Console/foreign.js
+  var log2 = function(s) {
+    return function() {
+      console.log(s);
+    };
+  };
+  var warn = function(s) {
+    return function() {
+      console.warn(s);
+    };
+  };
+
+  // output/Effect.Class.Console/index.js
+  var log3 = function(dictMonadEffect) {
+    var $67 = liftEffect(dictMonadEffect);
+    return function($68) {
+      return $67(log2($68));
+    };
+  };
+
   // output/Questions/index.js
   var bind5 = /* @__PURE__ */ bind(bindAff);
   var pure7 = /* @__PURE__ */ pure(applicativeAff);
   var bind12 = /* @__PURE__ */ bind(bindHalogenM);
   var gets4 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var discard4 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var log4 = /* @__PURE__ */ log3(monadEffectEffect);
   var modify_5 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var append6 = /* @__PURE__ */ append(semigroupArray);
+  var append12 = /* @__PURE__ */ append(semigroupArray);
   var type_7 = /* @__PURE__ */ type_3(isPropInputType);
   var value7 = /* @__PURE__ */ value3(isPropString);
   var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
   var gEncodeJsonCons1 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJString));
   var gEncodeJsonCons22 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJBoolean);
   var gEncodeJsonCons32 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonInt));
-  var discard4 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var gEncodeJsonCons4 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJNumber));
   var traverse_4 = /* @__PURE__ */ traverse_(applicativeHalogenM)(foldableArray);
   var Submitted = /* @__PURE__ */ function() {
     function Submitted2() {
@@ -8297,218 +8383,273 @@
         return pure7(true);
       }
       ;
-      throw new Error("Failed pattern match at Questions (line 241, column 3 - line 245, column 20): " + [response.constructor.name]);
+      throw new Error("Failed pattern match at Questions (line 252, column 3 - line 256, column 20): " + [response.constructor.name]);
     });
   };
   var updateForm = function(dictMonadEffect) {
+    var liftEffect7 = liftEffect(monadEffectHalogenM(dictMonadEffect));
     return function(key) {
       return function(value1) {
         return bind12(gets4(function(v) {
           return v.formData;
         }))(function(formData) {
-          return modify_5(function(state3) {
-            return {
-              formData: function() {
-                if (key === "age") {
-                  var $153 = {};
-                  for (var $154 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $154)) {
-                      $153[$154] = formData[$154];
+          return discard4(liftEffect7(log4(key + (" : " + value1))))(function() {
+            return modify_5(function(state3) {
+              return {
+                formData: function() {
+                  if (key === "age") {
+                    var $182 = {};
+                    for (var $183 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $183)) {
+                        $182[$183] = formData[$183];
+                      }
+                      ;
                     }
                     ;
+                    $182.age = fromMaybe(-1 | 0)(fromString2(value1));
+                    return $182;
                   }
                   ;
-                  $153.age = fromMaybe(-1 | 0)(fromString(value1));
-                  return $153;
-                }
-                ;
-                if (key === "sex") {
-                  var $156 = {};
-                  for (var $157 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $157)) {
-                      $156[$157] = formData[$157];
+                  if (key === "sex") {
+                    var $185 = {};
+                    for (var $186 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $186)) {
+                        $185[$186] = formData[$186];
+                      }
+                      ;
                     }
                     ;
+                    $185.sex = fromMaybe(-1 | 0)(fromString2(value1));
+                    return $185;
                   }
                   ;
-                  $156.sex = fromMaybe(-1 | 0)(fromString(value1));
-                  return $156;
-                }
-                ;
-                if (key === "major") {
-                  var $159 = {};
-                  for (var $160 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $160)) {
-                      $159[$160] = formData[$160];
+                  if (key === "major") {
+                    var $188 = {};
+                    for (var $189 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $189)) {
+                        $188[$189] = formData[$189];
+                      }
+                      ;
                     }
                     ;
+                    $188.major = value1;
+                    return $188;
                   }
                   ;
-                  $159.major = value1;
-                  return $159;
-                }
-                ;
-                if (key === "alcohol") {
-                  var $162 = {};
-                  for (var $163 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $163)) {
-                      $162[$163] = formData[$163];
+                  if (key === "alcohol") {
+                    var $191 = {};
+                    for (var $192 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $192)) {
+                        $191[$192] = formData[$192];
+                      }
+                      ;
                     }
                     ;
+                    $191.alcohol = value1 === "1";
+                    return $191;
                   }
                   ;
-                  $162.alcohol = value1 === "1";
-                  return $162;
-                }
-                ;
-                if (key === "alcohol_freq") {
-                  var $165 = {};
-                  for (var $166 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $166)) {
-                      $165[$166] = formData[$166];
+                  if (key === "alcoholFrequency") {
+                    var $194 = {};
+                    for (var $195 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $195)) {
+                        $194[$195] = formData[$195];
+                      }
+                      ;
                     }
                     ;
+                    $194.alcoholFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                    return $194;
                   }
                   ;
-                  $165.alcoholFreq = new Just(fromMaybe(-1 | 0)(fromString(value1)));
-                  return $165;
-                }
-                ;
-                if (key === "drugs") {
-                  var $168 = {};
-                  for (var $169 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $169)) {
-                      $168[$169] = formData[$169];
+                  if (key === "alcoholIntensity") {
+                    var $197 = {};
+                    for (var $198 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $198)) {
+                        $197[$198] = formData[$198];
+                      }
+                      ;
                     }
                     ;
+                    $197.alcoholIntensity = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                    return $197;
                   }
                   ;
-                  $168.drugs = value1 === "1";
-                  return $168;
-                }
-                ;
-                if (key === "drugs_freq") {
-                  var $171 = {};
-                  for (var $172 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $172)) {
-                      $171[$172] = formData[$172];
+                  if (key === "smoke") {
+                    var $200 = {};
+                    for (var $201 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $201)) {
+                        $200[$201] = formData[$201];
+                      }
+                      ;
                     }
                     ;
+                    $200.smoke = value1 === "1";
+                    return $200;
                   }
                   ;
-                  $171.drugsFreq = new Just(fromMaybe(-1 | 0)(fromString(value1)));
-                  return $171;
-                }
-                ;
-                if (key === "disorder") {
-                  var $174 = {};
-                  for (var $175 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $175)) {
-                      $174[$175] = formData[$175];
+                  if (key === "smokingYears") {
+                    var $203 = {};
+                    for (var $204 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $204)) {
+                        $203[$204] = formData[$204];
+                      }
+                      ;
                     }
                     ;
+                    $203.smokingYears = new Just(fromMaybe(-1)(fromString(value1)));
+                    return $203;
                   }
                   ;
-                  $174.disorder = value1 === "1";
-                  return $174;
-                }
-                ;
-                if (key === "disorderInput") {
-                  var $177 = {};
-                  for (var $178 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $178)) {
-                      $177[$178] = formData[$178];
+                  if (key === "smokingIntensity") {
+                    var $206 = {};
+                    for (var $207 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $207)) {
+                        $206[$207] = formData[$207];
+                      }
+                      ;
                     }
                     ;
+                    $206.smokingIntensity = new Just(fromMaybe(-1)(fromString(value1)));
+                    return $206;
                   }
                   ;
-                  $177.disorderInput = new Just(value1);
-                  return $177;
-                }
-                ;
-                if (key === "injury") {
-                  var $180 = {};
-                  for (var $181 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $181)) {
-                      $180[$181] = formData[$181];
+                  if (key === "drugs") {
+                    var $209 = {};
+                    for (var $210 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $210)) {
+                        $209[$210] = formData[$210];
+                      }
+                      ;
                     }
                     ;
+                    $209.drugs = value1 === "1";
+                    return $209;
                   }
                   ;
-                  $180.injury = value1 === "1";
-                  return $180;
-                }
-                ;
-                if (key === "injuryLocation") {
-                  var $183 = {};
-                  for (var $184 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $184)) {
-                      $183[$184] = formData[$184];
+                  if (key === "drugsFrequency") {
+                    var $212 = {};
+                    for (var $213 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $213)) {
+                        $212[$213] = formData[$213];
+                      }
+                      ;
                     }
                     ;
+                    $212.drugsFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                    return $212;
                   }
                   ;
-                  $183.injuryLocation = new Just(value1);
-                  return $183;
-                }
-                ;
-                if (key === "injuryTreated") {
-                  var $186 = {};
-                  for (var $187 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $187)) {
-                      $186[$187] = formData[$187];
+                  if (key === "disorder") {
+                    var $215 = {};
+                    for (var $216 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $216)) {
+                        $215[$216] = formData[$216];
+                      }
+                      ;
                     }
                     ;
+                    $215.disorder = value1 === "1";
+                    return $215;
                   }
                   ;
-                  $186.injuryTreated = new Just(value1 === "1");
-                  return $186;
-                }
-                ;
-                if (key === "abuse") {
-                  var $189 = {};
-                  for (var $190 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $190)) {
-                      $189[$190] = formData[$190];
+                  if (key === "disorderInput") {
+                    var $218 = {};
+                    for (var $219 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $219)) {
+                        $218[$219] = formData[$219];
+                      }
+                      ;
                     }
                     ;
+                    $218.disorderInput = new Just(value1);
+                    return $218;
                   }
                   ;
-                  $189.abuse = formData.abuse + fromMaybe(0)(fromString(value1)) | 0;
-                  return $189;
-                }
-                ;
-                if (key === "abuseOther") {
-                  var $192 = {};
-                  for (var $193 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $193)) {
-                      $192[$193] = formData[$193];
+                  if (key === "injury") {
+                    var $221 = {};
+                    for (var $222 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $222)) {
+                        $221[$222] = formData[$222];
+                      }
+                      ;
                     }
                     ;
+                    $221.injury = value1 === "1";
+                    return $221;
                   }
                   ;
-                  $192.abuseOther = new Just(value1);
-                  return $192;
-                }
-                ;
-                if (key === "shortage") {
-                  var $195 = {};
-                  for (var $196 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $196)) {
-                      $195[$196] = formData[$196];
+                  if (key === "injuryLocation") {
+                    var $224 = {};
+                    for (var $225 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $225)) {
+                        $224[$225] = formData[$225];
+                      }
+                      ;
                     }
                     ;
+                    $224.injuryLocation = new Just(value1);
+                    return $224;
                   }
                   ;
-                  $195.shortage = formData.shortage + fromMaybe(0)(fromString(value1)) | 0;
-                  return $195;
-                }
-                ;
-                return formData;
-              }(),
-              conditionalDivs: state3.conditionalDivs,
-              code: state3.code
-            };
+                  if (key === "injuryTreated") {
+                    var $227 = {};
+                    for (var $228 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $228)) {
+                        $227[$228] = formData[$228];
+                      }
+                      ;
+                    }
+                    ;
+                    $227.injuryTreated = new Just(value1 === "1");
+                    return $227;
+                  }
+                  ;
+                  if (key === "abuse") {
+                    var $230 = {};
+                    for (var $231 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $231)) {
+                        $230[$231] = formData[$231];
+                      }
+                      ;
+                    }
+                    ;
+                    $230.abuse = formData.abuse + fromMaybe(0)(fromString2(value1)) | 0;
+                    return $230;
+                  }
+                  ;
+                  if (key === "abuseOther") {
+                    var $233 = {};
+                    for (var $234 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $234)) {
+                        $233[$234] = formData[$234];
+                      }
+                      ;
+                    }
+                    ;
+                    $233.abuseOther = new Just(value1);
+                    return $233;
+                  }
+                  ;
+                  if (key === "shortage") {
+                    var $236 = {};
+                    for (var $237 in formData) {
+                      if ({}.hasOwnProperty.call(formData, $237)) {
+                        $236[$237] = formData[$237];
+                      }
+                      ;
+                    }
+                    ;
+                    $236.shortage = formData.shortage + fromMaybe(0)(fromString2(value1)) | 0;
+                    return $236;
+                  }
+                  ;
+                  return formData;
+                }(),
+                conditionalDivs: state3.conditionalDivs,
+                code: state3.code
+              };
+            });
           });
         });
       };
@@ -8532,69 +8673,82 @@
           return {
             formData: state3.formData,
             conditionalDivs: function() {
-              if (key === "alcoholFreq") {
-                var $199 = {};
-                for (var $200 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $200)) {
-                    $199[$200] = state3["conditionalDivs"][$200];
+              if (key === "alcoholFrequency") {
+                var $240 = {};
+                for (var $241 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $241)) {
+                    $240[$241] = state3["conditionalDivs"][$241];
                   }
                   ;
                 }
                 ;
-                $199.alcoholFreq = shouldShow;
-                return $199;
+                $240.alcoholFrequency = shouldShow;
+                return $240;
               }
               ;
-              if (key === "drugsFreq") {
-                var $202 = {};
-                for (var $203 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $203)) {
-                    $202[$203] = state3["conditionalDivs"][$203];
+              if (key === "smokeFreq") {
+                var $243 = {};
+                for (var $244 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $244)) {
+                    $243[$244] = state3["conditionalDivs"][$244];
                   }
                   ;
                 }
                 ;
-                $202.drugsFreq = shouldShow;
-                return $202;
+                $243.smokeFreq = shouldShow;
+                return $243;
+              }
+              ;
+              if (key === "drugsFrequency") {
+                var $246 = {};
+                for (var $247 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $247)) {
+                    $246[$247] = state3["conditionalDivs"][$247];
+                  }
+                  ;
+                }
+                ;
+                $246.drugsFrequency = shouldShow;
+                return $246;
               }
               ;
               if (key === "disorder") {
-                var $205 = {};
-                for (var $206 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $206)) {
-                    $205[$206] = state3["conditionalDivs"][$206];
+                var $249 = {};
+                for (var $250 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $250)) {
+                    $249[$250] = state3["conditionalDivs"][$250];
                   }
                   ;
                 }
                 ;
-                $205.disorder = shouldShow;
-                return $205;
+                $249.disorder = shouldShow;
+                return $249;
               }
               ;
               if (key === "injury") {
-                var $208 = {};
-                for (var $209 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $209)) {
-                    $208[$209] = state3["conditionalDivs"][$209];
+                var $252 = {};
+                for (var $253 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $253)) {
+                    $252[$253] = state3["conditionalDivs"][$253];
                   }
                   ;
                 }
                 ;
-                $208.injury = shouldShow;
-                return $208;
+                $252.injury = shouldShow;
+                return $252;
               }
               ;
               if (key === "abuseOther") {
-                var $211 = {};
-                for (var $212 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $212)) {
-                    $211[$212] = state3["conditionalDivs"][$212];
+                var $255 = {};
+                for (var $256 in state3.conditionalDivs) {
+                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $256)) {
+                    $255[$256] = state3["conditionalDivs"][$256];
                   }
                   ;
                 }
                 ;
-                $211.abuseOther = shouldShow;
-                return $211;
+                $255.abuseOther = shouldShow;
+                return $255;
               }
               ;
               return state3.conditionalDivs;
@@ -8607,13 +8761,13 @@
   };
   var mkQuestion2 = function(label5) {
     return function(innerHtml) {
-      return div2([class_("question")])(append6([label_([text(label5)]), br_])(append6(innerHtml)([br_])));
+      return div2([class_("question")])(append12([label_([text(label5)]), br_])(append12(innerHtml)([br_])));
     };
   };
   var sexQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("Sexo")([input([type_7(InputRadio.value), id3("sex"), required2(true), value7("0"), onChecked(function(v) {
+    return mkQuestion2("Sexo")([input([type_7(InputRadio.value), name4("sex"), required2(true), value7("0"), onChecked(function(v) {
       return new UpdateForm("sex", "0");
-    })]), text("Masculino"), br_, input([type_7(InputRadio.value), id3("sex"), required2(true), value7("1"), onChecked(function(v) {
+    })]), text("Masculino"), br_, input([type_7(InputRadio.value), name4("sex"), required2(true), value7("1"), onChecked(function(v) {
       return new UpdateForm("sex", "1");
     })]), text("Femenino")]);
   }();
@@ -8652,6 +8806,23 @@
       }());
     })]), text("Ninguna")]);
   }();
+  var smokeQuestion = /* @__PURE__ */ function() {
+    return mkQuestion2("\xBFFumas?")([input([type_7(InputRadio.value), id3("smoke_yes"), name4("smoke"), required2(true), onChecked(function(v) {
+      return new CompositeAction([new UpdateForm("smoke", "1"), new ShowQuestion("smokeFreq", true)]);
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("smoke_no"), name4("smoke"), required2(true), onChecked(function(v) {
+      return new CompositeAction([new UpdateForm("smoke", "0"), new ShowQuestion("smokeFreq", false)]);
+    })]), text("No")]);
+  }();
+  var smokeYearsQuestion = /* @__PURE__ */ function() {
+    return mkQuestion2("\xBFCu\xE1ntos a\xF1os llevas fumando?")([input([type_7(InputNumber.value), name4("smoke_years"), step3(new Step(0.01)), onValueChange(function(val) {
+      return new UpdateForm("smokingYears", val);
+    })])]);
+  }();
+  var smokingIntensityQuestion = /* @__PURE__ */ function() {
+    return mkQuestion2("\xBFCu\xE1ntos cigarros fumas aproximadamente en un d\xEDa?")([input([type_7(InputNumber.value), name4("smoke_intensity"), step3(new Step(0.01)), onValueChange(function(val) {
+      return new UpdateForm("smokingIntensity", val);
+    })])]);
+  }();
   var majorQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("Carrera")([input([type_7(InputText.value), id3("major"), required2(true), onValueInput(function(val) {
       return new UpdateForm("major", val);
@@ -8679,7 +8850,7 @@
     })]), text("No")]);
   }();
   var injuryLocationQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFEn d\xF3nde se ubic\xF3 el golpe?")([input([type_7(InputText.value), id3("injury_location_input"), name4("injury_location"), required2(true), onValueChange(function(val) {
+    return mkQuestion2("\xBFEn d\xF3nde se ubic\xF3 el golpe?")([small_([text("A nivel de la frente, cerca de la oreja, en la nuca o en la coronilla, o en dado caso a nivel frontal, parietal, occipital o temporal, tambi\xE9n mencionar si fue del lado izquierdo o derecho")]), input([type_7(InputText.value), id3("injury_location_input"), name4("injury_location"), required2(true), onValueChange(function(val) {
       return new UpdateForm("injuryLocation", val);
     })])]);
   }();
@@ -8690,9 +8861,13 @@
         sex: -1 | 0,
         major: "",
         alcohol: false,
-        alcoholFreq: Nothing.value,
+        alcoholFrequency: Nothing.value,
+        alcoholIntensity: Nothing.value,
+        smoke: false,
+        smokingYears: Nothing.value,
+        smokingIntensity: Nothing.value,
         drugs: false,
-        drugsFreq: Nothing.value,
+        drugsFrequency: Nothing.value,
         disorder: false,
         disorderInput: Nothing.value,
         injury: false,
@@ -8704,8 +8879,9 @@
         loss: false
       },
       conditionalDivs: {
-        alcoholFreq: false,
-        drugsFreq: false,
+        alcoholFrequency: false,
+        smokeFreq: false,
+        drugsFrequency: false,
         disorder: false,
         injury: false,
         abuseOther: false,
@@ -8714,7 +8890,19 @@
       code: ""
     };
   };
-  var formToJSON = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJBoolean))(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons(encodeJsonJString)(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(gEncodeJsonNil)({
+  var formToJSON = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJBoolean))(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons(encodeJsonJString)(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons4(gEncodeJsonNil)({
+    reflectSymbol: function() {
+      return "smokingYears";
+    }
+  })())({
+    reflectSymbol: function() {
+      return "smokingIntensity";
+    }
+  })())({
+    reflectSymbol: function() {
+      return "smoke";
+    }
+  })())({
     reflectSymbol: function() {
       return "shortage";
     }
@@ -8744,7 +8932,7 @@
     }
   })())({
     reflectSymbol: function() {
-      return "drugsFreq";
+      return "drugsFrequency";
     }
   })())({
     reflectSymbol: function() {
@@ -8760,7 +8948,11 @@
     }
   })())({
     reflectSymbol: function() {
-      return "alcoholFreq";
+      return "alcoholIntensity";
+    }
+  })())({
+    reflectSymbol: function() {
+      return "alcoholFrequency";
     }
   })())({
     reflectSymbol: function() {
@@ -8804,16 +8996,16 @@
           return {
             formData: state3.formData,
             conditionalDivs: function() {
-              var $219 = {};
-              for (var $220 in state3.conditionalDivs) {
-                if ({}.hasOwnProperty.call(state3.conditionalDivs, $220)) {
-                  $219[$220] = state3["conditionalDivs"][$220];
+              var $263 = {};
+              for (var $264 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $264)) {
+                  $263[$264] = state3["conditionalDivs"][$264];
                 }
                 ;
               }
               ;
-              $219.badCode = true;
-              return $219;
+              $263.badCode = true;
+              return $263;
             }(),
             code: state3.code
           };
@@ -8855,12 +9047,15 @@
     };
   };
   var drugsQuestion = /* @__PURE__ */ function() {
-    return mkQuestion2("\xBFConsumes drogas?")([input([type_7(InputRadio.value), id3("drugs_yes"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("drugs", "1"), new ShowQuestion("drugsFreq", false)]);
-    })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("drugs_no"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("drugs", "0"), new ShowQuestion("drugsFreq", false)]);
+    return mkQuestion2("\xBFConsumes drogas?")([input([type_7(InputRadio.value), name4("drugs"), id3("drugs_yes"), required2(true), onChecked(function(v) {
+      return new CompositeAction([new UpdateForm("drugs", "1"), new ShowQuestion("drugsFrequency", true)]);
+    })]), text("S\xED"), br_, input([type_7(InputRadio.value), name4("drugs"), id3("drugs_no"), required2(true), onChecked(function(v) {
+      return new CompositeAction([new UpdateForm("drugs", "0"), new ShowQuestion("drugsFrequency", false)]);
     })]), text("No")]);
   }();
+  var drugsFrequencyQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("drugs"), /* @__PURE__ */ onValueChange(function(val) {
+    return new UpdateForm("drugsFrequency", val);
+  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("Todos los d\xEDas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("Una vez a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("Cada dos semanas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("Una vez al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("4")])([/* @__PURE__ */ text("De manera espor\xE1dica")])])]);
   var disorderQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("Tienes alg\xFAn diagn\xF3stico psiqui\xE1trico o neurol\xF3gico?")([small_([text("Dicho diagn\xF3stico debe de haber sido designado por un profesional de la salud, puede ser diagn\xF3stico de ansiedad, depresi\xF3n, bipolaridad tipo I o II, TDA-H, autismo, alguna enfermedad neurodegenerativa, etc.")]), input([type_7(InputRadio.value), id3("disorder_yes"), name4("disorder"), value7("1"), required2(true), onChecked(function(v) {
       return new CompositeAction([new UpdateForm("disorder", "1"), new ShowQuestion("disorder", true)]);
@@ -8886,14 +9081,17 @@
   };
   var alcoholQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("\xBFConsumes alcohol?")([input([type_7(InputRadio.value), id3("alcohol_yes"), name4("alcohol"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("alcohol", "1"), new ShowQuestion("alcoholFreq", true)]);
+      return new CompositeAction([new UpdateForm("alcohol", "1"), new ShowQuestion("alcoholFrequency", true)]);
     })]), text("S\xED"), br_, input([type_7(InputRadio.value), id3("alcohol_no"), name4("alcohol"), required2(true), onChecked(function(v) {
-      return new CompositeAction([new UpdateForm("alcohol", "0"), new ShowQuestion("alcoholFreq", false)]);
+      return new CompositeAction([new UpdateForm("alcohol", "0"), new ShowQuestion("alcoholFrequency", false)]);
     })]), text("No")]);
   }();
-  var alcoholFreqQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
-    return new UpdateForm("alcoholFreq", value1);
-  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("Todos los d\xEDas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("Una vez a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("Cada dos semanas")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("Una vez al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("4")])([/* @__PURE__ */ text("De manera espor\xE1dica")])])]);
+  var alcoholIntensityQuestion = /* @__PURE__ */ mkQuestion2("\xBFCu\xE1ntas bebidas alcoh\xF3licas sueles tomar en un d\xEDa de consumo?")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcoholIntensity"), /* @__PURE__ */ onValueChange(function(value1) {
+    return new UpdateForm("alcoholIntensity", value1);
+  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar cantidad")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("1 o 2")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("3 o 4")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("5 o 6")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("7 o m\xE1s")])])]);
+  var alcoholFrequencyQuestion = /* @__PURE__ */ mkQuestion2("\xBFCon qu\xE9 frecuencia consumes? (Sin importar la cantidad)")([/* @__PURE__ */ select([/* @__PURE__ */ id3("alcohol"), /* @__PURE__ */ onValueChange(function(value1) {
+    return new UpdateForm("alcoholFrequency", value1);
+  }), /* @__PURE__ */ required2(true)])([/* @__PURE__ */ option([/* @__PURE__ */ disabled2(true), /* @__PURE__ */ selected(true), /* @__PURE__ */ value7("")])([/* @__PURE__ */ text("Seleccionar frecuencia")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("0")])([/* @__PURE__ */ text("Una o menos veces al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("1")])([/* @__PURE__ */ text("De 2 a 4 veces al mes")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("2")])([/* @__PURE__ */ text("De 2 a 3 veces a la semana")]), /* @__PURE__ */ option([/* @__PURE__ */ value7("3")])([/* @__PURE__ */ text("4 o m\xE1s veces a la semana")])])]);
   var ageQuestion = /* @__PURE__ */ function() {
     return mkQuestion2("Edad")([input([type_7(InputNumber.value), id3("age"), required2(true), onValueInput(function(val) {
       return new UpdateForm("age", val);
@@ -8971,12 +9169,36 @@
     return div2([class_("container")])([h1_([text("Evaluaci\xF3n neuropsicol\xF3gica")]), h3_([text("Hola, muchas gracias por tomarte el tiempo para participar, por favor contesta con sinceridad, se te asignar\xE1 un n\xFAmero de participante por lo que tus respuestas ser\xE1n an\xF3nimas.")]), form([id3("participant_form"), onSubmit(function(ev) {
       return new SendForm(ev);
     })])([ageQuestion, sexQuestion, majorQuestion, alcoholQuestion, function() {
-      if (state3.conditionalDivs.alcoholFreq) {
-        return alcoholFreqQuestion;
+      if (state3.conditionalDivs.alcoholFrequency) {
+        return alcoholFrequencyQuestion;
       }
       ;
       return div_([]);
-    }(), drugsQuestion, disorderQuestion, function() {
+    }(), function() {
+      if (state3.conditionalDivs.alcoholFrequency) {
+        return alcoholIntensityQuestion;
+      }
+      ;
+      return div_([]);
+    }(), smokeQuestion, function() {
+      if (state3.conditionalDivs.smokeFreq) {
+        return smokeYearsQuestion;
+      }
+      ;
+      return div_([]);
+    }(), function() {
+      if (state3.conditionalDivs.smokeFreq) {
+        return smokingIntensityQuestion;
+      }
+      ;
+      return div_([]);
+    }(), drugsQuestion, function() {
+      if (state3.conditionalDivs.drugsFrequency) {
+        return drugsFrequencyQuestion;
+      }
+      ;
+      return div_([]);
+    }(), disorderQuestion, function() {
       if (state3.conditionalDivs.disorder) {
         return disorderInputQuestion;
       }
@@ -8996,11 +9218,10 @@
       return div_([]);
     }(), abuseQuestion(state3.conditionalDivs.abuseOther), shortageQuestion, lossQuestion, codeVerification(state3.conditionalDivs.badCode), input([type_7(InputSubmit.value), title("Siguiente"), value7("Siguiente")])])]);
   };
-  var renderQuestions = renderQuestionsForm;
   var questionsComponent = function(dictMonadAff) {
     return mkComponent({
       initialState: initialState3,
-      render: renderQuestions,
+      render: renderQuestionsForm,
       "eval": mkEval({
         handleQuery: defaultEval.handleQuery,
         receive: defaultEval.receive,
@@ -9488,13 +9709,6 @@
   };
   var fork = function(dict) {
     return dict.fork;
-  };
-
-  // output/Effect.Console/foreign.js
-  var warn = function(s) {
-    return function() {
-      console.warn(s);
-    };
   };
 
   // output/Halogen.Aff.Driver.State/index.js
@@ -10293,7 +10507,7 @@
                 ;
                 if (slot6 instanceof ThunkSlot) {
                   var step$prime = step(st.value0, slot6.value0);
-                  return mkStep(new Step(extract2(step$prime), new Just(step$prime), $lazy_patch(103), done));
+                  return mkStep(new Step2(extract2(step$prime), new Just(step$prime), $lazy_patch(103), done));
                 }
                 ;
                 throw new Error("Failed pattern match at Halogen.VDom.Driver (line 97, column 22 - line 103, column 79): " + [slot6.constructor.name]);
@@ -10309,8 +10523,8 @@
               }
               ;
               if (slot6 instanceof ThunkSlot) {
-                var step3 = buildThunk2(slot6.value0);
-                return mkStep(new Step(extract2(step3), new Just(step3), $lazy_patch(89), done));
+                var step4 = buildThunk2(slot6.value0);
+                return mkStep(new Step2(extract2(step4), new Just(step4), $lazy_patch(89), done));
               }
               ;
               throw new Error("Failed pattern match at Halogen.VDom.Driver (line 84, column 7 - line 89, column 75): " + [slot6.constructor.name]);
@@ -10321,7 +10535,7 @@
               var renderChild = read(renderChildRef)();
               var rsx = renderChild(cs)();
               var node = getNode(rsx);
-              return mkStep(new Step(node, Nothing.value, $lazy_patch(117), done));
+              return mkStep(new Step2(node, Nothing.value, $lazy_patch(117), done));
             };
           });
           var patch2 = $lazy_patch(91);
