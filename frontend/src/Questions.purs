@@ -38,7 +38,7 @@ type FormData =
   , alcoholIntensity :: Maybe Int
   , smoke :: Boolean
   , smokingYears :: Maybe Number
-  , smokeIntensity :: Maybe Number
+  , smokingIntensity :: Maybe Number
   , drugs :: Boolean
   , drugsFreq :: Maybe Int
   , disorder :: Boolean
@@ -88,7 +88,7 @@ initialState _ =
       , alcoholIntensity: Nothing
       , smoke: false
       , smokingYears: Nothing
-      , smokeIntensity: Nothing
+      , smokingIntensity: Nothing
       , drugs: false
       , drugsFreq: Nothing
       , disorder: false
@@ -143,7 +143,7 @@ renderQuestionsForm state =
         , if state.conditionalDivs.alcoholFrequency then alcoholIntensityQuestion else HH.div_ []
         , smokeQuestion
         , if state.conditionalDivs.smokeFreq then smokeYearsQuestion else HH.div_ []
-        , if state.conditionalDivs.smokeFreq then smokeIntensityQuestion else HH.div_ []
+        , if state.conditionalDivs.smokeFreq then smokingIntensityQuestion else HH.div_ []
         , drugsQuestion
         , if state.conditionalDivs.drugsFreq then drugsFreqQuestion else HH.div_ []
         , disorderQuestion
@@ -186,7 +186,7 @@ updateForm key value = do
              "alcohol_int" -> formData { alcoholIntensity = Just $ fromMaybe (-1) $ I.fromString value }
              "smoke" -> formData { smoke = value == "1" }
              "smoke_years" -> formData { smokingYears = Just $ fromMaybe (-1.0) $ N.fromString value }
-             "smoke_intensity" -> formData { smokeIntensity = Just $ fromMaybe (-1.0) $ N.fromString value }
+             "smoke_intensity" -> formData { smokingIntensity = Just $ fromMaybe (-1.0) $ N.fromString value }
              "drugs" -> formData { drugs = value == "1" }
              "drugs_freq" -> formData { drugsFreq = Just $ fromMaybe (-1) $ I.fromString value }
              "disorder" -> formData { disorder = value == "1" }
@@ -417,8 +417,8 @@ smokeYearsQuestion = mkQuestion "¿Cuántos años llevas fumando?"
     ]
   ]
 
-smokeIntensityQuestion :: forall w. HH.HTML w Action
-smokeIntensityQuestion = mkQuestion "¿Cuántos cigarros fumas aproximadamente en un día?"
+smokingIntensityQuestion :: forall w. HH.HTML w Action
+smokingIntensityQuestion = mkQuestion "¿Cuántos cigarros fumas aproximadamente en un día?"
   [ HH.input
     [ HP.type_ HP.InputNumber
     , HP.name "smoke_intensity"
