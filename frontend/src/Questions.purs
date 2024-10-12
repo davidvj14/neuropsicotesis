@@ -435,7 +435,7 @@ drugsQuestion = mkQuestion "¿Consumes drogas?"
     , HP.required true
     , HE.onChecked \_ -> CompositeAction
       [ UpdateForm "drugs" "1"
-      , ShowQuestion "drugsFreq" false 
+      , ShowQuestion "drugsFreq" true 
       ]
     ]
   , HH.text "Sí"
