@@ -75,7 +75,7 @@ type ChildSlots =
   )
 
 handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action ChildSlots Output m Unit
-handleAction action = do
+handleAction action =
   case action of
     UpdateAnxiety index val -> setAnxietyAnswer index val
     UpdateDepression index val -> setDepressionAnswer index val
