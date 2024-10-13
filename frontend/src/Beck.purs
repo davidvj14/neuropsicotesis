@@ -82,7 +82,9 @@ handleAction action =
     AnxietyFormDone ev -> do
        H.liftEffect $ preventDefault ev
        H.modify_ \state -> state { stage = DepressionInstructions }
-    HandleSubmit ev -> handleSubmit ev
+    HandleSubmit ev -> do 
+       handleSubmit ev
+       H.raise BeckDone
     AnxietyInstructionsDone _ -> H.modify_ \state -> state { stage = AnxietyForm }
     _ -> pure unit
     
