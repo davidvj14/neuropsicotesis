@@ -11,6 +11,7 @@ import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Properties as HP
 import Questions as Q
+import Wisconsin as W
 import Type.Proxy (Proxy(..))
 
 type State = 
@@ -32,7 +33,7 @@ data Action
   = HandleQuestions Q.Output
   | HandleBarrat Barrat.Output
   | HandleBeck Beck.Output
-  | HandleCardSorting
+  | HandleWisconsin W.Output
   | HandleCardGame
   | HandleEnding
   | FadeOutComplete
@@ -41,11 +42,13 @@ type ChildSlots =
   ( questions :: Q.Slot
   , barrat :: Barrat.Slot
   , beck :: Beck.BeckSlot
+  , wisconsin :: W.WisconsinSlot
   )
 
 _questions = Proxy :: Proxy "questions"
 _barrat = Proxy :: Proxy "barrat"
 _beck = Proxy :: Proxy "beck"
+_wisconsin = Proxy :: Proxy "wisconsin"
 
 initialState :: forall i. i -> State
 initialState _ = { currentStage: Questions, fadingOutStage: Nothing }
@@ -78,7 +81,7 @@ renderCurrent stage =
         Questions -> HH.slot _questions 0 Q.questionsComponent unit HandleQuestions
         Barrat -> HH.slot _barrat 1 Barrat.barratComponent unit HandleBarrat
         Beck -> HH.slot _beck 2 Beck.mainComponent unit HandleBeck
-        Wisconsin -> HH.text "Wisconsin Component"
+        Wisconsin -> HH.slot _wisconsin 3 W.mainComponent unit HandleWisconsin
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"
         Ending -> HH.text "Ending Component"
