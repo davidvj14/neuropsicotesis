@@ -233,6 +233,9 @@ mainHandler =
           state { stage = DepressionInstructions
                 , anxietyAnswers = anxAns
                 }
+       HandleSubmit ev -> do
+          H.liftEffect $ preventDefault ev
+          H.raise BeckDone
        _ -> pure unit
 
 genDepressionRadios :: forall w. Array (Tuple Int String) -> Int -> Array (HH.HTML w Action)
