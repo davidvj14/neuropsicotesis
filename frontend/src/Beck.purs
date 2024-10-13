@@ -7,9 +7,7 @@ import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
 import Data.Argonaut (encodeJson)
 import Data.Array (foldl, replicate, snoc, updateAt, zip, range)
-import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
-import Data.Show.Generic (genericShow)
 import Data.Tuple (Tuple(..))
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
@@ -27,11 +25,6 @@ data BeckStage
   | AnxietyForm
   | DepressionInstructions
   | DepressionForm
-
-derive instance genericBeckStage :: Generic BeckStage _
-
-instance showBeckStage :: Show BeckStage where
-  show = genericShow
 
 type State =
   { anxietyAnswers :: Array Int
