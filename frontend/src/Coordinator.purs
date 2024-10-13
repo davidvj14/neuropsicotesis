@@ -97,7 +97,7 @@ maybeRenderFadingOut (Just stage) =
         Questions -> HH.slot _questions 10 Q.questionsComponent unit HandleQuestions
         Barrat -> HH.slot _barrat 11 Barrat.barratComponent unit HandleBarrat
         Beck -> HH.slot _beck 12 Beck.mainComponent unit HandleBeck
-        Wisconsin -> HH.text "Wisconsin Component"
+        Wisconsin -> HH.slot _wisconsin 13 W.mainComponent unit HandleWisconsin
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"
         Ending -> HH.text "Ending Component"
@@ -109,6 +109,7 @@ mainHandler action = do
   case action of
     HandleQuestions _ -> fadeToStage Barrat
     HandleBarrat _ -> fadeToStage Beck
+    HandleBeck _ -> fadeToStage Wisconsin
     FadeOutComplete -> do
        fadingOut <- H.gets _.fadingOutStage
        case fadingOut of
