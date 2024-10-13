@@ -14,10 +14,13 @@ import Data.Show.Generic (genericShow)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
+import Effect.Aff as Aff
 import Effect.Aff.Class (class MonadAff)
-import Effect.Class (class MonadEffect)
+import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Class.Console (log)
 import Effect.Exception.Unsafe (unsafeThrow)
 import Effect.Now (now)
+import Effect.Timer (setTimeout)
 import Extras (InstructionsOutput, InstructionsSlot, instructionsComponent)
 import Halogen as H
 import Halogen.HTML as HH
@@ -27,6 +30,7 @@ import Type.Proxy (Proxy(..))
 import Web.Event.Event (Event, preventDefault)
 import Web.HTML.Event.DragEvent (DragEvent)
 import Web.HTML.Event.DragEvent as DE
+
 
 data WisconsinStage
   = WisconsinInstructions
@@ -52,6 +56,7 @@ type State =
   , stage :: WisconsinStage
   , lastTimer :: Number
   , showIncorrect :: Boolean
+  , sortedCards :: Array (Maybe Card)
   }
 
 initialState :: forall i. i -> State
@@ -64,14 +69,18 @@ initialState _ =
   , stage: WisconsinInstructions
   , lastTimer: 0.0
   , showIncorrect: false
+  , sortedCards: replicate 4 Nothing
   }
 
 data Action
   = WisconsinInstructionsDone InstructionsOutput
   | HandleWisconsinDone Output
   | HandleDrop DragEvent Int
+  | SetShowIncorrect Boolean
+  | PreventDefault Event
 
-data Output = WisconsinDone
+data Output
+  = WisconsinDone
 
 type WisconsinSlot = forall query. H.Slot query Output Int
 
@@ -92,25 +101,51 @@ render state = case state.stage of
   WisconsinTest ->
     HH.slot _wisconsinTest 41 wisconsinComponent state HandleWisconsinDone
 
-renderWisconsin :: forall m. H.ComponentHTML Action ChildSlots m
-renderWisconsin =
+mainComponent :: forall query input m. MonadAff m => H.Component query input Output m
+mainComponent =
+  H.mkComponent 
+    { initialState
+    , render
+    , eval: H.mkEval $ H.defaultEval
+      { handleAction = wisconsinHandler }
+    }
+
+
+renderWisconsin :: forall m. State -> H.ComponentHTML Action ChildSlots m
+renderWisconsin state =
   HH.div
     [ HP.class_ $ H.ClassName "wisconsin-container" ]
-    []
+    [ if state.showIncorrect then renderIncorrect else HH.div_ []
+    , criteriaCards
+    , sortingAreas state.sortedCards 
+    ]
 
-sortingArea :: forall m. Int -> H.ComponentHTML Action ChildSlots m
-sortingArea areaId =
+sortingArea :: forall m. Int -> Maybe Card -> H.ComponentHTML Action ChildSlots m
+sortingArea areaId mbCard =
   HH.div
     [ HP.class_ $ H.ClassName "sorting-area"
     , HE.onDrop \ev -> HandleDrop ev areaId
+    , HE.onDragOver \ev -> PreventDefault $ DE.toEvent ev
     ]
-    []
+    case mbCard of
+         Just card ->
+           [ HH.img
+              [ HP.src card.image
+              , HP.style "overflow:hidden"
+              ]
+           ]
+         Nothing -> []
+    {-[ HH.img
+        [ HP.src $ (unsafeIndex criterionCards areaId).image
+        , HP.style "overflow:hidden"
+        ]
+    ]-}
 
 wisconsinComponent :: forall query m. MonadAff m => H.Component query State Output m
 wisconsinComponent = 
   H.mkComponent
     { initialState: identity
-    , render: (\_ -> renderWisconsin)
+    , render: renderWisconsin
     , eval: H.mkEval $ H.defaultEval
       { handleAction = wisconsinHandler }
     }
@@ -121,14 +156,24 @@ wisconsinHandler action =
        WisconsinInstructionsDone _ -> do
           ms <- H.liftEffect nowToNumber
           H.modify_ \state -> state { stage = WisconsinTest, lastTimer = ms }
+       PreventDefault ev -> H.liftEffect $ preventDefault ev
+       HandleDrop ev areaId -> handleDrop ev areaId
        _ -> pure unit
 
 handleDrop :: forall m. MonadAff m => DragEvent -> Int -> H.HalogenM State Action ChildSlots Output m Unit
 handleDrop ev areaId = do
   H.liftEffect $ preventDefault $ DE.toEvent ev
-  pure unit
+  sortedCards <- H.gets _.sortedCards
+  currentCard <- H.gets _.currentCard
+  let newSorted = unsafeArrUpdate areaId (Just currentCard) sortedCards
+  isCorrect <- evalAnswer areaId
+  when (not isCorrect) (timerShowIncorrect)
+  setNextCard
+  maybeNextCriterion
+  timer <- H.liftEffect nowToNumber
+  H.modify_ \state -> state { lastTimer = timer, sortedCards = newSorted }
 
-evalAnswer :: forall m. MonadAff m => Int -> H.HalogenM State Action ChildSlots Output m Unit
+evalAnswer :: forall m. MonadAff m => Int -> H.HalogenM State Action ChildSlots Output m Boolean
 evalAnswer areaId = do
   let criterionCard = unsafeIndex criterionCards areaId
   currentCriterion <- H.gets _.currentCriterion
@@ -139,48 +184,104 @@ evalAnswer areaId = do
   case currentCriterion of
        Shape ->
          if currentCard.shape == criterionCard.shape
-           then
+           then do
               H.modify_ \state ->
                 state { score = state.score + 1 
                       , answers = snoc state.answers { grade: Correct, timeTaken: time }
                       }
-           else H.modify_ \state ->
-              state { answers = snoc state.answers 
-                      { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
-                      , timeTaken: time
-                      } 
-                    }
+              pure true
+           else do
+              H.modify_ \state ->
+                state { answers = snoc state.answers 
+                        { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
+                        , timeTaken: time
+                        } 
+                      }
+              pure false
        Color ->
          if currentCard.color == criterionCard.color
-           then
+           then do
               H.modify_ \state ->
                 state { score = state.score + 1 
                       , answers = snoc state.answers { grade: Correct, timeTaken: time }
                       }
-           else H.modify_ \state ->
-              state { answers = snoc state.answers 
-                      { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
-                      , timeTaken: time
-                      } 
-                    }
+              pure true
+           else do
+              H.modify_ \state ->
+                state { answers = snoc state.answers 
+                        { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
+                        , timeTaken: time
+                        } 
+                      }
+              pure false
        Number ->
          if currentCard.number == criterionCard.number
-           then
+           then do
               H.modify_ \state ->
                 state { score = state.score + 1 
                       , answers = snoc state.answers { grade: Correct, timeTaken: time }
                       }
-           else H.modify_ \state ->
-              state { answers = snoc state.answers 
-                      { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
-                      , timeTaken: time
-                      } 
-                    }
+              pure true
+           else do
+              H.modify_ \state ->
+                state { answers = snoc state.answers 
+                        { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
+                        , timeTaken: time
+                        } 
+                      }
+              pure false
+
+timerShowIncorrect :: forall m. MonadAff m => H.HalogenM State Action ChildSlots Output m Unit
+timerShowIncorrect = do
+  H.modify_ \state -> state { showIncorrect = true }
+  H.liftAff $ Aff.delay $ Milliseconds 500.0
+  H.modify_ \state -> state { showIncorrect = false }
+
+maybeNextCriterion :: forall m. MonadAff m => H.HalogenM State Action ChildSlots Output m Unit
+maybeNextCriterion = do
+  score <- H.gets _.score
+  when
+    (mod score 10 == 0)
+    (H.modify_ \state -> state { currentCriterion = unsafeIndex criteria (score / 10)})
 
 
+sortingAreas :: forall m. Array (Maybe Card) -> H.ComponentHTML Action ChildSlots m
+sortingAreas sortedCards =
+  HH.div
+    [ HP.id "card-area" ]
+    [ sortingArea 0 $ unsafeIndex sortedCards 0
+    , sortingArea 1 $ unsafeIndex sortedCards 1
+    , sortingArea 2 $ unsafeIndex sortedCards 2
+    , sortingArea 3 $ unsafeIndex sortedCards 3
+    ]
 
-sortingAreas :: forall m. H.ComponentHTML Action ChildSlots m
-sortingAreas = HH.div [] []
+criteriaCards :: forall m. H.ComponentHTML Action ChildSlots m
+criteriaCards =
+  HH.div
+    [ HP.id "criteria-cards"]
+    [ criterionCard $ unsafeIndex criterionCards 0
+    , criterionCard $ unsafeIndex criterionCards 1
+    , criterionCard $ unsafeIndex criterionCards 2
+    , criterionCard $ unsafeIndex criterionCards 3
+    ]
+
+criterionCard :: forall m. Card -> H.ComponentHTML Action ChildSlots m
+criterionCard card = 
+  HH.div
+    [ HP.class_ $ H.ClassName "sorting-area"]
+    [ HH.img
+      [ HP.src card.image
+      , HP.style "overflow: hidden"
+      ] 
+    ]
+
+renderIncorrect :: forall m. H.ComponentHTML Action ChildSlots m
+renderIncorrect = 
+  HH.div
+    [ HP.id "message"
+    , HP.class_ $ H.ClassName "container"
+    ]
+    [ HH.text "Incorrecto" ]
 
 instructions :: String
 instructions = 
@@ -299,6 +400,12 @@ unsafeFromJust :: forall a. Maybe a -> a
 unsafeFromJust = case _ of
   Just a -> a
   _ -> unsafeThrow "unsafeFromJust exception"
+
+unsafeArrUpdate :: forall a. Int -> a -> Array a -> Array a
+unsafeArrUpdate index new arr = 
+  case updateAt index new arr of
+       Just newArr -> newArr
+       _ -> unsafeThrow "unsafeArrUpdate exception"
 
 nowToNumber :: Effect Number
 nowToNumber = do

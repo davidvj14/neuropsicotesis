@@ -101,7 +101,7 @@ maybeRenderFadingOut (Just stage) =
         GoNoGo -> HH.text "GoNoGo Component"
         Stroop -> HH.text "Stroop Component"
         Ending -> HH.text "Ending Component"
-        Void -> HH.text "Void"
+        Void -> HH.text ""
     ]
 
 mainHandler :: forall output m. MonadAff m => Action -> H.HalogenM State Action ChildSlots output m Unit

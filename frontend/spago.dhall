@@ -20,6 +20,7 @@ to generate this file without the comments in this block.
   , "argonaut-core"
   , "arrays"
   , "console"
+  , "datetime"
   , "effect"
   , "either"
   , "exceptions"
@@ -27,6 +28,7 @@ to generate this file without the comments in this block.
   , "halogen"
   , "halogen-vdom"
   , "integers"
+  , "js-timers"
   , "maybe"
   , "now"
   , "numbers"
@@ -35,6 +37,7 @@ to generate this file without the comments in this block.
   , "strings"
   , "tuples"
   , "web-events"
+  , "web-html"
   , "yoga-json"
   ]
 , packages = ./packages.dhall
