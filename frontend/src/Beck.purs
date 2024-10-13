@@ -11,6 +11,7 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect)
+import Effect.Class.Console (log)
 import Effect.Exception.Unsafe (unsafeThrow)
 import Extras (InstructionsOutput, InstructionsSlot, instructionsComponent)
 import Halogen as H
@@ -42,6 +43,7 @@ data Action
   | ActionUnit
   | GoDepressionInstructions
   | HandleAnxietyDone Output
+  | HandleDepressionDone Output
 
 type DepressionAnswer = Tuple Int String
 
@@ -84,7 +86,7 @@ handleAction action =
        H.modify_ \state -> state { stage = DepressionInstructions }
     HandleSubmit ev -> do 
        handleSubmit ev
-       H.raise BeckDone
+       mainHandler $ HandleDepressionDone BeckDone
     AnxietyInstructionsDone _ -> H.modify_ \state -> state { stage = AnxietyForm }
     _ -> pure unit
     
@@ -142,7 +144,7 @@ render state = case state.stage of
   AnxietyForm -> HH.slot _anxietySlot 31 anxietyComponent state HandleAnxietyDone
   DepressionInstructions ->
     HH.slot _depressionInstructions 32 (instructionsComponent depressionInstructions) state DepressionInstructionsDone
-  DepressionForm -> HH.slot _depressionSlot 33 depressionComponent state (\_ -> ActionUnit)
+  DepressionForm -> HH.slot _depressionSlot 33 depressionComponent state HandleDepressionDone
 
 renderAnxiety :: forall m.  H.ComponentHTML Action ChildSlots m
 renderAnxiety =
@@ -233,8 +235,8 @@ mainHandler =
           state { stage = DepressionInstructions
                 , anxietyAnswers = anxAns
                 }
-       HandleSubmit ev -> do
-          H.liftEffect $ preventDefault ev
+       HandleDepressionDone BeckDone -> do
+          H.liftEffect $ log "??????"
           H.raise BeckDone
        _ -> pure unit
 
