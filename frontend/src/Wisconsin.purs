@@ -38,7 +38,7 @@ type Results =
   }
 
 type State =
-  { currendCard :: Card
+  { currentCard :: Card
   , score :: Int
   , answers :: Array Answer
   , currentCriterion :: Criterion
@@ -46,21 +46,55 @@ type State =
   , stage :: WisconsinStage
   }
 
-data Output = WisconsinDone
-
-{-
 initialState :: forall i. i -> State
 initialState _ = 
-  { score: 0
-  , errors: 0
-  , perseverations: 0
-  , deferredPerseverations: 0
-  , maintenanceErrors: 0
-  , timeToFirst: 0
-  , timeAfterError: 0.0
-  , totalTime: 0
+  { currentCard: unsafeIndex cards 0
+  , score: 0
+  , answers: []
+  , currentCriterion: unsafeIndex criteria 0
+  , currentIndex: 0
+  , stage: WisconsinInstructions
   }
--}
+
+data Action
+  = WisconsinInstructionsDone InstructionsOutput
+  | HandleWisconsinDone Output
+
+data Output = WisconsinDone
+
+type WisconsinSlot = forall query. H.Slot query Output Int
+
+type ChildSlots = 
+  ( wisconsinInstructions :: InstructionsSlot
+  , wisconsinTest :: WisconsinSlot
+  )
+
+_wisconsinInstructions = Proxy :: Proxy "wisconsinInstructions"
+_wisconsinTest = Proxy :: Proxy "wisconsinTest"
+
+render :: forall m. MonadAff m => State -> H.ComponentHTML Action ChildSlots m
+render state = case state.stage of
+  WisconsinInstructions ->
+    HH.slot _wisconsinInstructions 40 (instructionsComponent instructions) unit WisconsinInstructionsDone
+  WisconsinTest ->
+    HH.slot _wisconsinTest 41 wisconsinComponent state HandleWisconsinDone
+
+renderWisconsin :: forall m. H.ComponentHTML Action ChildSlots m
+renderWisconsin = HH.div [] []
+
+wisconsinComponent :: forall query m. MonadAff m => H.Component query State Output m
+wisconsinComponent = 
+  H.mkComponent
+    { initialState: identity
+    , render: (\_ -> renderWisconsin)
+    , eval: H.mkEval $ H.defaultEval
+      { handleAction = wisconsinHandler }
+    }
+
+wisconsinHandler :: forall m. MonadAff m => Action -> H.HalogenM State Action ChildSlots Output m Unit
+wisconsinHandler action =
+  case action of
+       _ -> pure unit
 
 instructions :: String
 instructions = 
@@ -173,6 +207,24 @@ criterionCards =
     , number: Four
     }
   ]
+
+unsafeIndex :: forall a. Array a -> Int -> a
+unsafeIndex arr index = case arr !! index of
+  Just a -> a
+  _ -> unsafeThrow "unsafeIndex exception"
+
+setNextCard :: forall m. MonadEffect m => H.HalogenM State Action ChildSlots Output m Unit
+setNextCard = do
+  currentIndex <- H.gets _.currentIndex
+  let newIndex = currentIndex + 1
+  if newIndex >= 64
+    then H.raise WisconsinDone
+    else
+       H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
+  where
+    nextCard newIndex = case (cards !! newIndex) of
+                             Just card -> card
+                             _ -> unsafeThrow "unreachable next card"
 
 cards :: Array Card
 cards = 
