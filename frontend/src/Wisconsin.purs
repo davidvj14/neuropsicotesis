@@ -170,6 +170,7 @@ wisconsinHandler action =
        HandleDrop ev areaId -> handleDrop ev areaId
        HandleWisconsinDone _ -> do
           answers <- H.gets _.answers
+          H.liftEffect $ log $ "end len: " <> (show $ length answers)
           let results = eval answers
           _ <- H.liftAff $ AX.post ResponseFormat.ignore "/wisconsin"
             (Just $ RequestBody.Json $ encodeJson results)
@@ -187,7 +188,6 @@ handleDrop ev areaId = do
   when (not isCorrect) (timerShowIncorrect)
   setNextCard
   maybeNextCriterion
-  answers <- H.gets _.answers
   timer <- H.liftEffect nowToNumber
   H.modify_ \state -> state { lastTimer = timer }
 
@@ -554,7 +554,7 @@ setNextCard = do
   currentIndex <- H.gets _.currentIndex
   H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
-  if newIndex >= 64
+  if newIndex >= 5
     then H.raise WisconsinDone
     else
        H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
