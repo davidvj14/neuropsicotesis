@@ -20,6 +20,7 @@ readCookie name = do
   cookieString <- readCookieImpl name
   pure $ if cookieString == "" then Nothing else Just cookieString
 
+
 instructionsComponent :: forall input query m. MonadAff m => String -> H.Component query input InstructionsOutput m
 instructionsComponent instructions = 
   H.mkComponent
