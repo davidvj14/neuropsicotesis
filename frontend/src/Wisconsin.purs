@@ -486,7 +486,7 @@ setNextCard = do
   currentIndex <- H.gets _.currentIndex
   H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
-  if newIndex >= 64
+  if newIndex >= 5
     then H.raise WisconsinDone
     else
        H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
