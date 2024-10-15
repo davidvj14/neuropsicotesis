@@ -187,6 +187,7 @@ handleDrop ev areaId = do
   when (not isCorrect) (timerShowIncorrect)
   setNextCard
   maybeNextCriterion
+  answers <- H.gets _.answers
   timer <- H.liftEffect nowToNumber
   H.modify_ \state -> state { lastTimer = timer }
 
@@ -206,14 +207,19 @@ evalAnswer areaId = do
                 state { score = state.score + 1 
                       , answers = snoc state.answers { grade: Correct, timeTaken: time }
                       }
+              ans <- H.gets _.answers
+              H.liftEffect $ log $ "len: " <> (show $ length ans)
               pure true
            else do
+              H.liftEffect $ log "?"
               H.modify_ \state ->
                 state { answers = snoc state.answers 
                         { grade: Incorrect currentCriterion (compareForError critCard currentCard)
                         , timeTaken: time
                         } 
                       }
+              ans <- H.gets _.answers
+              H.liftEffect $ log $ "len: " <> (show $ length ans)
               pure false
        Color ->
          if currentCard.color == critCard.color
@@ -222,6 +228,8 @@ evalAnswer areaId = do
                 state { score = state.score + 1 
                       , answers = snoc state.answers { grade: Correct, timeTaken: time }
                       }
+              ans <- H.gets _.answers
+              H.liftEffect $ log $ "len: " <> (show $ length ans)
               pure true
            else do
               H.modify_ \state ->
@@ -230,6 +238,8 @@ evalAnswer areaId = do
                         , timeTaken: time
                         } 
                       }
+              ans <- H.gets _.answers
+              H.liftEffect $ log $ "len: " <> (show $ length ans)
               pure false
        Number ->
          if currentCard.number == critCard.number
@@ -238,6 +248,8 @@ evalAnswer areaId = do
                 state { score = state.score + 1 
                       , answers = snoc state.answers { grade: Correct, timeTaken: time }
                       }
+              ans <- H.gets _.answers
+              H.liftEffect $ log $ "len: " <> (show $ length ans)
               pure true
            else do
               H.modify_ \state ->
@@ -246,6 +258,8 @@ evalAnswer areaId = do
                         , timeTaken: time
                         } 
                       }
+              ans <- H.gets _.answers
+              H.liftEffect $ log $ "len: " <> (show $ length ans)
               pure false
 
 timerShowIncorrect :: forall m. MonadAff m => H.HalogenM State Action ChildSlots Output m Unit
