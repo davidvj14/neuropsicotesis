@@ -2,6 +2,8 @@ module Extras where
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
+import Effect (Effect)
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
@@ -10,6 +12,13 @@ import Halogen.HTML.Properties as HP
 
 data InstructionsOutput = DoneReading
 data Action = ClickedDone
+
+foreign import readCookieImpl :: String -> Effect String
+
+readCookie :: String -> Effect (Maybe String)
+readCookie name = do
+  cookieString <- readCookieImpl name
+  pure $ if cookieString == "" then Nothing else Just cookieString
 
 instructionsComponent :: forall input query m. MonadAff m => String -> H.Component query input InstructionsOutput m
 instructionsComponent instructions = 
