@@ -6,9 +6,11 @@ import Affjax.RequestBody as RequestBody
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
 import Data.Argonaut (encodeJson)
-import Data.Array (foldl, length, range, replicate, snoc, updateAt, zip, (!!))
+import Data.Array (drop, foldl, head, last, length, range, replicate, snoc, take, updateAt, zip, (!!))
+import Data.Array as Array
 import Data.DateTime.Instant (Instant, unInstant)
 import Data.Generic.Rep (class Generic)
+import Data.Lazy (Lazy, defer, force)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Show.Generic (genericShow)
 import Data.Time.Duration (Milliseconds(..))
@@ -39,12 +41,24 @@ data WisconsinStage
 type Results =
   { score :: Int
   , errors :: Int
+  , maintenanceErrors :: Int
   , perseverations :: Int
   , deferredPerseverations :: Int
-  , maintenanceErrors :: Int
-  , timeToFirst :: Int
+  , timeToFirst :: Number
   , timeAfterError :: Number
-  , totalTime :: Int
+  , totalTime :: Number
+  }
+
+initResults :: Results
+initResults = 
+  { score : 0
+  , errors: 0
+  , maintenanceErrors: 0
+  , perseverations: 0
+  , deferredPerseverations: 0
+  , timeToFirst: 0.0
+  , timeAfterError: 0.0
+  , totalTime: 0.0
   }
 
 type State =
@@ -110,14 +124,15 @@ mainComponent =
       { handleAction = wisconsinHandler }
     }
 
-
 renderWisconsin :: forall m. State -> H.ComponentHTML Action ChildSlots m
 renderWisconsin state =
   HH.div
     [ HP.class_ $ H.ClassName "wisconsin-container" ]
     [ if state.showIncorrect then renderIncorrect else HH.div_ []
     , criteriaCards
+    , HH.br_ 
     , sortingAreas state.sortedCards 
+    , deckArea state.currentCard
     ]
 
 sortingArea :: forall m. Int -> Maybe Card -> H.ComponentHTML Action ChildSlots m
@@ -135,11 +150,6 @@ sortingArea areaId mbCard =
               ]
            ]
          Nothing -> []
-    {-[ HH.img
-        [ HP.src $ (unsafeIndex criterionCards areaId).image
-        , HP.style "overflow:hidden"
-        ]
-    ]-}
 
 wisconsinComponent :: forall query m. MonadAff m => H.Component query State Output m
 wisconsinComponent = 
@@ -158,6 +168,12 @@ wisconsinHandler action =
           H.modify_ \state -> state { stage = WisconsinTest, lastTimer = ms }
        PreventDefault ev -> H.liftEffect $ preventDefault ev
        HandleDrop ev areaId -> handleDrop ev areaId
+       HandleWisconsinDone _ -> do
+          answers <- H.gets _.answers
+          let results = eval answers
+          _ <- H.liftAff $ AX.post ResponseFormat.ignore "/wisconsin"
+            (Just $ RequestBody.Json $ encodeJson results)
+          H.raise WisconsinDone
        _ -> pure unit
 
 handleDrop :: forall m. MonadAff m => DragEvent -> Int -> H.HalogenM State Action ChildSlots Output m Unit
@@ -166,16 +182,17 @@ handleDrop ev areaId = do
   sortedCards <- H.gets _.sortedCards
   currentCard <- H.gets _.currentCard
   let newSorted = unsafeArrUpdate areaId (Just currentCard) sortedCards
+  H.modify_ \state -> state { sortedCards = newSorted }
   isCorrect <- evalAnswer areaId
   when (not isCorrect) (timerShowIncorrect)
   setNextCard
   maybeNextCriterion
   timer <- H.liftEffect nowToNumber
-  H.modify_ \state -> state { lastTimer = timer, sortedCards = newSorted }
+  H.modify_ \state -> state { lastTimer = timer }
 
 evalAnswer :: forall m. MonadAff m => Int -> H.HalogenM State Action ChildSlots Output m Boolean
 evalAnswer areaId = do
-  let criterionCard = unsafeIndex criterionCards areaId
+  let critCard = unsafeIndex criterionCards areaId
   currentCriterion <- H.gets _.currentCriterion
   currentCard <- H.gets _.currentCard
   timerOld <- H.gets _.lastTimer
@@ -183,7 +200,7 @@ evalAnswer areaId = do
   let time = timerNew - timerOld
   case currentCriterion of
        Shape ->
-         if currentCard.shape == criterionCard.shape
+         if currentCard.shape == critCard.shape
            then do
               H.modify_ \state ->
                 state { score = state.score + 1 
@@ -193,13 +210,13 @@ evalAnswer areaId = do
            else do
               H.modify_ \state ->
                 state { answers = snoc state.answers 
-                        { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
+                        { grade: Incorrect currentCriterion (compareForError critCard currentCard)
                         , timeTaken: time
                         } 
                       }
               pure false
        Color ->
-         if currentCard.color == criterionCard.color
+         if currentCard.color == critCard.color
            then do
               H.modify_ \state ->
                 state { score = state.score + 1 
@@ -209,13 +226,13 @@ evalAnswer areaId = do
            else do
               H.modify_ \state ->
                 state { answers = snoc state.answers 
-                        { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
+                        { grade: Incorrect currentCriterion (compareForError critCard currentCard)
                         , timeTaken: time
                         } 
                       }
               pure false
        Number ->
-         if currentCard.number == criterionCard.number
+         if currentCard.number == critCard.number
            then do
               H.modify_ \state ->
                 state { score = state.score + 1 
@@ -225,7 +242,7 @@ evalAnswer areaId = do
            else do
               H.modify_ \state ->
                 state { answers = snoc state.answers 
-                        { grade: Incorrect currentCriterion (compareForError criterionCard currentCard)
+                        { grade: Incorrect currentCriterion (compareForError critCard currentCard)
                         , timeTaken: time
                         } 
                       }
@@ -249,11 +266,14 @@ sortingAreas :: forall m. Array (Maybe Card) -> H.ComponentHTML Action ChildSlot
 sortingAreas sortedCards =
   HH.div
     [ HP.id "card-area" ]
-    [ sortingArea 0 $ unsafeIndex sortedCards 0
-    , sortingArea 1 $ unsafeIndex sortedCards 1
-    , sortingArea 2 $ unsafeIndex sortedCards 2
-    , sortingArea 3 $ unsafeIndex sortedCards 3
-    ]
+      [ HH.div
+        [ HP.id "card-area" ]
+        [ sortingArea 0 $ unsafeIndex sortedCards 0
+        , sortingArea 1 $ unsafeIndex sortedCards 1
+        , sortingArea 2 $ unsafeIndex sortedCards 2
+        , sortingArea 3 $ unsafeIndex sortedCards 3
+        ]
+      ]
 
 criteriaCards :: forall m. H.ComponentHTML Action ChildSlots m
 criteriaCards =
@@ -275,11 +295,19 @@ criterionCard card =
       ] 
     ]
 
+deckArea :: forall m. Card -> H.ComponentHTML Action ChildSlots m
+deckArea card =
+  HH.div
+    [ HP.class_ $ H.ClassName "deck-area" 
+    , HP.draggable true
+    ]
+    [ HH.img [ HP.src card.image, HP.style "overflow: hidden", HP.id "deck-card" ] ]
+
 renderIncorrect :: forall m. H.ComponentHTML Action ChildSlots m
 renderIncorrect = 
   HH.div
     [ HP.id "message"
-    , HP.class_ $ H.ClassName "container"
+    , HP.class_ $ H.ClassName "message-container"
     ]
     [ HH.text "Incorrecto" ]
 
@@ -325,12 +353,26 @@ data CardError
   | OneErr Criterion
   | TwoErr Criterion Criterion
 
+instance eqCardError :: Eq CardError where
+  eq Other Other = true
+  eq Other _ = false
+  eq (OneErr c1) other =
+    case other of
+         Other -> false
+         (OneErr c2) -> c1 == c2
+         (TwoErr c2 c3) -> c1 == c2 || c1 == c3
+  eq (TwoErr c1 c2) other =
+    case other of
+         Other -> false
+         (OneErr c3) -> c1 == c3 || c2 == c3
+         (TwoErr c3 c4) -> c1 == c3 || c1 == c4 || c2 == c3 || c2 == c4
+
 compareForError :: Card -> Card -> CardError
 compareForError c1 c2 = 
   case length matches of
        0 -> Other
-       1 -> OneErr fstMatch
-       2 -> TwoErr fstMatch sndMatch
+       1 -> OneErr (unsafeFromJust $ matches !! 0)
+       2 -> TwoErr (unsafeFromJust $ matches !! 0) (unsafeFromJust $ matches !! 1)
        _ -> unsafeThrow "Unreachable"
   where
         matches :: Array Criterion
@@ -338,12 +380,92 @@ compareForError c1 c2 =
           (if c1.shape == c2.shape then [Shape] else []) <>
           (if c1.color == c2.color then [Color] else []) <>
           (if c1.number == c2.number then [Number] else [])
-        fstMatch = unsafeFromJust $ matches !! 0
-        sndMatch = unsafeFromJust $ matches !! 1
+
+enqueue :: forall a. a -> Array a -> Array a
+enqueue x deque = if Array.length deque < 4
+                   then Array.snoc deque x
+                   else Array.snoc (Array.drop 1 deque) x
+
+checkForDeferred :: Array Answer -> Grade -> Boolean
+checkForDeferred last4 grade =
+  case last4 !! 0 of
+    Just g | g.grade == grade -> true
+    _ -> case last4 !! 1 of
+      Just g | g.grade == grade -> true
+      _ -> case last4 !! 2 of
+        Just g | g.grade == grade -> true
+        _ -> false
+
+checkForPerseveration :: Array Answer -> Grade -> Boolean
+checkForPerseveration last4 grade =
+  case last last4 of
+    Nothing -> false
+    Just ans -> case ans.grade of
+      Correct -> false
+      Incorrect _ _ -> ans.grade == grade
+  
+checkForMaintenanceError :: Array Answer -> Boolean
+checkForMaintenanceError last4 =
+  case last4 !! 0 of
+    Just a0 | a0.grade == Correct ->
+      case last4 !! 1 of
+        Just a1 | a1.grade == Correct ->
+          case last4 !! 2 of
+            Just a2 | a2.grade == Correct -> true
+            _ -> false
+        _ -> false
+    _ -> false
+
+evalStep :: Results -> Array Answer -> Answer -> Results
+evalStep result last4 answer =
+  let
+    result' = result { totalTime = result.totalTime + answer.timeTaken }
+    result'' = case head (take 1 last4) of
+      Just prevAnswer | isIncorrect prevAnswer.grade ->
+        result' { timeAfterError = result'.timeAfterError + answer.timeTaken }
+      _ -> result'
+  in
+    case answer.grade of
+      Correct -> result'' { score = result''.score + 1 }
+      Incorrect _ _ ->
+        if checkForPerseveration last4 answer.grade then
+          result'' { perseverations = result''.perseverations + 1 }
+        else if checkForDeferred last4 answer.grade then
+          result'' { deferredPerseverations = result''.deferredPerseverations + 1 }
+        else if checkForMaintenanceError last4 then
+          result'' { maintenanceErrors = result''.maintenanceErrors + 1 }
+        else
+          result'' { errors = result''.errors + 1 }
+
+eval :: Array Answer -> Results
+eval answers = 
+  case head answers of
+    Nothing -> initResults
+    Just firstAnswer ->
+      let
+        initialResult = initResults { timeToFirst = firstAnswer.timeTaken }
+        go :: Results -> Array Answer -> Array Answer -> Results
+        go acc last4 remainingAnswers =
+          case head remainingAnswers of
+            Nothing -> acc
+            Just answer ->
+              let
+                newAcc = evalStep acc last4 answer
+                newLast4 = take 4 $ snoc last4 answer
+              in
+                go newAcc newLast4 (drop 1 remainingAnswers)
+      in
+        go initialResult [] answers
+
+isIncorrect :: Grade -> Boolean
+isIncorrect (Incorrect _ _) = true
+isIncorrect _ = false
+
 
 data Grade
   = Correct
   | Incorrect Criterion CardError
+derive instance eqGrade :: Eq Grade
 
 type Answer = 
   { grade :: Grade
@@ -416,13 +538,14 @@ nowToNumber = do
 setNextCard :: forall m. MonadEffect m => H.HalogenM State Action ChildSlots Output m Unit
 setNextCard = do
   currentIndex <- H.gets _.currentIndex
+  H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
   if newIndex >= 64
     then H.raise WisconsinDone
     else
        H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
   where
-    nextCard newIndex = unsafeFromJust $ cards !! newIndex
+    nextCard newIndex = unsafeIndex cards newIndex
 
 cards :: Array Card
 cards = 
