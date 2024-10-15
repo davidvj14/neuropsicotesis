@@ -87,13 +87,13 @@ initialState _ =
 
 data Action
   = WisconsinInstructionsDone InstructionsOutput
-  | HandleWisconsinDone Output
+  | HandleWisconsinDone Output 
   | HandleDrop DragEvent Int
   | SetShowIncorrect Boolean
   | PreventDefault Event
 
 data Output
-  = WisconsinDone
+  = WisconsinDone (Array Answer)
 
 type WisconsinSlot = forall query. H.Slot query Output Int
 
@@ -167,12 +167,11 @@ wisconsinHandler action =
           H.modify_ \state -> state { stage = WisconsinTest, lastTimer = ms }
        PreventDefault ev -> H.liftEffect $ preventDefault ev
        HandleDrop ev areaId -> handleDrop ev areaId
-       HandleWisconsinDone _ -> do
-          answers <- H.gets _.answers
+       HandleWisconsinDone (WisconsinDone answers) -> do
           let results = eval answers
           _ <- H.liftAff $ AX.post ResponseFormat.ignore "/wisconsin"
             (Just $ RequestBody.Json $ encodeJson results)
-          H.raise WisconsinDone
+          H.raise $ WisconsinDone []
        _ -> pure unit
 
 handleDrop :: forall m. MonadAff m => DragEvent -> Int -> H.HalogenM State Action ChildSlots Output m Unit
@@ -487,7 +486,9 @@ setNextCard = do
   H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
   if newIndex >= 5
-    then H.raise WisconsinDone
+    then do
+       answers <- H.gets _.answers
+       H.raise $ WisconsinDone answers
     else
        H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
   where
