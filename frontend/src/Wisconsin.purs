@@ -33,7 +33,6 @@ import Web.Event.Event (Event, preventDefault)
 import Web.HTML.Event.DragEvent (DragEvent)
 import Web.HTML.Event.DragEvent as DE
 
-
 data WisconsinStage
   = WisconsinInstructions
   | WisconsinTest
@@ -170,7 +169,6 @@ wisconsinHandler action =
        HandleDrop ev areaId -> handleDrop ev areaId
        HandleWisconsinDone _ -> do
           answers <- H.gets _.answers
-          H.liftEffect $ log $ "end len: " <> (show $ length answers)
           let results = eval answers
           _ <- H.liftAff $ AX.post ResponseFormat.ignore "/wisconsin"
             (Just $ RequestBody.Json $ encodeJson results)
@@ -199,67 +197,35 @@ evalAnswer areaId = do
   timerOld <- H.gets _.lastTimer
   timerNew <- H.liftEffect nowToNumber
   let time = timerNew - timerOld
+  let updateState grade = H.modify_ \state ->
+        state { answers = snoc state.answers { grade, timeTaken: time } }
   case currentCriterion of
        Shape ->
          if currentCard.shape == critCard.shape
            then do
-              H.modify_ \state ->
-                state { score = state.score + 1 
-                      , answers = snoc state.answers { grade: Correct, timeTaken: time }
-                      }
-              ans <- H.gets _.answers
-              H.liftEffect $ log $ "len: " <> (show $ length ans)
+              updateState Correct
+              H.modify_ \state -> state { score = state.score + 1 }
               pure true
            else do
-              H.liftEffect $ log "?"
-              H.modify_ \state ->
-                state { answers = snoc state.answers 
-                        { grade: Incorrect currentCriterion (compareForError critCard currentCard)
-                        , timeTaken: time
-                        } 
-                      }
-              ans <- H.gets _.answers
-              H.liftEffect $ log $ "len: " <> (show $ length ans)
+              updateState $ Incorrect currentCriterion (compareForError critCard currentCard)
               pure false
        Color ->
          if currentCard.color == critCard.color
            then do
-              H.modify_ \state ->
-                state { score = state.score + 1 
-                      , answers = snoc state.answers { grade: Correct, timeTaken: time }
-                      }
-              ans <- H.gets _.answers
-              H.liftEffect $ log $ "len: " <> (show $ length ans)
+              updateState Correct
+              H.modify_ \state -> state { score = state.score + 1 }
               pure true
            else do
-              H.modify_ \state ->
-                state { answers = snoc state.answers 
-                        { grade: Incorrect currentCriterion (compareForError critCard currentCard)
-                        , timeTaken: time
-                        } 
-                      }
-              ans <- H.gets _.answers
-              H.liftEffect $ log $ "len: " <> (show $ length ans)
+              updateState $ Incorrect currentCriterion (compareForError critCard currentCard)
               pure false
        Number ->
          if currentCard.number == critCard.number
            then do
-              H.modify_ \state ->
-                state { score = state.score + 1 
-                      , answers = snoc state.answers { grade: Correct, timeTaken: time }
-                      }
-              ans <- H.gets _.answers
-              H.liftEffect $ log $ "len: " <> (show $ length ans)
+              updateState Correct
+              H.modify_ \state -> state { score = state.score + 1 }
               pure true
            else do
-              H.modify_ \state ->
-                state { answers = snoc state.answers 
-                        { grade: Incorrect currentCriterion (compareForError critCard currentCard)
-                        , timeTaken: time
-                        } 
-                      }
-              ans <- H.gets _.answers
-              H.liftEffect $ log $ "len: " <> (show $ length ans)
+              updateState $ Incorrect currentCriterion (compareForError critCard currentCard)
               pure false
 
 timerShowIncorrect :: forall m. MonadAff m => H.HalogenM State Action ChildSlots Output m Unit
@@ -325,15 +291,6 @@ renderIncorrect =
     ]
     [ HH.text "Incorrecto" ]
 
-instructions :: String
-instructions = 
-  "En esta tarea lo que tiene que hacer es tomar cada una de las cartas " <>
-  "mostradas y colocarlas sobre una de las zonas designadas según como " <>
-  "crea que se relacionan o deban clasificarse. Los criterios de " <>
-  "clasificación irán cambiando conforme avance la prueba. Si la carta " <>
-  "que colocó es correcta, no sucederá nada, pero si es incorrecta, " <>
-  "se le notificará. Entonces tome la siguiente carta y trate de colocarla " <>
-  "en el lugar adecuado."
 
 data Criterion
   = Shape
@@ -475,7 +432,6 @@ isIncorrect :: Grade -> Boolean
 isIncorrect (Incorrect _ _) = true
 isIncorrect _ = false
 
-
 data Grade
   = Correct
   | Incorrect Criterion CardError
@@ -501,30 +457,6 @@ criteria =
   , Shape
   , Number
   , Color
-  ]
-
-criterionCards :: Array Card
-criterionCards = 
-  [ { image: "public/wisconsin/init1.png"
-    , shape: Square
-    , color: Cyan
-    , number: One
-    }
-  , { image: "public/wisconsin/init2.png"
-    , shape: Octagon
-    , color: Red
-    , number: Two
-    }
-  , { image: "public/wisconsin/init3.png"
-    , shape: Rhombus
-    , color: Brown
-    , number: Three
-    }
-  , { image: "public/wisconsin/init4.png"
-    , shape: Trapeze
-    , color: Blue
-    , number: Four
-    }
   ]
 
 unsafeIndex :: forall a. Array a -> Int -> a
@@ -554,12 +486,46 @@ setNextCard = do
   currentIndex <- H.gets _.currentIndex
   H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
-  if newIndex >= 5
+  if newIndex >= 64
     then H.raise WisconsinDone
     else
        H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
   where
     nextCard newIndex = unsafeIndex cards newIndex
+
+instructions :: String
+instructions = 
+  "En esta tarea lo que tiene que hacer es tomar cada una de las cartas " <>
+  "mostradas y colocarlas sobre una de las zonas designadas según como " <>
+  "crea que se relacionan o deban clasificarse. Los criterios de " <>
+  "clasificación irán cambiando conforme avance la prueba. Si la carta " <>
+  "que colocó es correcta, no sucederá nada, pero si es incorrecta, " <>
+  "se le notificará. Entonces tome la siguiente carta y trate de colocarla " <>
+  "en el lugar adecuado."
+
+criterionCards :: Array Card
+criterionCards = 
+  [ { image: "public/wisconsin/init1.png"
+    , shape: Square
+    , color: Cyan
+    , number: One
+    }
+  , { image: "public/wisconsin/init2.png"
+    , shape: Octagon
+    , color: Red
+    , number: Two
+    }
+  , { image: "public/wisconsin/init3.png"
+    , shape: Rhombus
+    , color: Brown
+    , number: Three
+    }
+  , { image: "public/wisconsin/init4.png"
+    , shape: Trapeze
+    , color: Blue
+    , number: Four
+    }
+  ]
 
 cards :: Array Card
 cards = 
