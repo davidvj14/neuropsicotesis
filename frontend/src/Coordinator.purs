@@ -50,10 +50,10 @@ _barrat = Proxy :: Proxy "barrat"
 _beck = Proxy :: Proxy "beck"
 _wisconsin = Proxy :: Proxy "wisconsin"
 
-initialState :: forall i. i -> State
-initialState _ = { currentStage: Questions, fadingOutStage: Nothing }
+initialState :: Stage -> State
+initialState stage = { currentStage: stage, fadingOutStage: Nothing }
 
-mainComponent :: forall query input output m. MonadAff m => H.Component query input output m
+mainComponent :: forall query output m. MonadAff m => H.Component query Stage output m
 mainComponent =
   H.mkComponent
   { initialState
