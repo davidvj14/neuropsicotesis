@@ -215,3 +215,62 @@ th {
     background-color: #f0f0f0;
     text-align: center;
 }
+.go-no-go-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.go-no-go-area {
+  width: 300px;
+  height: 300px;
+  margin: 20px auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.stimulus {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.go .circle {
+  background-color: #4CAF50; /* Green */
+}
+
+.no-go .circle {
+  background-color: #F44336; /* Red */
+}
+
+.fixation-cross {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.message-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
