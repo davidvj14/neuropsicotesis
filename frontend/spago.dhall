@@ -29,15 +29,18 @@ to generate this file without the comments in this block.
   , "halogen-vdom"
   , "integers"
   , "js-timers"
+  , "lazy"
   , "maybe"
   , "now"
   , "numbers"
   , "prelude"
+  , "random"
   , "record"
   , "strings"
   , "tuples"
   , "web-events"
   , "web-html"
+  , "web-uievents"
   , "yoga-json"
   ]
 , packages = ./packages.dhall
