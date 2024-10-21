@@ -60,6 +60,10 @@ data Action
   | NextTrial
   | SubmitResults
 
+type Output = Int
+
+type StroopSlot = forall query. H.Slot query Output Int
+
 stroopComponent :: forall query input m. MonadAff m => H.Component query input Unit m
 stroopComponent =
   H.mkComponent
