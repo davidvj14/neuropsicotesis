@@ -110,12 +110,14 @@ renderInstructions :: forall m. H.ComponentHTML Action () m
 renderInstructions =
   HH.div_
     [ HH.h2_ [ HH.text "Go/No-Go Test Instructions" ]
-    , HH.p_ [ HH.text "In this test, you will see green and red circles." ]
-    , HH.p_ [ HH.text "Click when you see a green circle (Go)." ]
-    , HH.p_ [ HH.text "Do not click when you see a red circle (No-Go)." ]
+    , HH.p_ [ HH.text "En esta prueba verás una serie de estímulos, uno a la vez." ]
+    , HH.p_ [ HH.text $ "Haz click a la pantalla cuando veas un CÍRCULO VERDE."
+            <>  " No des click a otro color, únicamente cuando veas el CÍRCULO VERDE"]
+    , HH.p_ [ HH.text "Procura dar click lo más rápido posible sin cometer ningún error." ]
+    , HH.p_ [ HH.text "Comenzaremos con una versión de práctica." ]
     , HH.button
         [ HE.onClick \_ -> GoNoGoInstructionsDone ]
-        [ HH.text "Start" ]
+        [ HH.text "Comenzar" ]
     ]
 
 renderPrepareMessage :: forall m. H.ComponentHTML Action () m
