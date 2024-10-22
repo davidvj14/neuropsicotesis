@@ -2,16 +2,15 @@ module Stroop where
 
 import Prelude
 
-import Affjax.Web as AX
 import Affjax.RequestBody as RequestBody
-import Affjax.RequestHeader as RequestHeader
 import Affjax.ResponseFormat as ResponseFormat
+import Affjax.Web as AX
 import Data.Argonaut (encodeJson)
 import Data.Array ((!!))
 import Data.DateTime.Instant (Instant, unInstant)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.String (toLower)
+import Data.String (Pattern(..), contains, toLower)
 import Data.String.CodeUnits (charAt, singleton)
 import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
@@ -23,7 +22,13 @@ import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
+import Web.DOM.Document (toNonElementParentNode)
+import Web.DOM.NonElementParentNode (getElementById)
 import Web.Event.Event (preventDefault)
+import Web.HTML (window)
+import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.HTMLElement (focus, fromElement)
+import Web.HTML.Window (document)
 import Web.UIEvent.KeyboardEvent (KeyboardEvent, key)
 import Web.UIEvent.KeyboardEvent as KE
 
@@ -37,14 +42,18 @@ type State =
   , stage :: StroopStage
   , startTime :: Maybe Number
   , stroopTime :: Number
+  , stroopStimuli :: Int
   , nonStroopTime :: Number
+  , nonStroopStimuli :: Int
   , stroopErrors :: Int
   , nonStroopErrors :: Int
   }
 
 type Results =
   { stroopTime :: Number
+  , stroopStimuli :: Int
   , nonStroopTime :: Number
+  , nonStroopStimuli :: Int
   , stroopErrors :: Int
   , nonStroopErrors :: Int
   }
@@ -60,11 +69,11 @@ data Action
   | NextTrial
   | SubmitResults
 
-type Output = Int
+data Output = StroopDoneOut
 
 type StroopSlot = forall query. H.Slot query Output Int
 
-stroopComponent :: forall query input m. MonadAff m => H.Component query input Unit m
+stroopComponent :: forall query input m. MonadAff m => H.Component query input Output m
 stroopComponent =
   H.mkComponent
     { initialState
@@ -83,7 +92,9 @@ initialState _ =
   , stage: StroopInstructions
   , startTime: Nothing
   , stroopTime: 0.0
+  , stroopStimuli: 0
   , nonStroopTime: 0.0
+  , nonStroopStimuli: 0
   , stroopErrors: 0
   , nonStroopErrors: 0
   }
@@ -93,8 +104,7 @@ render state = case state.stage of
   StroopInstructions ->
     HH.div
       [ HP.class_ $ H.ClassName "stroop-container" ]
-      [ HH.h1_ [ HH.text "Stroop Task" ]
-      , HH.p_ [ HH.text "Placeholder instructions" ]
+      [ HH.p_ [ HH.text "Placeholder instructions" ]
       , HH.button
           [ HE.onClick \_ -> StartTest ]
           [ HH.text "Start Test" ]
@@ -102,13 +112,13 @@ render state = case state.stage of
   StroopTest ->
     HH.div
       [ HP.class_ $ H.ClassName "stroop-container" 
+      , HP.id "stroop-test"
       , HE.onKeyDown HandleKeyPress
       , HP.tabIndex 0
       ]
-      [ HH.h1_ [ HH.text "Stroop Task" ]
-      , HH.div
+      [ HH.div
           [ HP.class_ $ H.ClassName "stroop-word" 
-          , HP.style $ "color: " <> state.currentColor
+          , HP.style $ "color: " <> colorFromName state.currentColor
           ]
           [ HH.text state.currentWord ]
       , if state.showFeedback
@@ -116,28 +126,30 @@ render state = case state.stage of
                  [ HP.class_ $ H.ClassName "feedback" ]
                  [ HH.text state.feedbackMessage ]
           else HH.text ""
-      , HH.div
-          [ HP.class_ $ H.ClassName "score" ]
-          [ HH.text $ "Score: " <> show state.score <> " / " <> show state.totalTrials ]
       ]
   StroopDone ->
     HH.div
       [ HP.class_ $ H.ClassName "stroop-container" ]
-      [ HH.h1_ [ HH.text "Stroop Task Complete" ]
-      , HH.p_
-          [ HH.text $ "Your final score: " <> show state.score 
-                   <> " out of " <> show state.totalTrials
-          ]
+      [ HH.h1_ [ HH.text "Has concluido esta prueba" ]
       , HH.button
           [ HE.onClick \_ -> SubmitResults ]
-          [ HH.text "Submit Results" ]
+          [ HH.text "Siguiente" ]
       ]
 
-handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action () Unit m Unit
+handleAction :: forall m. MonadAff m => Action -> H.HalogenM State Action () Output m Unit
 handleAction = case _ of
   StartTest -> do
     H.modify_ _ { stage = StroopTest }
     handleAction NextTrial
+    w <- H.liftEffect window
+    d <- H.liftEffect $ document w
+    mbElem <- H.liftEffect $ getElementById "stroop-test" $ toNonElementParentNode $ toDocument d
+    case mbElem of
+         Just elem -> do
+            case fromElement elem of
+                 Just e -> H.liftEffect $ focus e
+                 _ -> pure unit
+         _ -> pure unit
 
   HandleKeyPress event -> do
     H.liftEffect $ preventDefault $ KE.toEvent event
@@ -145,42 +157,47 @@ handleAction = case _ of
     currentTime <- H.liftEffect now
     let cTime = unInst currentTime
     let userInput = key event
-    let isStroop = state.currentWord /= state.currentColor
-    let timeTaken = case state.startTime of
-                      Just startTime -> cTime - startTime
-                      Nothing -> 0.0
-
-    if userInput == firstLetter state.currentColor
+    if contains (Pattern userInput) "RAVMravm"
       then do
-        H.modify_ _ { score = state.score + 1
-                    , totalTrials = state.totalTrials + 1
-                    , showFeedback = true
-                    , feedbackMessage = "Correct!"
-                    , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
-                    , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
-                    }
-      else do
-        H.modify_ _ { totalTrials = state.totalTrials + 1
-                    , showFeedback = true
-                    , feedbackMessage = "Incorrect!"
-                    , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
-                    , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
-                    , stroopErrors = if isStroop then state.stroopErrors + 1 else state.stroopErrors
-                    , nonStroopErrors = if isStroop then state.nonStroopErrors else state.nonStroopErrors + 1
-                    }
-    H.liftAff $ H.liftAff $ delay $ Milliseconds 1000.0
-    handleAction NextTrial
+        let isStroop = (toLower state.currentWord) /= state.currentColor
+        let timeTaken = case state.startTime of
+                          Just startTime -> cTime - startTime
+                          Nothing -> 0.0
+
+        if userInput == firstLetter state.currentColor
+          then do
+            H.modify_ _ { score = state.score + 1
+                        , totalTrials = state.totalTrials + 1
+                        , showFeedback = true
+                        , feedbackMessage = "Correcto"
+                        , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
+                        , stroopStimuli = if isStroop then state.stroopStimuli + 1 else state.stroopStimuli
+                        , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
+                        , nonStroopStimuli = if isStroop then state.nonStroopStimuli else state.nonStroopStimuli + 1
+                        }
+          else do
+            H.modify_ _ { totalTrials = state.totalTrials + 1
+                        , showFeedback = true
+                        , feedbackMessage = "Incorrecto"
+                        , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
+                        , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
+                        , stroopErrors = if isStroop then state.stroopErrors + 1 else state.stroopErrors
+                        , nonStroopErrors = if isStroop then state.nonStroopErrors else state.nonStroopErrors + 1
+                        }
+        H.liftAff $ H.liftAff $ delay $ Milliseconds 1000.0
+        handleAction NextTrial
+      else pure unit
 
   NextTrial -> do
     state <- H.get
-    if state.totalTrials >= 10
+    if state.totalTrials >= 5
       then H.modify_ _ { stage = StroopDone }
       else do
         wordIndex <- H.liftEffect randomIndex
         colorIndex <- H.liftEffect randomIndex
         startTime <- H.liftEffect now
-        let newWord = fromMaybe "Red" $ words !! wordIndex
-        let newColor = fromMaybe "red" $ colors !! colorIndex
+        let newWord = fromMaybe "Rojo" $ words !! wordIndex
+        let newColor = fromMaybe "Rojo" $ words !! colorIndex
         H.modify_ _ { currentWord = newWord
                     , currentColor = newColor
                     , showFeedback = false
@@ -191,21 +208,28 @@ handleAction = case _ of
     state <- H.get
     let results = 
           { stroopTime: state.stroopTime
+          , stroopStimuli: state.stroopStimuli
           , nonStroopTime: state.nonStroopTime
+          , nonStroopStimuli: state.nonStroopStimuli
           , stroopErrors: state.stroopErrors
           , nonStroopErrors: state.nonStroopErrors
           }
     response <- H.liftAff $ AX.post ResponseFormat.ignore "/stroop"
       (Just $ RequestBody.Json $ encodeJson results)
     case response of
-      Left err -> pure unit
-      Right _ -> pure unit
+      Left _ -> H.raise StroopDoneOut
+      Right _ -> H.raise StroopDoneOut
 
 words :: Array String
-words = ["Red", "Blue", "Green", "Yellow"]
+words = ["Rojo", "Azul", "Verde", "Morado"]
 
-colors :: Array String
-colors = ["red", "blue", "green", "yellow"]
+colorFromName :: String -> String
+colorFromName = case _ of
+  "Rojo" -> "#FF0000"
+  "Verde" -> "#00FF00"
+  "Azul" -> "#0000FF"
+  "Morado" -> "#8a2be2"
+  _ -> ""
 
 randomIndex :: Effect Int
 randomIndex = randomInt 0 3
