@@ -2,15 +2,14 @@ module GoNoGo where
 
 import Prelude
 
-import Data.Array (length, snoc, take, drop, head, last)
+import Data.Array (length, snoc)
 import Data.Array as Array
 import Data.DateTime.Instant (unInstant)
 import Data.Int (toNumber)
-import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (Milliseconds(..), delay)
 import Effect.Aff.Class (class MonadAff)
-import Effect.Class (liftEffect)
 import Effect.Now (now)
 import Effect.Random (randomInt)
 import Halogen as H
@@ -23,11 +22,13 @@ import Web.UIEvent.MouseEvent as ME
 type State =
   { stage :: GoNoGoStage
   , currentStimulus :: Maybe Stimulus
+  , responded :: Boolean
   , responses :: Array Response
   , practiceResponses :: Array Response
   , showStimulus :: Boolean
   , lastTimer :: Number
-  , showIncorrect :: Boolean
+  , showResult :: Boolean
+  , message :: String
   }
 
 data GoNoGoStage
@@ -53,15 +54,19 @@ data Action
   | StartPractice
   | StartTest
   | HandleResponse ME.MouseEvent
-  | SetShowStimulus Boolean
-  | SetShowIncorrect Boolean
   | PreventDefault Event
+  | GoNoGoCompleteRaiser
 
-type GoNoGoSlot = H.Slot Query Output Int
+type GoNoGoSlot = forall query. H.Slot query Output Int
 
-data Query a = GetResults (Results -> a)
+data Output = GoNoGoComplete
 
-data Output = TestComplete Results
+type Result =
+  { comissionErrors :: Int
+  , omissionErrors :: Int
+  , responseTime :: Number
+  , averageResponseTime :: Number
+  }
 
 type Results =
   { correctGo :: Int
@@ -71,26 +76,26 @@ type Results =
   , averageResponseTime :: Number
   }
 
-component :: forall input m. MonadAff m => H.Component Query input Output m
+component :: forall input query m. MonadAff m => H.Component query input Output m
 component =
   H.mkComponent
     { initialState
     , render
     , eval: H.mkEval $ H.defaultEval
-        { handleAction = goNoGoHandler
-        , handleQuery = handleQuery
-        }
+        { handleAction = goNoGoHandler }
     }
 
 initialState :: forall i. i -> State
 initialState _ = 
   { stage: GoNoGoInstructions
   , currentStimulus: Nothing
+  , responded: false
   , responses: []
   , practiceResponses: []
   , showStimulus: false
   , lastTimer: 0.0
-  , showIncorrect: false
+  , showResult: false
+  , message: ""
   }
 
 render :: forall m. State -> H.ComponentHTML Action () m
@@ -108,9 +113,9 @@ render state =
 
 renderInstructions :: forall m. H.ComponentHTML Action () m
 renderInstructions =
-  HH.div_
-    [ HH.h2_ [ HH.text "Go/No-Go Test Instructions" ]
-    , HH.p_ [ HH.text "En esta prueba verás una serie de estímulos, uno a la vez." ]
+  HH.div
+  [ HP.class_ $ H.ClassName "instructions-container" ]
+    [ HH.p_ [ HH.text "En esta prueba verás una serie de estímulos, uno a la vez." ]
     , HH.p_ [ HH.text $ "Haz click a la pantalla cuando veas un CÍRCULO VERDE."
             <>  " No des click a otro color, únicamente cuando veas el CÍRCULO VERDE"]
     , HH.p_ [ HH.text "Procura dar click lo más rápido posible sin cometer ningún error." ]
@@ -122,17 +127,17 @@ renderInstructions =
 
 renderPrepareMessage :: forall m. H.ComponentHTML Action () m
 renderPrepareMessage =
-  HH.div_
-    [ HH.h2_ [ HH.text "Prepare" ]
-    , HH.p_ [ HH.text "Place your hand on the mouse." ]
-    , HH.p_ [ HH.text "The practice session will begin shortly." ]
+  HH.div
+    [ HP.class_ $ H.ClassName "instructions-container"]
+    [ HH.h2_ [ HH.text "Prepárate" ]
+    , HH.p_ [ HH.text "Coloca tu mano en el click derecho del mouse." ]
     ]
 
 renderTestMessage :: forall m. H.ComponentHTML Action () m
 renderTestMessage =
-  HH.div_
-    [ HH.h2_ [ HH.text "Practice Complete" ]
-    , HH.p_ [ HH.text "The real test will begin shortly." ]
+  HH.div
+    [ HP.class_ $ H.ClassName "instructions-container"]
+    [ HH.h2_ [ HH.text "Ahora vamos con la prueba" ]
     ]
 
 renderGoNoGo :: forall m. State -> Boolean -> H.ComponentHTML Action () m
@@ -141,10 +146,7 @@ renderGoNoGo state isPractice =
     [ HP.class_ $ H.ClassName "go-no-go-area"
     , HE.onMouseDown \ev -> HandleResponse ev
     ]
-    [ if state.showIncorrect 
-      then renderIncorrect 
-      else HH.div_ []
-    , if state.showStimulus
+    [ if state.showStimulus
       then case state.currentStimulus of
            Just Go -> HH.div 
              [ HP.class_ $ H.ClassName "stimulus go" ] 
@@ -156,49 +158,62 @@ renderGoNoGo state isPractice =
       else HH.div 
         [ HP.class_ $ H.ClassName "fixation-cross" ] 
         [ HH.text "+" ]
+    , if isPractice && state.showResult
+        then renderResult state.message
+        else HH.div_ []
     ]
 
-renderIncorrect :: forall m. H.ComponentHTML Action () m
-renderIncorrect = 
+renderResult :: forall m. String -> H.ComponentHTML Action () m
+renderResult message = 
   HH.div
-    [ HP.id "message"
-    , HP.class_ $ H.ClassName "message-container"
+    [ HP.id "gonogo-message"
+    , HP.class_ $ H.ClassName "gonogo-message"
     ]
-    [ HH.text "Incorrect" ]
+    [ HH.text message ]
 
 renderComplete :: forall m. H.ComponentHTML Action () m
 renderComplete =
-  HH.div_
-    [ HH.h2_ [ HH.text "Test Complete" ]
-    , HH.p_ [ HH.text "Thank you for participating." ]
+  HH.div
+    [ HP.class_ $ H.ClassName "instructions-container"]
+    [ HH.h2_ [ HH.text "Has terminado esta prueba" ]
+    , HH.button
+        [ HE.onClick \_ -> GoNoGoCompleteRaiser ]
+        [ HH.text "Siguiente" ]
     ]
 
 goNoGoHandler :: forall m. MonadAff m => Action -> H.HalogenM State Action () Output m Unit
 goNoGoHandler = case _ of
   GoNoGoInstructionsDone -> do
     H.modify_ _ { stage = PrepareMessage }
-    H.liftAff $ delay $ Milliseconds 8000.0
+    H.liftAff $ delay $ Milliseconds 1000.0
     goNoGoHandler StartPractice
   StartPractice -> do
     H.modify_ _ { stage = PracticeSession }
     runPracticeSession
   StartTest -> do
-    H.modify_ _ { stage = GoNoGoTest }
+    H.modify_ _ { stage = GoNoGoTest, showResult = false }
     runTestSession
   HandleResponse ev -> do
     H.liftEffect $ preventDefault $ ME.toEvent ev
-    now <- H.liftEffect nowToNumber
-    state <- H.get
-    case state.currentStimulus of
-      Just stim ->
-        let response = { stimulus: stim, responded: true, responseTime: now - state.lastTimer }
-        in if state.stage == PracticeSession
-           then H.modify_ \s -> s { practiceResponses = snoc s.practiceResponses response }
-           else H.modify_ \s -> s { responses = snoc s.responses response }
-      Nothing -> pure unit
-  SetShowStimulus show -> H.modify_ _ { showStimulus = show }
-  SetShowIncorrect show -> H.modify_ _ { showIncorrect = show }
+    responded <- H.gets _.responded
+    if responded 
+      then pure unit
+      else do
+        now <- H.liftEffect nowToNumber
+        state <- H.get
+        H.modify_ _ { responded = true }
+        case state.currentStimulus of
+          Just stim ->
+            let response = { stimulus: stim, responded: true, responseTime: now - state.lastTimer }
+            in if state.stage == PracticeSession
+               then H.modify_ \s -> s { practiceResponses = snoc s.practiceResponses response
+                                      , showResult = true
+                                      , message = if stim == Go then "Correcto" else "Incorrecto"
+                                      }
+               else H.modify_ \s -> s { responses = snoc s.responses response }
+          Nothing -> pure unit
   PreventDefault ev -> H.liftEffect $ preventDefault ev
+  GoNoGoCompleteRaiser -> H.raise GoNoGoComplete
 
 runPracticeSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runPracticeSession = do
@@ -208,12 +223,12 @@ runPracticeSession = do
     hideStimulus
     H.liftAff $ delay $ Milliseconds 1500.0
   H.modify_ _ { stage = TestMessage }
-  H.liftAff $ delay $ Milliseconds 8000.0
+  H.liftAff $ delay $ Milliseconds 2000.0
   goNoGoHandler StartTest
 
 runTestSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runTestSession = do
-  replicateM_ 100 $ do
+  replicateM_ 5 $ do
     showStimulus
     H.liftAff $ delay $ Milliseconds 500.0
     hideStimulus
@@ -224,10 +239,10 @@ showStimulus :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 showStimulus = do
   stim <- H.liftEffect randomStimulus
   now <- H.liftEffect nowToNumber
-  H.modify_ _ { currentStimulus = Just stim, showStimulus = true, lastTimer = now }
+  H.modify_ _ { currentStimulus = Just stim, showStimulus = true, lastTimer = now, showResult = false, responded = false }
 
 hideStimulus :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
-hideStimulus = H.modify_ _ { currentStimulus = Nothing, showStimulus = false }
+hideStimulus = H.modify_ _ { showStimulus = false }
 
 randomStimulus :: Effect Stimulus
 randomStimulus = do
@@ -235,28 +250,21 @@ randomStimulus = do
   pure if n == 0 then Go else NoGo
 
 replicateM_ :: forall m a. Monad m => Int -> m a -> m Unit
-replicateM_ n ma | n <= 0 = pure unit
+replicateM_ n _ | n <= 0 = pure unit
 replicateM_ n ma = ma *> replicateM_ (n - 1) ma
 
-handleQuery :: forall a m. Query a -> H.HalogenM State Action () Output m (Maybe a)
-handleQuery = case _ of
-  GetResults reply -> do
-    state <- H.get
-    let results = calculateResults state.responses
-    pure $ Just $ reply results
-
-calculateResults :: Array Response -> Results
-calculateResults responses =
-  { correctGo: countCorrect Go
-  , incorrectGo: countIncorrect Go
-  , correctNoGo: countCorrect NoGo
-  , incorrectNoGo: countIncorrect NoGo
-  , averageResponseTime: averageResponseTime
+computeResult :: Array Response -> Result
+computeResult responses =
+  { comissionErrors: countComission
+  , omissionErrors: countOmission
+  , responseTime: totalResponseTime
+  , averageResponseTime: avgRespTime
   }
   where
-    countCorrect stim = length $ filter (\r -> r.stimulus == stim && r.responded == (stim == Go)) responses
-    countIncorrect stim = length $ filter (\r -> r.stimulus == stim && r.responded /= (stim == Go)) responses
-    averageResponseTime = sum (map _.responseTime responses) / toNumber (length responses)
+    countComission = length $ filter (\response -> response.stimulus == NoGo && response.responded) responses
+    countOmission = length $ filter (\response -> response.stimulus == Go && (not response.responded)) responses
+    totalResponseTime = sum (map _.responseTime responses)
+    avgRespTime = totalResponseTime / toNumber (length responses)
 
 filter :: forall a. (a -> Boolean) -> Array a -> Array a
 filter pred arr = arr # Array.filter pred
