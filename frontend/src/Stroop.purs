@@ -37,6 +37,7 @@ type State =
   , currentColor :: String
   , score :: Int
   , totalTrials :: Int
+  , responded :: Boolean
   , showFeedback :: Boolean
   , feedbackMessage :: String
   , stage :: StroopStage
@@ -87,6 +88,7 @@ initialState _ =
   , currentColor: ""
   , score: 0
   , totalTrials: 0
+  , responded: false
   , showFeedback: false
   , feedbackMessage: ""
   , stage: StroopInstructions
@@ -103,7 +105,7 @@ render :: forall m. State -> H.ComponentHTML Action () m
 render state = case state.stage of
   StroopInstructions ->
     HH.div
-      [ HP.class_ $ H.ClassName "stroop-container" ]
+      [ HP.class_ $ H.ClassName "instructions-container" ]
       [ HH.p_ [ HH.text "Placeholder instructions" ]
       , HH.button
           [ HE.onClick \_ -> StartTest ]
@@ -129,8 +131,8 @@ render state = case state.stage of
       ]
   StroopDone ->
     HH.div
-      [ HP.class_ $ H.ClassName "stroop-container" ]
-      [ HH.h1_ [ HH.text "Has concluido esta prueba" ]
+      [ HP.class_ $ H.ClassName "instructions-container" ]
+      [ HH.p_ [ HH.text "Has concluido esta prueba" ]
       , HH.button
           [ HE.onClick \_ -> SubmitResults ]
           [ HH.text "Siguiente" ]
@@ -152,45 +154,50 @@ handleAction = case _ of
          _ -> pure unit
 
   HandleKeyPress event -> do
-    H.liftEffect $ preventDefault $ KE.toEvent event
-    state <- H.get
-    currentTime <- H.liftEffect now
-    let cTime = unInst currentTime
-    let userInput = key event
-    if contains (Pattern userInput) "RAVMravm"
-      then do
-        let isStroop = (toLower state.currentWord) /= state.currentColor
-        let timeTaken = case state.startTime of
-                          Just startTime -> cTime - startTime
-                          Nothing -> 0.0
-
-        if userInput == firstLetter state.currentColor
+    responded <- H.gets _.responded
+    if responded
+      then pure unit
+      else do
+        H.liftEffect $ preventDefault $ KE.toEvent event
+        let userInput = key event
+        if contains (Pattern userInput) "RAVMravm"
           then do
-            H.modify_ _ { score = state.score + 1
-                        , totalTrials = state.totalTrials + 1
-                        , showFeedback = true
-                        , feedbackMessage = "Correcto"
-                        , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
-                        , stroopStimuli = if isStroop then state.stroopStimuli + 1 else state.stroopStimuli
-                        , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
-                        , nonStroopStimuli = if isStroop then state.nonStroopStimuli else state.nonStroopStimuli + 1
-                        }
-          else do
-            H.modify_ _ { totalTrials = state.totalTrials + 1
-                        , showFeedback = true
-                        , feedbackMessage = "Incorrecto"
-                        , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
-                        , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
-                        , stroopErrors = if isStroop then state.stroopErrors + 1 else state.stroopErrors
-                        , nonStroopErrors = if isStroop then state.nonStroopErrors else state.nonStroopErrors + 1
-                        }
-        H.liftAff $ H.liftAff $ delay $ Milliseconds 1000.0
-        handleAction NextTrial
-      else pure unit
+            H.modify_ _ { responded = true }
+            state <- H.get
+            currentTime <- H.liftEffect now
+            let cTime = unInst currentTime
+            let isStroop = state.currentWord /= state.currentColor
+            let timeTaken = case state.startTime of
+                              Just startTime -> cTime - startTime
+                              Nothing -> 0.0
+
+            if userInput == firstLetter state.currentColor
+              then do
+                H.modify_ _ { score = state.score + 1
+                            , totalTrials = state.totalTrials + 1
+                            , showFeedback = true
+                            , feedbackMessage = "Correcto"
+                            , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
+                            , stroopStimuli = if isStroop then state.stroopStimuli + 1 else state.stroopStimuli
+                            , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
+                            , nonStroopStimuli = if isStroop then state.nonStroopStimuli else state.nonStroopStimuli + 1
+                            }
+              else do
+                H.modify_ _ { totalTrials = state.totalTrials + 1
+                            , showFeedback = true
+                            , feedbackMessage = "Incorrecto"
+                            , stroopTime = if isStroop then state.stroopTime + timeTaken else state.stroopTime
+                            , nonStroopTime = if isStroop then state.nonStroopTime else state.nonStroopTime + timeTaken
+                            , stroopErrors = if isStroop then state.stroopErrors + 1 else state.stroopErrors
+                            , nonStroopErrors = if isStroop then state.nonStroopErrors else state.nonStroopErrors + 1
+                            }
+            H.liftAff $ H.liftAff $ delay $ Milliseconds 150.0
+            handleAction NextTrial
+          else pure unit
 
   NextTrial -> do
     state <- H.get
-    if state.totalTrials >= 5
+    if state.totalTrials >= 20
       then H.modify_ _ { stage = StroopDone }
       else do
         wordIndex <- H.liftEffect randomIndex
@@ -202,6 +209,7 @@ handleAction = case _ of
                     , currentColor = newColor
                     , showFeedback = false
                     , startTime = Just $ unInst startTime
+                    , responded = false
                     }
 
   SubmitResults -> do
