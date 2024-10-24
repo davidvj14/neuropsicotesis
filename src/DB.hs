@@ -64,20 +64,33 @@ Barrat
 
 GoNoGo
     p_id ParticipantesId
+    comissionErrors Int
+    omissionErrors Int
+    responseTime Int
     Primary p_id
     deriving Show
 
+Stroop
+    p_id ParticipantesId
+    stroopTime Int
+    stroopStimuli Int
+    stroopErrors Int
+    nonStroopTime Int
+    nonStroopStimuli Int
+    nonStroopErrors Int
+    Primary p_id
+    deriving Show
 
 Wisconsin
     p_id ParticipantesId
-    sorting_score Int
+    score Int
     errors Int
     perseverations Int
     deferred Int
     merrors Int
-    sorting_ttf Int
+    ttf Double
     tae Double
-    game_time Int
+    time Double
     attempts [Int]
     
     Primary p_id

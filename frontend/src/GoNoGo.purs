@@ -2,6 +2,10 @@ module GoNoGo where
 
 import Prelude
 
+import Affjax.RequestBody as RequestBody
+import Affjax.ResponseFormat as ResponseFormat
+import Affjax.Web as AX
+import Data.Argonaut (encodeJson)
 import Data.Array (length, snoc)
 import Data.Array as Array
 import Data.DateTime.Instant (unInstant)
@@ -10,6 +14,7 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (Milliseconds(..), delay)
 import Effect.Aff.Class (class MonadAff)
+import Effect.Class.Console (log)
 import Effect.Now (now)
 import Effect.Random (randomInt)
 import Halogen as H
@@ -17,6 +22,8 @@ import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Web.Event.Event (Event, preventDefault)
+import Web.HTML (window)
+import Web.HTML.Window (alert)
 import Web.UIEvent.MouseEvent as ME
 
 type State =
@@ -65,7 +72,6 @@ type Result =
   { comissionErrors :: Int
   , omissionErrors :: Int
   , responseTime :: Number
-  , averageResponseTime :: Number
   }
 
 type Results =
@@ -213,7 +219,12 @@ goNoGoHandler = case _ of
                else H.modify_ \s -> s { responses = snoc s.responses response }
           Nothing -> pure unit
   PreventDefault ev -> H.liftEffect $ preventDefault ev
-  GoNoGoCompleteRaiser -> H.raise GoNoGoComplete
+  GoNoGoCompleteRaiser -> do
+     responses <- H.gets _.responses
+     let results = computeResult responses
+     serverResponse <- H.liftAff $ AX.post ResponseFormat.ignore "/gonogo"
+      (Just $ RequestBody.Json $ encodeJson results)
+     H.raise GoNoGoComplete
 
 runPracticeSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runPracticeSession = do
@@ -258,13 +269,11 @@ computeResult responses =
   { comissionErrors: countComission
   , omissionErrors: countOmission
   , responseTime: totalResponseTime
-  , averageResponseTime: avgRespTime
   }
   where
     countComission = length $ filter (\response -> response.stimulus == NoGo && response.responded) responses
     countOmission = length $ filter (\response -> response.stimulus == Go && (not response.responded)) responses
     totalResponseTime = sum (map _.responseTime responses)
-    avgRespTime = totalResponseTime / toNumber (length responses)
 
 filter :: forall a. (a -> Boolean) -> Array a -> Array a
 filter pred arr = arr # Array.filter pred

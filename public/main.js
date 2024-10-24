@@ -107,10 +107,10 @@
   };
   var applySecond = function(dictApply) {
     var apply1 = apply(dictApply);
-    var map26 = map(dictApply.Functor0());
+    var map27 = map(dictApply.Functor0());
     return function(a2) {
       return function(b2) {
-        return apply1(map26($$const(identity2))(a2))(b2);
+        return apply1(map27($$const(identity2))(a2))(b2);
       };
     };
   };
@@ -315,13 +315,32 @@
       return x * y | 0;
     };
   };
+  var numAdd = function(n1) {
+    return function(n2) {
+      return n1 + n2;
+    };
+  };
+  var numMul = function(n1) {
+    return function(n2) {
+      return n1 * n2;
+    };
+  };
 
   // output/Data.Semiring/index.js
+  var semiringNumber = {
+    add: numAdd,
+    zero: 0,
+    mul: numMul,
+    one: 1
+  };
   var semiringInt = {
     add: intAdd,
     zero: 0,
     mul: intMul,
     one: 1
+  };
+  var add = function(dict) {
+    return dict.add;
   };
 
   // output/Data.Ring/index.js
@@ -1071,10 +1090,10 @@
   var $$try = function(dictMonadError) {
     var catchError1 = catchError(dictMonadError);
     var Monad0 = dictMonadError.MonadThrow0().Monad0();
-    var map26 = map(Monad0.Bind1().Apply0().Functor0());
+    var map27 = map(Monad0.Bind1().Apply0().Functor0());
     var pure19 = pure(Monad0.Applicative0());
     return function(a2) {
-      return catchError1(map26(Right.create)(a2))(function($52) {
+      return catchError1(map27(Right.create)(a2))(function($52) {
         return pure19(Left.create($52));
       });
     };
@@ -1728,6 +1747,9 @@
     l1[i2] = a2;
     return just(l1);
   };
+  var filterImpl = function(f, xs) {
+    return xs.filter(f);
+  };
   var sliceImpl = function(s, e, l) {
     return l.slice(s, e);
   };
@@ -2015,7 +2037,7 @@
       };
     }
     return function(apply3) {
-      return function(map26) {
+      return function(map27) {
         return function(pure19) {
           return function(f) {
             return function(array) {
@@ -2024,14 +2046,14 @@
                   case 0:
                     return pure19([]);
                   case 1:
-                    return map26(array1)(f(array[bot]));
+                    return map27(array1)(f(array[bot]));
                   case 2:
-                    return apply3(map26(array2)(f(array[bot])))(f(array[bot + 1]));
+                    return apply3(map27(array2)(f(array[bot])))(f(array[bot + 1]));
                   case 3:
-                    return apply3(apply3(map26(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
+                    return apply3(apply3(map27(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
                   default:
                     var pivot = bot + Math.floor((top3 - bot) / 4) * 2;
-                    return apply3(map26(concat2)(go2(bot, pivot)))(go2(pivot, top3));
+                    return apply3(map27(concat2)(go2(bot, pivot)))(go2(pivot, top3));
                 }
               }
               return go2(0, array.length);
@@ -2109,6 +2131,7 @@
   var findIndex = /* @__PURE__ */ function() {
     return runFn4(findIndexImpl)(Just.create)(Nothing.value);
   }();
+  var filter = /* @__PURE__ */ runFn2(filterImpl);
   var drop = function(n) {
     return function(xs) {
       var $173 = n < 1;
@@ -8733,9 +8756,24 @@
   var bind5 = /* @__PURE__ */ bind(bindHalogenM);
   var modify_5 = /* @__PURE__ */ modify_2(monadStateHalogenM);
   var discard4 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var map18 = /* @__PURE__ */ map(functorArray);
   var gets4 = /* @__PURE__ */ gets(monadStateHalogenM);
   var pure12 = /* @__PURE__ */ pure(applicativeHalogenM);
   var get4 = /* @__PURE__ */ get(monadStateHalogenM);
+  var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
+  var encodeJson3 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons(encodeJsonJNumber)(gEncodeJsonNil)({
+    reflectSymbol: function() {
+      return "responseTime";
+    }
+  })())({
+    reflectSymbol: function() {
+      return "omissionErrors";
+    }
+  })())({
+    reflectSymbol: function() {
+      return "comissionErrors";
+    }
+  })())());
   var Go = /* @__PURE__ */ function() {
     function Go2() {
     }
@@ -8847,6 +8885,7 @@
     GoNoGoCompleteRaiser2.value = new GoNoGoCompleteRaiser2();
     return GoNoGoCompleteRaiser2;
   }();
+  var sum2 = /* @__PURE__ */ foldl2(/* @__PURE__ */ add(semiringNumber))(0);
   var replicateM_ = function(dictMonad) {
     var pure23 = pure(dictMonad.Applicative0());
     var applySecond2 = applySecond(dictMonad.Bind1().Apply0());
@@ -8889,13 +8928,13 @@
             return div_([]);
           }
           ;
-          throw new Error("Failed pattern match at GoNoGo (line 150, column 12 - line 157, column 33): " + [state3.currentStimulus.constructor.name]);
+          throw new Error("Failed pattern match at GoNoGo (line 156, column 12 - line 163, column 33): " + [state3.currentStimulus.constructor.name]);
         }
         ;
         return div2([class_("fixation-cross")])([text("+")]);
       }(), function() {
-        var $83 = isPractice && state3.showResult;
-        if ($83) {
+        var $100 = isPractice && state3.showResult;
+        if ($100) {
           return renderResult(state3.message);
         }
         ;
@@ -8932,13 +8971,13 @@
         return renderComplete;
       }
       ;
-      throw new Error("Failed pattern match at GoNoGo (line 105, column 7 - line 111, column 35): " + [state3.stage.constructor.name]);
+      throw new Error("Failed pattern match at GoNoGo (line 111, column 7 - line 117, column 35): " + [state3.stage.constructor.name]);
     }()]);
   };
   var randomStimulus = function __do2() {
     var n = randomInt(0)(1)();
-    var $85 = n === 0;
-    if ($85) {
+    var $102 = n === 0;
+    if ($102) {
       return Go.value;
     }
     ;
@@ -8952,20 +8991,20 @@
     return bind5(liftEffect7(randomStimulus))(function(stim) {
       return bind5(liftEffect7(nowToNumber))(function(now2) {
         return modify_5(function(v) {
-          var $87 = {};
-          for (var $88 in v) {
-            if ({}.hasOwnProperty.call(v, $88)) {
-              $87[$88] = v[$88];
+          var $104 = {};
+          for (var $105 in v) {
+            if ({}.hasOwnProperty.call(v, $105)) {
+              $104[$105] = v[$105];
             }
             ;
           }
           ;
-          $87.currentStimulus = new Just(stim);
-          $87.showStimulus = true;
-          $87.lastTimer = now2;
-          $87.showResult = false;
-          $87.responded = false;
-          return $87;
+          $104.currentStimulus = new Just(stim);
+          $104.showStimulus = true;
+          $104.lastTimer = now2;
+          $104.showResult = false;
+          $104.responded = false;
+          return $104;
         });
       });
     });
@@ -8985,16 +9024,16 @@
   };
   var hideStimulus = function(dictMonadAff) {
     return modify_5(function(v) {
-      var $90 = {};
-      for (var $91 in v) {
-        if ({}.hasOwnProperty.call(v, $91)) {
-          $90[$91] = v[$91];
+      var $107 = {};
+      for (var $108 in v) {
+        if ({}.hasOwnProperty.call(v, $108)) {
+          $107[$108] = v[$108];
         }
         ;
       }
       ;
-      $90.showStimulus = false;
-      return $90;
+      $107.showStimulus = false;
+      return $107;
     });
   };
   var runTestSession = function(dictMonadAff) {
@@ -9008,18 +9047,23 @@
       });
     })))(function() {
       return modify_5(function(v) {
-        var $93 = {};
-        for (var $94 in v) {
-          if ({}.hasOwnProperty.call(v, $94)) {
-            $93[$94] = v[$94];
+        var $110 = {};
+        for (var $111 in v) {
+          if ({}.hasOwnProperty.call(v, $111)) {
+            $110[$111] = v[$111];
           }
           ;
         }
         ;
-        $93.stage = Complete.value;
-        return $93;
+        $110.stage = Complete.value;
+        return $110;
       });
     });
+  };
+  var filter3 = function(pred2) {
+    return function(arr) {
+      return filter(pred2)(arr);
+    };
   };
   var eqStimulus = {
     eq: function(x) {
@@ -9069,6 +9113,22 @@
     }
   };
   var eq22 = /* @__PURE__ */ eq(eqGoNoGoStage);
+  var computeResult = function(responses) {
+    var totalResponseTime = sum2(map18(function(v) {
+      return v.responseTime;
+    })(responses));
+    var countOmission = length(filter3(function(response) {
+      return eq12(response.stimulus)(Go.value) && !response.responded;
+    })(responses));
+    var countComission = length(filter3(function(response) {
+      return eq12(response.stimulus)(NoGo.value) && response.responded;
+    })(responses));
+    return {
+      comissionErrors: countComission,
+      omissionErrors: countOmission,
+      responseTime: totalResponseTime
+    };
+  };
   var runPracticeSession = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     var hideStimulus1 = hideStimulus(dictMonadAff);
@@ -9080,16 +9140,16 @@
       });
     })))(function() {
       return discard4(modify_5(function(v) {
-        var $100 = {};
-        for (var $101 in v) {
-          if ({}.hasOwnProperty.call(v, $101)) {
-            $100[$101] = v[$101];
+        var $117 = {};
+        for (var $118 in v) {
+          if ({}.hasOwnProperty.call(v, $118)) {
+            $117[$118] = v[$118];
           }
           ;
         }
         ;
-        $100.stage = TestMessage.value;
-        return $100;
+        $117.stage = TestMessage.value;
+        return $117;
       }))(function() {
         return discard4(liftAff3(delay(2e3)))(function() {
           return goNoGoHandler(dictMonadAff)(StartTest.value);
@@ -9104,16 +9164,16 @@
     return function(v) {
       if (v instanceof GoNoGoInstructionsDone) {
         return discard4(modify_5(function(v1) {
-          var $104 = {};
-          for (var $105 in v1) {
-            if ({}.hasOwnProperty.call(v1, $105)) {
-              $104[$105] = v1[$105];
+          var $121 = {};
+          for (var $122 in v1) {
+            if ({}.hasOwnProperty.call(v1, $122)) {
+              $121[$122] = v1[$122];
             }
             ;
           }
           ;
-          $104.stage = PrepareMessage.value;
-          return $104;
+          $121.stage = PrepareMessage.value;
+          return $121;
         }))(function() {
           return discard4(liftAff3(delay(1e3)))(function() {
             return goNoGoHandler(dictMonadAff)(StartPractice.value);
@@ -9123,16 +9183,16 @@
       ;
       if (v instanceof StartPractice) {
         return discard4(modify_5(function(v1) {
-          var $107 = {};
-          for (var $108 in v1) {
-            if ({}.hasOwnProperty.call(v1, $108)) {
-              $107[$108] = v1[$108];
+          var $124 = {};
+          for (var $125 in v1) {
+            if ({}.hasOwnProperty.call(v1, $125)) {
+              $124[$125] = v1[$125];
             }
             ;
           }
           ;
-          $107.stage = PracticeSession.value;
-          return $107;
+          $124.stage = PracticeSession.value;
+          return $124;
         }))(function() {
           return runPracticeSession(dictMonadAff);
         });
@@ -9140,17 +9200,17 @@
       ;
       if (v instanceof StartTest) {
         return discard4(modify_5(function(v1) {
-          var $110 = {};
-          for (var $111 in v1) {
-            if ({}.hasOwnProperty.call(v1, $111)) {
-              $110[$111] = v1[$111];
+          var $127 = {};
+          for (var $128 in v1) {
+            if ({}.hasOwnProperty.call(v1, $128)) {
+              $127[$128] = v1[$128];
             }
             ;
           }
           ;
-          $110.stage = GoNoGoTest.value;
-          $110.showResult = false;
-          return $110;
+          $127.stage = GoNoGoTest.value;
+          $127.showResult = false;
+          return $127;
         }))(function() {
           return runTestSession1;
         });
@@ -9168,16 +9228,16 @@
             return bind5(liftEffect7(nowToNumber))(function(now2) {
               return bind5(get4)(function(state3) {
                 return discard4(modify_5(function(v1) {
-                  var $114 = {};
-                  for (var $115 in v1) {
-                    if ({}.hasOwnProperty.call(v1, $115)) {
-                      $114[$115] = v1[$115];
+                  var $131 = {};
+                  for (var $132 in v1) {
+                    if ({}.hasOwnProperty.call(v1, $132)) {
+                      $131[$132] = v1[$132];
                     }
                     ;
                   }
                   ;
-                  $114.responded = true;
-                  return $114;
+                  $131.responded = true;
+                  return $131;
                 }))(function() {
                   if (state3.currentStimulus instanceof Just) {
                     var response = {
@@ -9185,42 +9245,42 @@
                       responded: true,
                       responseTime: now2 - state3.lastTimer
                     };
-                    var $118 = eq22(state3.stage)(PracticeSession.value);
-                    if ($118) {
+                    var $135 = eq22(state3.stage)(PracticeSession.value);
+                    if ($135) {
                       return modify_5(function(s) {
-                        var $120 = {};
-                        for (var $121 in s) {
-                          if ({}.hasOwnProperty.call(s, $121)) {
-                            $120[$121] = s[$121];
+                        var $137 = {};
+                        for (var $138 in s) {
+                          if ({}.hasOwnProperty.call(s, $138)) {
+                            $137[$138] = s[$138];
                           }
                           ;
                         }
                         ;
-                        $120.practiceResponses = snoc(s.practiceResponses)(response);
-                        $120.showResult = true;
-                        $120.message = function() {
-                          var $119 = eq12(state3.currentStimulus.value0)(Go.value);
-                          if ($119) {
+                        $137.practiceResponses = snoc(s.practiceResponses)(response);
+                        $137.showResult = true;
+                        $137.message = function() {
+                          var $136 = eq12(state3.currentStimulus.value0)(Go.value);
+                          if ($136) {
                             return "Correcto";
                           }
                           ;
                           return "Incorrecto";
                         }();
-                        return $120;
+                        return $137;
                       });
                     }
                     ;
                     return modify_5(function(s) {
-                      var $123 = {};
-                      for (var $124 in s) {
-                        if ({}.hasOwnProperty.call(s, $124)) {
-                          $123[$124] = s[$124];
+                      var $140 = {};
+                      for (var $141 in s) {
+                        if ({}.hasOwnProperty.call(s, $141)) {
+                          $140[$141] = s[$141];
                         }
                         ;
                       }
                       ;
-                      $123.responses = snoc(s.responses)(response);
-                      return $123;
+                      $140.responses = snoc(s.responses)(response);
+                      return $140;
                     });
                   }
                   ;
@@ -9228,7 +9288,7 @@
                     return pure12(unit);
                   }
                   ;
-                  throw new Error("Failed pattern match at GoNoGo (line 205, column 9 - line 214, column 31): " + [state3.currentStimulus.constructor.name]);
+                  throw new Error("Failed pattern match at GoNoGo (line 211, column 9 - line 220, column 31): " + [state3.currentStimulus.constructor.name]);
                 });
               });
             });
@@ -9241,10 +9301,17 @@
       }
       ;
       if (v instanceof GoNoGoCompleteRaiser) {
-        return raise(GoNoGoComplete.value);
+        return bind5(gets4(function(v1) {
+          return v1.responses;
+        }))(function(responses) {
+          var results = computeResult(responses);
+          return bind5(liftAff3(post2(ignore)("/gonogo")(new Just(new Json(encodeJson3(results))))))(function(serverResponse) {
+            return raise(GoNoGoComplete.value);
+          });
+        });
       }
       ;
-      throw new Error("Failed pattern match at GoNoGo (line 185, column 17 - line 216, column 49): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at GoNoGo (line 191, column 17 - line 227, column 28): " + [v.constructor.name]);
     };
   };
   var component = function(dictMonadAff) {
@@ -9270,11 +9337,11 @@
   var append6 = /* @__PURE__ */ append(semigroupArray);
   var type_7 = /* @__PURE__ */ type_3(isPropInputType);
   var value7 = /* @__PURE__ */ value3(isPropString);
-  var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
+  var gEncodeJsonCons4 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
   var gEncodeJsonCons1 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJString));
   var gEncodeJsonCons22 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJBoolean);
   var gEncodeJsonCons32 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonInt));
-  var gEncodeJsonCons4 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJNumber));
+  var gEncodeJsonCons42 = /* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJNumber));
   var discard5 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
   var traverse_4 = /* @__PURE__ */ traverse_(applicativeHalogenM)(foldableArray);
   var Submitted = /* @__PURE__ */ function() {
@@ -9854,7 +9921,7 @@
       code: ""
     };
   };
-  var formToJSON = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJBoolean))(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons(encodeJsonJString)(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons4(gEncodeJsonNil)({
+  var formToJSON = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJBoolean))(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons(encodeJsonJString)(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons42(/* @__PURE__ */ gEncodeJsonCons42(gEncodeJsonNil)({
     reflectSymbol: function() {
       return "smokingYears";
     }
@@ -10227,9 +10294,9 @@
   }
 
   // output/Web.DOM.NonElementParentNode/index.js
-  var map18 = /* @__PURE__ */ map(functorEffect);
+  var map19 = /* @__PURE__ */ map(functorEffect);
   var getElementById = function(eid) {
-    var $2 = map18(toMaybe);
+    var $2 = map19(toMaybe);
     var $3 = _getElementById(eid);
     return function($4) {
       return $2($3($4));
@@ -10285,11 +10352,11 @@
   };
 
   // output/Web.HTML.HTMLDocument/index.js
-  var map19 = /* @__PURE__ */ map(functorEffect);
+  var map20 = /* @__PURE__ */ map(functorEffect);
   var toParentNode = unsafeCoerce2;
   var toDocument = unsafeCoerce2;
   var readyState = function(doc) {
-    return map19(function() {
+    return map20(function() {
       var $4 = fromMaybe(Loading.value);
       return function($5) {
         return $4(parse($5));
@@ -10348,7 +10415,7 @@
   var liftAff2 = /* @__PURE__ */ liftAff(monadAffAff);
   var gEncodeJsonCons5 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
   var gEncodeJsonCons12 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJNumber);
-  var encodeJson3 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons12(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons12(gEncodeJsonNil)({
+  var encodeJson4 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons12(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons5(/* @__PURE__ */ gEncodeJsonCons12(gEncodeJsonNil)({
     reflectSymbol: function() {
       return "stroopTime";
     }
@@ -10706,7 +10773,7 @@
             stroopErrors: state3.stroopErrors,
             nonStroopErrors: state3.nonStroopErrors
           };
-          return bind7(liftAff1(post2(ignore)("/stroop")(new Just(new Json(encodeJson3(results))))))(function(response) {
+          return bind7(liftAff1(post2(ignore)("/stroop")(new Just(new Json(encodeJson4(results))))))(function(response) {
             if (response instanceof Left) {
               return raise(StroopDoneOut.value);
             }
@@ -10798,7 +10865,7 @@
   var show5 = /* @__PURE__ */ show(showInt);
   var gEncodeJsonCons6 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
   var gEncodeJsonCons13 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJNumber);
-  var encodeJson4 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons13(/* @__PURE__ */ gEncodeJsonCons13(/* @__PURE__ */ gEncodeJsonCons13(gEncodeJsonNil)({
+  var encodeJson5 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonArray(encodeJsonInt))(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons6(/* @__PURE__ */ gEncodeJsonCons13(/* @__PURE__ */ gEncodeJsonCons13(/* @__PURE__ */ gEncodeJsonCons13(gEncodeJsonNil)({
     reflectSymbol: function() {
       return "totalTime";
     }
@@ -10829,6 +10896,10 @@
   })())({
     reflectSymbol: function() {
       return "deferredPerseverations";
+    }
+  })())({
+    reflectSymbol: function() {
+      return "criterionAttempts";
     }
   })())());
   var identity10 = /* @__PURE__ */ identity(categoryFn);
@@ -11013,12 +11084,15 @@
     return Red2;
   }();
   var WisconsinDone = /* @__PURE__ */ function() {
-    function WisconsinDone2(value0) {
+    function WisconsinDone2(value0, value1) {
       this.value0 = value0;
+      this.value1 = value1;
     }
     ;
     WisconsinDone2.create = function(value0) {
-      return new WisconsinDone2(value0);
+      return function(value1) {
+        return new WisconsinDone2(value0, value1);
+      };
     };
     return WisconsinDone2;
   }();
@@ -11097,29 +11171,29 @@
   var timerShowIncorrect = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     return discard7(modify_8(function(state3) {
-      var $177 = {};
-      for (var $178 in state3) {
-        if ({}.hasOwnProperty.call(state3, $178)) {
-          $177[$178] = state3[$178];
+      var $190 = {};
+      for (var $191 in state3) {
+        if ({}.hasOwnProperty.call(state3, $191)) {
+          $190[$191] = state3[$191];
         }
         ;
       }
       ;
-      $177.showIncorrect = true;
-      return $177;
+      $190.showIncorrect = true;
+      return $190;
     }))(function() {
       return discard7(liftAff3(delay(500)))(function() {
         return modify_8(function(state3) {
-          var $180 = {};
-          for (var $181 in state3) {
-            if ({}.hasOwnProperty.call(state3, $181)) {
-              $180[$181] = state3[$181];
+          var $193 = {};
+          for (var $194 in state3) {
+            if ({}.hasOwnProperty.call(state3, $194)) {
+              $193[$194] = state3[$194];
             }
             ;
           }
           ;
-          $180.showIncorrect = false;
-          return $180;
+          $193.showIncorrect = false;
+          return $193;
         });
       });
     });
@@ -11139,7 +11213,7 @@
           return [];
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 144, column 5 - line 151, column 23): " + [mbCard.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 147, column 5 - line 154, column 23): " + [mbCard.constructor.name]);
       }());
     };
   };
@@ -11170,7 +11244,8 @@
     deferredPerseverations: 0,
     timeToFirst: 0,
     timeAfterError: 0,
-    totalTime: 0
+    totalTime: 0,
+    criterionAttempts: []
   };
   var eqCriterion = {
     eq: function(x) {
@@ -11264,7 +11339,7 @@
             return eq13(v.value0)(v1.value0) || eq13(v.value0)(v1.value1);
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 330, column 5 - line 333, column 48): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 364, column 5 - line 367, column 48): " + [v1.constructor.name]);
         }
         ;
         if (v instanceof TwoErr) {
@@ -11280,10 +11355,10 @@
             return eq13(v.value0)(v1.value0) || (eq13(v.value0)(v1.value1) || (eq13(v.value1)(v1.value0) || eq13(v.value1)(v1.value1)));
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 335, column 5 - line 338, column 72): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 369, column 5 - line 372, column 72): " + [v1.constructor.name]);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 326, column 1 - line 338, column 72): " + [v.constructor.name, v1.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 360, column 1 - line 372, column 72): " + [v.constructor.name, v1.constructor.name]);
       };
     }
   };
@@ -11375,38 +11450,39 @@
       return v.score;
     }))(function(score) {
       return when2(mod2(score)(10) === 0)(modify_8(function(state3) {
-        var $218 = {};
-        for (var $219 in state3) {
-          if ({}.hasOwnProperty.call(state3, $219)) {
-            $218[$219] = state3[$219];
+        var $231 = {};
+        for (var $232 in state3) {
+          if ({}.hasOwnProperty.call(state3, $232)) {
+            $231[$232] = state3[$232];
           }
           ;
         }
         ;
-        $218.currentCriterion = unsafeIndex2(criteria)(div3(score)(10));
-        return $218;
+        $231.currentCriterion = unsafeIndex2(criteria)(div3(score)(10));
+        $231.foundCriterion = false;
+        return $231;
       }));
     });
   };
   var compareForError = function(c1) {
     return function(c2) {
       var matches2 = append12(function() {
-        var $221 = eq23(c1.shape)(c2.shape);
-        if ($221) {
+        var $234 = eq23(c1.shape)(c2.shape);
+        if ($234) {
           return [Shape.value];
         }
         ;
         return [];
       }())(append12(function() {
-        var $222 = eq6(c1.color)(c2.color);
-        if ($222) {
+        var $235 = eq6(c1.color)(c2.color);
+        if ($235) {
           return [Color.value];
         }
         ;
         return [];
       }())(function() {
-        var $223 = eq3(c1.number)(c2.number);
-        if ($223) {
+        var $236 = eq3(c1.number)(c2.number);
+        if ($236) {
           return [$$Number.value];
         }
         ;
@@ -11442,103 +11518,182 @@
             return v.lastTimer;
           }))(function(timerOld) {
             return bind8(liftEffect7(nowToNumber2))(function(timerNew) {
-              var time4 = timerNew - timerOld;
-              var updateState = function(grade) {
-                return modify_8(function(state3) {
-                  var $225 = {};
-                  for (var $226 in state3) {
-                    if ({}.hasOwnProperty.call(state3, $226)) {
-                      $225[$226] = state3[$226];
+              return bind8(gets7(function(v) {
+                return v.currentAttempts;
+              }))(function(currentAttempts) {
+                return bind8(gets7(function(v) {
+                  return v.criterionAttempts;
+                }))(function(criterionAttempts) {
+                  return bind8(gets7(function(v) {
+                    return v.foundCriterion;
+                  }))(function(foundCriterion) {
+                    var time4 = timerNew - timerOld;
+                    var updateState = function(grade) {
+                      return modify_8(function(state3) {
+                        var $238 = {};
+                        for (var $239 in state3) {
+                          if ({}.hasOwnProperty.call(state3, $239)) {
+                            $238[$239] = state3[$239];
+                          }
+                          ;
+                        }
+                        ;
+                        $238.answers = snoc(state3.answers)({
+                          grade,
+                          timeTaken: time4
+                        });
+                        $238.currentAttempts = state3.currentAttempts + 1 | 0;
+                        return $238;
+                      });
+                    };
+                    if (currentCriterion instanceof Shape) {
+                      var $242 = eq23(currentCard.shape)(critCard.shape);
+                      if ($242) {
+                        return discard7(updateState(Correct.value))(function() {
+                          return discard7(modify_8(function(state3) {
+                            var $244 = {};
+                            for (var $245 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $245)) {
+                                $244[$245] = state3[$245];
+                              }
+                              ;
+                            }
+                            ;
+                            $244.score = state3.score + 1 | 0;
+                            $244.currentAttempts = 0;
+                            $244.criterionAttempts = function() {
+                              if (foundCriterion) {
+                                return state3.criterionAttempts;
+                              }
+                              ;
+                              return snoc(criterionAttempts)(currentAttempts + 1 | 0);
+                            }();
+                            $244.foundCriterion = true;
+                            return $244;
+                          }))(function() {
+                            return pure13(true);
+                          });
+                        });
+                      }
+                      ;
+                      return discard7(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
+                        return discard7(modify_8(function(state3) {
+                          var $247 = {};
+                          for (var $248 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $248)) {
+                              $247[$248] = state3[$248];
+                            }
+                            ;
+                          }
+                          ;
+                          $247.currentAttempts = currentAttempts + 1 | 0;
+                          return $247;
+                        }))(function() {
+                          return pure13(false);
+                        });
+                      });
                     }
                     ;
-                  }
-                  ;
-                  $225.answers = snoc(state3.answers)({
-                    grade,
-                    timeTaken: time4
-                  });
-                  return $225;
-                });
-              };
-              if (currentCriterion instanceof Shape) {
-                var $229 = eq23(currentCard.shape)(critCard.shape);
-                if ($229) {
-                  return discard7(updateState(Correct.value))(function() {
-                    return discard7(modify_8(function(state3) {
-                      var $230 = {};
-                      for (var $231 in state3) {
-                        if ({}.hasOwnProperty.call(state3, $231)) {
-                          $230[$231] = state3[$231];
-                        }
-                        ;
+                    if (currentCriterion instanceof Color) {
+                      var $250 = eq6(currentCard.color)(critCard.color);
+                      if ($250) {
+                        return discard7(updateState(Correct.value))(function() {
+                          return discard7(modify_8(function(state3) {
+                            var $252 = {};
+                            for (var $253 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $253)) {
+                                $252[$253] = state3[$253];
+                              }
+                              ;
+                            }
+                            ;
+                            $252.score = state3.score + 1 | 0;
+                            $252.currentAttempts = 0;
+                            $252.criterionAttempts = function() {
+                              if (foundCriterion) {
+                                return state3.criterionAttempts;
+                              }
+                              ;
+                              return snoc(criterionAttempts)(currentAttempts + 1 | 0);
+                            }();
+                            $252.foundCriterion = true;
+                            return $252;
+                          }))(function() {
+                            return pure13(true);
+                          });
+                        });
                       }
                       ;
-                      $230.score = state3.score + 1 | 0;
-                      return $230;
-                    }))(function() {
-                      return pure13(true);
-                    });
-                  });
-                }
-                ;
-                return discard7(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
-                  return pure13(false);
-                });
-              }
-              ;
-              if (currentCriterion instanceof Color) {
-                var $233 = eq6(currentCard.color)(critCard.color);
-                if ($233) {
-                  return discard7(updateState(Correct.value))(function() {
-                    return discard7(modify_8(function(state3) {
-                      var $234 = {};
-                      for (var $235 in state3) {
-                        if ({}.hasOwnProperty.call(state3, $235)) {
-                          $234[$235] = state3[$235];
-                        }
-                        ;
+                      return discard7(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
+                        return discard7(modify_8(function(state3) {
+                          var $255 = {};
+                          for (var $256 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $256)) {
+                              $255[$256] = state3[$256];
+                            }
+                            ;
+                          }
+                          ;
+                          $255.currentAttempts = currentAttempts + 1 | 0;
+                          return $255;
+                        }))(function() {
+                          return pure13(false);
+                        });
+                      });
+                    }
+                    ;
+                    if (currentCriterion instanceof $$Number) {
+                      var $258 = eq3(currentCard.number)(critCard.number);
+                      if ($258) {
+                        return discard7(updateState(Correct.value))(function() {
+                          return discard7(modify_8(function(state3) {
+                            var $260 = {};
+                            for (var $261 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $261)) {
+                                $260[$261] = state3[$261];
+                              }
+                              ;
+                            }
+                            ;
+                            $260.score = state3.score + 1 | 0;
+                            $260.currentAttempts = 0;
+                            $260.criterionAttempts = function() {
+                              if (foundCriterion) {
+                                return state3.criterionAttempts;
+                              }
+                              ;
+                              return snoc(criterionAttempts)(currentAttempts + 1 | 0);
+                            }();
+                            $260.foundCriterion = true;
+                            return $260;
+                          }))(function() {
+                            return pure13(true);
+                          });
+                        });
                       }
                       ;
-                      $234.score = state3.score + 1 | 0;
-                      return $234;
-                    }))(function() {
-                      return pure13(true);
-                    });
+                      return discard7(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
+                        return discard7(modify_8(function(state3) {
+                          var $263 = {};
+                          for (var $264 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $264)) {
+                              $263[$264] = state3[$264];
+                            }
+                            ;
+                          }
+                          ;
+                          $263.currentAttempts = currentAttempts + 1 | 0;
+                          return $263;
+                        }))(function() {
+                          return pure13(false);
+                        });
+                      });
+                    }
+                    ;
+                    throw new Error("Failed pattern match at Wisconsin (line 209, column 3 - line 260, column 25): " + [currentCriterion.constructor.name]);
                   });
-                }
-                ;
-                return discard7(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
-                  return pure13(false);
                 });
-              }
-              ;
-              if (currentCriterion instanceof $$Number) {
-                var $237 = eq3(currentCard.number)(critCard.number);
-                if ($237) {
-                  return discard7(updateState(Correct.value))(function() {
-                    return discard7(modify_8(function(state3) {
-                      var $238 = {};
-                      for (var $239 in state3) {
-                        if ({}.hasOwnProperty.call(state3, $239)) {
-                          $238[$239] = state3[$239];
-                        }
-                        ;
-                      }
-                      ;
-                      $238.score = state3.score + 1 | 0;
-                      return $238;
-                    }))(function() {
-                      return pure13(true);
-                    });
-                  });
-                }
-                ;
-                return discard7(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
-                  return pure13(false);
-                });
-              }
-              ;
-              throw new Error("Failed pattern match at Wisconsin (line 201, column 3 - line 228, column 25): " + [currentCriterion.constructor.name]);
+              });
             });
           });
         });
@@ -11561,10 +11716,10 @@
           return eq5(v.value0.grade)(grade);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 373, column 17 - line 375, column 42): " + [v.value0.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 407, column 17 - line 409, column 42): " + [v.value0.grade.constructor.name]);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 371, column 3 - line 375, column 42): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 405, column 3 - line 409, column 42): " + [v.constructor.name]);
     };
   };
   var checkForMaintenanceError = function(last4) {
@@ -11609,6 +11764,7 @@
     return function(last4) {
       return function(answer) {
         var result$prime = {
+          criterionAttempts: result.criterionAttempts,
           deferredPerseverations: result.deferredPerseverations,
           errors: result.errors,
           maintenanceErrors: result.maintenanceErrors,
@@ -11622,6 +11778,7 @@
           var v = head(take(1)(last4));
           if (v instanceof Just && isIncorrect(v.value0.grade)) {
             return {
+              criterionAttempts: result$prime.criterionAttempts,
               deferredPerseverations: result$prime.deferredPerseverations,
               errors: result$prime.errors,
               maintenanceErrors: result$prime.maintenanceErrors,
@@ -11644,13 +11801,14 @@
             timeToFirst: result$prime$prime.timeToFirst,
             timeAfterError: result$prime$prime.timeAfterError,
             totalTime: result$prime$prime.totalTime,
+            criterionAttempts: result$prime$prime.criterionAttempts,
             score: result$prime$prime.score + 1 | 0
           };
         }
         ;
         if (answer.grade instanceof Incorrect) {
-          var $261 = checkForPerseveration(last4)(answer.grade);
-          if ($261) {
+          var $286 = checkForPerseveration(last4)(answer.grade);
+          if ($286) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -11659,12 +11817,13 @@
               timeToFirst: result$prime$prime.timeToFirst,
               timeAfterError: result$prime$prime.timeAfterError,
               totalTime: result$prime$prime.totalTime,
+              criterionAttempts: result$prime$prime.criterionAttempts,
               perseverations: result$prime$prime.perseverations + 1 | 0
             };
           }
           ;
-          var $262 = checkForDeferred(last4)(answer.grade);
-          if ($262) {
+          var $287 = checkForDeferred(last4)(answer.grade);
+          if ($287) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -11673,12 +11832,13 @@
               timeToFirst: result$prime$prime.timeToFirst,
               timeAfterError: result$prime$prime.timeAfterError,
               totalTime: result$prime$prime.totalTime,
+              criterionAttempts: result$prime$prime.criterionAttempts,
               deferredPerseverations: result$prime$prime.deferredPerseverations + 1 | 0
             };
           }
           ;
-          var $263 = checkForMaintenanceError(last4);
-          if ($263) {
+          var $288 = checkForMaintenanceError(last4);
+          if ($288) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -11687,6 +11847,7 @@
               timeToFirst: result$prime$prime.timeToFirst,
               timeAfterError: result$prime$prime.timeAfterError,
               totalTime: result$prime$prime.totalTime,
+              criterionAttempts: result$prime$prime.criterionAttempts,
               maintenanceErrors: result$prime$prime.maintenanceErrors + 1 | 0
             };
           }
@@ -11699,69 +11860,73 @@
             timeToFirst: result$prime$prime.timeToFirst,
             timeAfterError: result$prime$prime.timeAfterError,
             totalTime: result$prime$prime.totalTime,
+            criterionAttempts: result$prime$prime.criterionAttempts,
             errors: result$prime$prime.errors + 1 | 0
           };
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 398, column 5 - line 408, column 52): " + [answer.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 432, column 5 - line 442, column 52): " + [answer.grade.constructor.name]);
       };
     };
   };
   var $$eval = function(answers) {
-    var v = head(answers);
-    if (v instanceof Nothing) {
-      return initResults;
-    }
-    ;
-    if (v instanceof Just) {
-      var initialResult = {
-        deferredPerseverations: initResults.deferredPerseverations,
-        errors: initResults.errors,
-        maintenanceErrors: initResults.maintenanceErrors,
-        perseverations: initResults.perseverations,
-        score: initResults.score,
-        timeAfterError: initResults.timeAfterError,
-        totalTime: initResults.totalTime,
-        timeToFirst: v.value0.timeTaken
-      };
-      var go2 = function($copy_acc) {
-        return function($copy_last4) {
-          return function($copy_remainingAnswers) {
-            var $tco_var_acc = $copy_acc;
-            var $tco_var_last4 = $copy_last4;
-            var $tco_done = false;
-            var $tco_result;
-            function $tco_loop(acc, last4, remainingAnswers) {
-              var v1 = head(remainingAnswers);
-              if (v1 instanceof Nothing) {
-                $tco_done = true;
-                return acc;
+    return function(attempts) {
+      var v = head(answers);
+      if (v instanceof Nothing) {
+        return initResults;
+      }
+      ;
+      if (v instanceof Just) {
+        var initialResult = {
+          deferredPerseverations: initResults.deferredPerseverations,
+          errors: initResults.errors,
+          maintenanceErrors: initResults.maintenanceErrors,
+          perseverations: initResults.perseverations,
+          score: initResults.score,
+          timeAfterError: initResults.timeAfterError,
+          totalTime: initResults.totalTime,
+          timeToFirst: v.value0.timeTaken,
+          criterionAttempts: attempts
+        };
+        var go2 = function($copy_acc) {
+          return function($copy_last4) {
+            return function($copy_remainingAnswers) {
+              var $tco_var_acc = $copy_acc;
+              var $tco_var_last4 = $copy_last4;
+              var $tco_done = false;
+              var $tco_result;
+              function $tco_loop(acc, last4, remainingAnswers) {
+                var v1 = head(remainingAnswers);
+                if (v1 instanceof Nothing) {
+                  $tco_done = true;
+                  return acc;
+                }
+                ;
+                if (v1 instanceof Just) {
+                  var newLast4 = take(4)(snoc(last4)(v1.value0));
+                  var newAcc = evalStep(acc)(last4)(v1.value0);
+                  $tco_var_acc = newAcc;
+                  $tco_var_last4 = newLast4;
+                  $copy_remainingAnswers = drop(1)(remainingAnswers);
+                  return;
+                }
+                ;
+                throw new Error("Failed pattern match at Wisconsin (line 453, column 11 - line 460, column 61): " + [v1.constructor.name]);
               }
               ;
-              if (v1 instanceof Just) {
-                var newLast4 = take(4)(snoc(last4)(v1.value0));
-                var newAcc = evalStep(acc)(last4)(v1.value0);
-                $tco_var_acc = newAcc;
-                $tco_var_last4 = newLast4;
-                $copy_remainingAnswers = drop(1)(remainingAnswers);
-                return;
+              while (!$tco_done) {
+                $tco_result = $tco_loop($tco_var_acc, $tco_var_last4, $copy_remainingAnswers);
               }
               ;
-              throw new Error("Failed pattern match at Wisconsin (line 419, column 11 - line 426, column 61): " + [v1.constructor.name]);
-            }
-            ;
-            while (!$tco_done) {
-              $tco_result = $tco_loop($tco_var_acc, $tco_var_last4, $copy_remainingAnswers);
-            }
-            ;
-            return $tco_result;
+              return $tco_result;
+            };
           };
         };
-      };
-      return go2(initialResult)([])(answers);
-    }
-    ;
-    throw new Error("Failed pattern match at Wisconsin (line 412, column 3 - line 428, column 36): " + [v.constructor.name]);
+        return go2(initialResult)([])(answers);
+      }
+      ;
+      throw new Error("Failed pattern match at Wisconsin (line 446, column 3 - line 462, column 36): " + [v.constructor.name]);
+    };
   };
   var cards = /* @__PURE__ */ function() {
     return [{
@@ -12096,7 +12261,10 @@
       stage: WisconsinInstructions.value,
       lastTimer: 0,
       showIncorrect: false,
-      sortedCards: replicate(4)(Nothing.value)
+      sortedCards: replicate(4)(Nothing.value),
+      currentAttempts: 0,
+      criterionAttempts: [],
+      foundCriterion: false
     };
   };
   var setNextCard = function(dictMonadEffect) {
@@ -12109,27 +12277,31 @@
     }))(function(currentIndex) {
       return discard7(liftEffect7(log5(show5(currentIndex))))(function() {
         var newIndex = currentIndex + 1 | 0;
-        var $270 = newIndex >= 5;
-        if ($270) {
+        var $295 = newIndex >= 5;
+        if ($295) {
           return bind8(gets7(function(v) {
             return v.answers;
           }))(function(answers) {
-            return raise(new WisconsinDone(answers));
+            return bind8(gets7(function(v) {
+              return v.criterionAttempts;
+            }))(function(attempts) {
+              return raise(new WisconsinDone(answers, attempts));
+            });
           });
         }
         ;
         return modify_8(function(state3) {
-          var $271 = {};
-          for (var $272 in state3) {
-            if ({}.hasOwnProperty.call(state3, $272)) {
-              $271[$272] = state3[$272];
+          var $296 = {};
+          for (var $297 in state3) {
+            if ({}.hasOwnProperty.call(state3, $297)) {
+              $296[$297] = state3[$297];
             }
             ;
           }
           ;
-          $271.currentIndex = newIndex;
-          $271.currentCard = nextCard(newIndex);
-          return $271;
+          $296.currentIndex = newIndex;
+          $296.currentCard = nextCard(newIndex);
+          return $296;
         });
       });
     });
@@ -12152,16 +12324,16 @@
             }))(function(currentCard) {
               var newSorted = unsafeArrUpdate(areaId)(new Just(currentCard))(sortedCards);
               return discard7(modify_8(function(state3) {
-                var $274 = {};
-                for (var $275 in state3) {
-                  if ({}.hasOwnProperty.call(state3, $275)) {
-                    $274[$275] = state3[$275];
+                var $299 = {};
+                for (var $300 in state3) {
+                  if ({}.hasOwnProperty.call(state3, $300)) {
+                    $299[$300] = state3[$300];
                   }
                   ;
                 }
                 ;
-                $274.sortedCards = newSorted;
-                return $274;
+                $299.sortedCards = newSorted;
+                return $299;
               }))(function() {
                 return bind8(evalAnswer1(areaId))(function(isCorrect) {
                   return discard7(when2(!isCorrect)(timerShowIncorrect1))(function() {
@@ -12169,16 +12341,16 @@
                       return discard7(maybeNextCriterion1)(function() {
                         return bind8(liftEffect7(nowToNumber2))(function(timer) {
                           return modify_8(function(state3) {
-                            var $277 = {};
-                            for (var $278 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $278)) {
-                                $277[$278] = state3[$278];
+                            var $302 = {};
+                            for (var $303 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $303)) {
+                                $302[$303] = state3[$303];
                               }
                               ;
                             }
                             ;
-                            $277.lastTimer = timer;
-                            return $277;
+                            $302.lastTimer = timer;
+                            return $302;
                           });
                         });
                       });
@@ -12200,17 +12372,17 @@
       if (action2 instanceof WisconsinInstructionsDone) {
         return bind8(liftEffect7(nowToNumber2))(function(ms) {
           return modify_8(function(state3) {
-            var $281 = {};
-            for (var $282 in state3) {
-              if ({}.hasOwnProperty.call(state3, $282)) {
-                $281[$282] = state3[$282];
+            var $306 = {};
+            for (var $307 in state3) {
+              if ({}.hasOwnProperty.call(state3, $307)) {
+                $306[$307] = state3[$307];
               }
               ;
             }
             ;
-            $281.stage = WisconsinTest.value;
-            $281.lastTimer = ms;
-            return $281;
+            $306.stage = WisconsinTest.value;
+            $306.lastTimer = ms;
+            return $306;
           });
         });
       }
@@ -12224,9 +12396,9 @@
       }
       ;
       if (action2 instanceof HandleWisconsinDone) {
-        var results = $$eval(action2.value0.value0);
-        return bind8(liftAff3(post2(ignore)("/wisconsin")(new Just(new Json(encodeJson4(results))))))(function() {
-          return raise(new WisconsinDone([]));
+        var results = $$eval(action2.value0.value0)(action2.value0.value1);
+        return bind8(liftAff3(post2(ignore)("/wisconsin")(new Just(new Json(encodeJson5(results))))))(function() {
+          return raise(new WisconsinDone([], []));
         });
       }
       ;
@@ -12264,7 +12436,7 @@
         return slot24(_wisconsinTest)(41)(wisconsinComponent1)(state3)(HandleWisconsinDone.create);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 111, column 16 - line 115, column 75): " + [state3.stage.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 114, column 16 - line 118, column 75): " + [state3.stage.constructor.name]);
     };
   };
   var mainComponent2 = function(dictMonadAff) {
@@ -12713,7 +12885,7 @@
   var pure11 = /* @__PURE__ */ pure(applicativeAff);
   var bindFlipped1 = /* @__PURE__ */ bindFlipped(bindMaybe);
   var pure14 = /* @__PURE__ */ pure(applicativeEffect);
-  var map20 = /* @__PURE__ */ map(functorEffect);
+  var map21 = /* @__PURE__ */ map(functorEffect);
   var discard9 = /* @__PURE__ */ discard(discardUnit);
   var throwError2 = /* @__PURE__ */ throwError(monadThrowAff);
   var selectElement = function(query2) {
@@ -12731,7 +12903,7 @@
     return function __do4() {
       var rs = bindFlipped6(readyState)(bindFlipped6(document2)(windowImpl))();
       if (rs instanceof Loading) {
-        var et = map20(toEventTarget)(windowImpl)();
+        var et = map21(toEventTarget)(windowImpl)();
         var listener = eventListener(function(v) {
           return callback(new Right(unit));
         })();
@@ -12844,11 +13016,11 @@
   var fork3 = /* @__PURE__ */ fork(monadForkAff);
   var parSequence_2 = /* @__PURE__ */ parSequence_(parallelAff)(applicativeParAff)(foldableList);
   var pure15 = /* @__PURE__ */ pure(applicativeAff);
-  var map21 = /* @__PURE__ */ map(functorCoyoneda);
+  var map22 = /* @__PURE__ */ map(functorCoyoneda);
   var parallel3 = /* @__PURE__ */ parallel(parallelAff);
   var map110 = /* @__PURE__ */ map(functorAff);
   var sequential2 = /* @__PURE__ */ sequential(parallelAff);
-  var map22 = /* @__PURE__ */ map(functorMaybe);
+  var map23 = /* @__PURE__ */ map(functorMaybe);
   var insert6 = /* @__PURE__ */ insert2(ordSubscriptionId);
   var retractFreeAp2 = /* @__PURE__ */ retractFreeAp(applicativeParAff);
   var $$delete4 = /* @__PURE__ */ $$delete2(ordForkId);
@@ -12918,7 +13090,7 @@
     return function(ref2) {
       return function(q2) {
         return bind13(liftEffect4(read(ref2)))(function(v) {
-          return evalM(render7)(ref2)(v["component"]["eval"](new Query(map21(Just.create)(liftCoyoneda(q2)), $$const(Nothing.value))));
+          return evalM(render7)(ref2)(v["component"]["eval"](new Query(map22(Just.create)(liftCoyoneda(q2)), $$const(Nothing.value))));
         });
       };
     };
@@ -12986,7 +13158,7 @@
                   return handleAff(evalF(render7)(ref2)(new Action(act)));
                 })))(function(finalize) {
                   return bind13(liftEffect4(read(ref2)))(function(v2) {
-                    return discard1(liftEffect4(modify_(map22(insert6(sid)(finalize)))(v2.subscriptions)))(function() {
+                    return discard1(liftEffect4(modify_(map23(insert6(sid)(finalize)))(v2.subscriptions)))(function() {
                       return pure15(v1.value1(sid));
                     });
                   });
@@ -13128,7 +13300,7 @@
   var parSequence_3 = /* @__PURE__ */ parSequence_(parallelAff)(applicativeParAff)(foldableList);
   var liftEffect5 = /* @__PURE__ */ liftEffect(monadEffectAff);
   var pure16 = /* @__PURE__ */ pure(applicativeEffect);
-  var map23 = /* @__PURE__ */ map(functorEffect);
+  var map24 = /* @__PURE__ */ map(functorEffect);
   var pure17 = /* @__PURE__ */ pure(applicativeAff);
   var when3 = /* @__PURE__ */ when(applicativeEffect);
   var renderStateX2 = /* @__PURE__ */ renderStateX(functorEffect);
@@ -13226,7 +13398,7 @@
               return function(childrenOutRef) {
                 return unComponentSlot(function(slot7) {
                   return function __do4() {
-                    var childrenIn = map23(slot7.pop)(read(childrenInRef))();
+                    var childrenIn = map24(slot7.pop)(read(childrenInRef))();
                     var $$var2 = function() {
                       if (childrenIn instanceof Just) {
                         write(childrenIn.value0.value1)(childrenInRef)();
@@ -13256,7 +13428,7 @@
                       ;
                       throw new Error("Failed pattern match at Halogen.Aff.Driver (line 213, column 14 - line 222, column 98): " + [childrenIn.constructor.name]);
                     }();
-                    var isDuplicate = map23(function($69) {
+                    var isDuplicate = map24(function($69) {
                       return isJust(slot7.get($69));
                     })(read(childrenOutRef))();
                     when3(isDuplicate)(warn("Halogen: Duplicate slot address was detected during rendering, unexpected results may occur"))();
@@ -13282,7 +13454,7 @@
           return function($$var2) {
             return function __do4() {
               var v = read($$var2)();
-              var shouldProcessHandlers = map23(isNothing)(read(v.pendingHandlers))();
+              var shouldProcessHandlers = map24(isNothing)(read(v.pendingHandlers))();
               when3(shouldProcessHandlers)(write(new Just(Nil.value))(v.pendingHandlers))();
               write(empty4)(v.childrenOut)();
               write(v.children)(v.childrenIn)();
@@ -13475,15 +13647,15 @@
   }
 
   // output/Web.DOM.Node/index.js
-  var map24 = /* @__PURE__ */ map(functorEffect);
+  var map25 = /* @__PURE__ */ map(functorEffect);
   var parentNode2 = /* @__PURE__ */ function() {
-    var $6 = map24(toMaybe);
+    var $6 = map25(toMaybe);
     return function($7) {
       return $6(_parentNode($7));
     };
   }();
   var nextSibling = /* @__PURE__ */ function() {
-    var $15 = map24(toMaybe);
+    var $15 = map25(toMaybe);
     return function($16) {
       return $15(_nextSibling($16));
     };
@@ -13511,7 +13683,7 @@
   var identity11 = /* @__PURE__ */ identity(categoryFn);
   var bind15 = /* @__PURE__ */ bind(bindAff);
   var liftEffect6 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var map25 = /* @__PURE__ */ map(functorEffect);
+  var map26 = /* @__PURE__ */ map(functorEffect);
   var bindFlipped9 = /* @__PURE__ */ bindFlipped(bindEffect);
   var substInParent = function(v) {
     return function(v1) {
@@ -13659,7 +13831,7 @@
   var runUI2 = function(component2) {
     return function(i2) {
       return function(element3) {
-        return bind15(liftEffect6(map25(toDocument)(bindFlipped9(document2)(windowImpl))))(function(document3) {
+        return bind15(liftEffect6(map26(toDocument)(bindFlipped9(document2)(windowImpl))))(function(document3) {
           return runUI(renderSpec(document3)(element3))(component2)(i2);
         });
       };
