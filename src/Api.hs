@@ -21,6 +21,8 @@ import Stroop.Types (StroopResults)
 import Stroop.Api (stroopHandler)
 import GoNoGo.Types (GoNoGoResults)
 import GoNoGo.Api (goNoGoHandler)
+import Wisconsin.Types (WisconsinResults)
+import Wisconsin.Api (wisconsinHandler)
 
 type API = Get '[HTML] (Html ())
   :<|> "code-validation" :> ReqBody '[JSON] Code :> Post '[JSON] Bool
@@ -31,6 +33,10 @@ type API = Get '[HTML] (Html ())
   :<|> "barrat"
     :> Header "Cookie" String
     :> ReqBody '[PlainText] String
+    :> Post '[PlainText] String
+  :<|> "wisconsin"
+    :> Header "Cookie" String
+    :> ReqBody '[JSON] WisconsinResults
     :> Post '[PlainText] String
   :<|> "stroop"
     :> Header "Cookie" String
@@ -54,6 +60,7 @@ server pool = rootHandler
   :<|> validateCode
   :<|> participantHandler pool
   :<|> barratHandler pool
+  :<|> wisconsinHandler pool
   :<|> stroopHandler pool
   :<|> goNoGoHandler pool
   :<|> beckHandler pool
