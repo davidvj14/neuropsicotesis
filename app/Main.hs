@@ -6,7 +6,7 @@ import System.Environment (lookupEnv)
 
 import Config (defaultConfig, Config(..), Environment(..), setLogger, makePool)
 import DB
-import Network.Wai.Handler.Warp hiding (setLogger)
+import Network.Wai.Handler.Warp
 import Api
 import Questions.Types
 import qualified Data.ByteString.Lazy as BsLazy
