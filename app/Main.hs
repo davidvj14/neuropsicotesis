@@ -11,6 +11,7 @@ import Api
 import Questions.Types
 import qualified Data.ByteString.Lazy as BsLazy
 import Data.Aeson (ToJSON(toJSON), decode, encode)
+import Network.Wai.Handler.WarpTLS (tlsSettings)
 
 
 main :: IO ()
@@ -21,7 +22,11 @@ main = do
   let cfg = defaultConfig { getPool = pool, getEnvConfig = env }
       logger = setLogger env
   runSqlPool doMigrations pool
-  run port $ logger (app pool)
+  --run port $ logger (app pool)
+  runTLS tlsOpts warpOpts (app pool)
+    where
+      tlsOpts = tlsSettings "/etc/ssl/certs/prueba-np.com.crt" "/etc/ssl/private/prueba-np.com.key"
+      tlsOpts = setPort 8081 defaultSettings
 
 lookupSetting :: Read a => String -> a -> IO a
 lookupSetting env def = do
