@@ -38,6 +38,7 @@ to generate this file without the comments in this block.
   , "record"
   , "strings"
   , "tuples"
+  , "web-dom"
   , "web-events"
   , "web-html"
   , "web-uievents"

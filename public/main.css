@@ -12,9 +12,6 @@ body {
     border-radius: 0.69vw;
     box-shadow: 0 0 0.69vw rgba(0, 0, 0, 0.1);
 }
-.message-container {
-    text-align: center;
-}
 h1 {
     color: #333;
     background-color: #fff;
@@ -216,18 +213,17 @@ th {
     text-align: center;
 }
 .go-no-go-container {
-  width: 100%;
-  max-width: 600px;
+  width: 95vw;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
   font-family: Arial, sans-serif;
   text-align: center;
 }
 
 .go-no-go-area {
-  width: 300px;
-  height: 300px;
-  margin: 20px auto;
+  width: 95vw;
+  height: 95vh;
+  margin: 10px auto;
   border: 2px solid #ccc;
   border-radius: 10px;
   display: flex;
@@ -237,8 +233,8 @@ th {
 }
 
 .stimulus {
-  width: 200px;
-  height: 200px;
+  width: 30vh;
+  height: 30vh;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -246,8 +242,8 @@ th {
 }
 
 .circle {
-  width: 150px;
-  height: 150px;
+  width: 30vh;
+  height: 30vh;
   border-radius: 50%;
 }
 
@@ -260,17 +256,50 @@ th {
 }
 
 .fixation-cross {
-  font-size: 48px;
+  font-size: 5vw;
   font-weight: bold;
 }
 
-.message-container {
+.gonogo-message {
   position: absolute;
-  top: 50%;
+  top: 80%;
   left: 50%;
-  transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.9);
+  transform: translate(-50%, -80%);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.stroop-container {
+  font-family: Arial, sans-serif;
+  width: 95vw;
+  height: 95vh;
+  margin: 2vh auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.stroop-word {
+  font-size: 6em;
+  font-weight: bold;
+  margin: 3vw 0;
+}
+
+.feedback {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: translate(-50%, -60%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 2vw 0;
 }

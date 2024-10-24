@@ -13,6 +13,7 @@ import Halogen.HTML.Properties as HP
 import Questions as Q
 import Wisconsin as W
 import GoNoGo as GNG
+import Stroop as Stroop
 import Type.Proxy (Proxy(..))
 
 type State = 
@@ -38,6 +39,7 @@ stageFromMbStr (Just cookie) =
        "beck" -> Beck
        "wisconsin" -> Wisconsin
        "gonogo" -> GoNoGo
+       "stroop" -> Stroop
        _ -> Questions
 
 data Action 
@@ -46,6 +48,7 @@ data Action
   | HandleBeck Beck.Output
   | HandleWisconsin W.Output
   | HandleGoNoGo GNG.Output
+  | HandleStroop Stroop.Output
   | HandleEnding
   | FadeOutComplete
 
@@ -55,6 +58,7 @@ type ChildSlots =
   , beck :: Beck.BeckSlot
   , wisconsin :: W.WisconsinSlot
   , goNoGo :: GNG.GoNoGoSlot
+  , stroop :: Stroop.StroopSlot
   )
 
 _questions = Proxy :: Proxy "questions"
@@ -62,6 +66,7 @@ _barrat = Proxy :: Proxy "barrat"
 _beck = Proxy :: Proxy "beck"
 _wisconsin = Proxy :: Proxy "wisconsin"
 _goNoGo = Proxy :: Proxy "goNoGo"
+_stroop = Proxy :: Proxy "stroop"
 
 initialState :: Stage -> State
 initialState stage = { currentStage: stage, fadingOutStage: Nothing }
@@ -96,7 +101,7 @@ renderCurrent stage =
         Beck -> HH.slot _beck 2 Beck.mainComponent unit HandleBeck
         Wisconsin -> HH.slot _wisconsin 3 W.mainComponent unit HandleWisconsin
         GoNoGo -> HH.slot _goNoGo 4 GNG.component unit HandleGoNoGo
-        Stroop -> HH.text "Stroop Component"
+        Stroop -> HH.slot _stroop 5 Stroop.stroopComponent unit HandleStroop
         Ending -> HH.text "Ending Component"
         Void -> HH.text ""
     ]
@@ -111,8 +116,8 @@ maybeRenderFadingOut (Just stage) =
         Barrat -> HH.slot _barrat 11 Barrat.barratComponent unit HandleBarrat
         Beck -> HH.slot _beck 12 Beck.mainComponent unit HandleBeck
         Wisconsin -> HH.slot _wisconsin 13 W.mainComponent unit HandleWisconsin
-        GoNoGo -> HH.slot _goNoGo 4 GNG.component unit HandleGoNoGo
-        Stroop -> HH.text "Stroop Component"
+        GoNoGo -> HH.slot _goNoGo 14 GNG.component unit HandleGoNoGo
+        Stroop -> HH.slot _stroop 15 Stroop.stroopComponent unit HandleStroop
         Ending -> HH.text "Ending Component"
         Void -> HH.text ""
     ]
@@ -124,6 +129,8 @@ mainHandler action = do
     HandleBarrat _ -> fadeToStage Beck
     HandleBeck _ -> fadeToStage Wisconsin
     HandleWisconsin _ -> fadeToStage GoNoGo
+    HandleGoNoGo _ -> fadeToStage Stroop
+    HandleStroop _ -> fadeToStage Ending
     FadeOutComplete -> do
        fadingOut <- H.gets _.fadingOutStage
        case fadingOut of
@@ -134,7 +141,6 @@ mainHandler action = do
 fadeToStage :: forall output m. MonadAff m => Stage -> H.HalogenM State Action ChildSlots output m Unit
 fadeToStage nextStage = do
   H.modify_ \s -> s { fadingOutStage = Just s.currentStage }
-  H.modify_ \s -> s { currentStage = Void }
   H.liftAff $ delay (Milliseconds 500.0)
   H.modify_ \s -> s { currentStage = nextStage }
   mainHandler FadeOutComplete
