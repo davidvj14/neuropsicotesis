@@ -33,6 +33,7 @@ dependencies:
 - bytestring
 - network
 - warp
+- warp-tls
 - wai
 - wai-extra
 - aeson
