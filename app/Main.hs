@@ -26,7 +26,7 @@ main = do
   runTLS tlsOpts warpOpts (app pool)
     where
       tlsOpts = tlsSettings "/etc/ssl/certs/prueba-np.com.crt" "/etc/ssl/private/prueba-np.com.key"
-      tlsOpts = setPort 8081 defaultSettings
+      warpOpts = setPort 8081 defaultSettings
 
 lookupSetting :: Read a => String -> a -> IO a
 lookupSetting env def = do
