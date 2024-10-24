@@ -6,23 +6,18 @@ import Affjax.RequestBody as RequestBody
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
 import Data.Argonaut (encodeJson)
-import Data.Array (drop, foldl, head, last, length, range, replicate, snoc, take, updateAt, zip, (!!))
+import Data.Array (drop, head, last, length, replicate, snoc, take, updateAt, (!!))
 import Data.Array as Array
-import Data.DateTime.Instant (Instant, unInstant)
-import Data.Generic.Rep (class Generic)
-import Data.Lazy (Lazy, defer, force)
-import Data.Maybe (Maybe(..), fromJust)
-import Data.Show.Generic (genericShow)
+import Data.DateTime.Instant (unInstant)
+import Data.Maybe (Maybe(..))
 import Data.Time.Duration (Milliseconds(..))
-import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Aff as Aff
 import Effect.Aff.Class (class MonadAff)
-import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Class (class MonadEffect)
 import Effect.Class.Console (log)
 import Effect.Exception.Unsafe (unsafeThrow)
 import Effect.Now (now)
-import Effect.Timer (setTimeout)
 import Extras (InstructionsOutput, InstructionsSlot, instructionsComponent)
 import Halogen as H
 import Halogen.HTML as HH
@@ -46,6 +41,7 @@ type Results =
   , timeToFirst :: Number
   , timeAfterError :: Number
   , totalTime :: Number
+  , criterionAttempts :: Array Int
   }
 
 initResults :: Results
@@ -58,6 +54,7 @@ initResults =
   , timeToFirst: 0.0
   , timeAfterError: 0.0
   , totalTime: 0.0
+  , criterionAttempts: []
   }
 
 type State =
@@ -70,6 +67,9 @@ type State =
   , lastTimer :: Number
   , showIncorrect :: Boolean
   , sortedCards :: Array (Maybe Card)
+  , currentAttempts :: Int
+  , criterionAttempts :: Array Int
+  , foundCriterion :: Boolean
   }
 
 initialState :: forall i. i -> State
@@ -83,6 +83,9 @@ initialState _ =
   , lastTimer: 0.0
   , showIncorrect: false
   , sortedCards: replicate 4 Nothing
+  , currentAttempts: 0
+  , criterionAttempts: []
+  , foundCriterion: false
   }
 
 data Action
@@ -93,7 +96,7 @@ data Action
   | PreventDefault Event
 
 data Output
-  = WisconsinDone (Array Answer)
+  = WisconsinDone (Array Answer) (Array Int)
 
 type WisconsinSlot = forall query. H.Slot query Output Int
 
@@ -167,11 +170,11 @@ wisconsinHandler action =
           H.modify_ \state -> state { stage = WisconsinTest, lastTimer = ms }
        PreventDefault ev -> H.liftEffect $ preventDefault ev
        HandleDrop ev areaId -> handleDrop ev areaId
-       HandleWisconsinDone (WisconsinDone answers) -> do
-          let results = eval answers
+       HandleWisconsinDone (WisconsinDone answers attempts) -> do
+          let results = eval answers attempts
           _ <- H.liftAff $ AX.post ResponseFormat.ignore "/wisconsin"
             (Just $ RequestBody.Json $ encodeJson results)
-          H.raise $ WisconsinDone []
+          H.raise $ WisconsinDone [] []
        _ -> pure unit
 
 handleDrop :: forall m. MonadAff m => DragEvent -> Int -> H.HalogenM State Action ChildSlots Output m Unit
@@ -195,36 +198,65 @@ evalAnswer areaId = do
   currentCard <- H.gets _.currentCard
   timerOld <- H.gets _.lastTimer
   timerNew <- H.liftEffect nowToNumber
+  currentAttempts <- H.gets _.currentAttempts
+  criterionAttempts <- H.gets _.criterionAttempts
+  foundCriterion <- H.gets _.foundCriterion
   let time = timerNew - timerOld
   let updateState grade = H.modify_ \state ->
-        state { answers = snoc state.answers { grade, timeTaken: time } }
+        state { answers = snoc state.answers { grade, timeTaken: time } 
+              , currentAttempts = state.currentAttempts + 1
+              }
   case currentCriterion of
        Shape ->
          if currentCard.shape == critCard.shape
            then do
               updateState Correct
-              H.modify_ \state -> state { score = state.score + 1 }
+              H.modify_ \state -> state { score = state.score + 1
+                                        , currentAttempts = 0
+                                        , criterionAttempts = 
+                                            if foundCriterion
+                                              then state.criterionAttempts
+                                              else snoc criterionAttempts (currentAttempts + 1)
+                                        , foundCriterion = true
+                                        }
               pure true
            else do
               updateState $ Incorrect currentCriterion (compareForError critCard currentCard)
+              H.modify_ \state -> state { currentAttempts = currentAttempts + 1 }
               pure false
        Color ->
          if currentCard.color == critCard.color
            then do
               updateState Correct
-              H.modify_ \state -> state { score = state.score + 1 }
+              H.modify_ \state -> state { score = state.score + 1
+                                        , currentAttempts = 0
+                                        , criterionAttempts = 
+                                            if foundCriterion
+                                              then state.criterionAttempts
+                                              else snoc criterionAttempts (currentAttempts + 1)
+                                        , foundCriterion = true
+                                        }
               pure true
            else do
               updateState $ Incorrect currentCriterion (compareForError critCard currentCard)
+              H.modify_ \state -> state { currentAttempts = currentAttempts + 1 }
               pure false
        Number ->
          if currentCard.number == critCard.number
            then do
               updateState Correct
-              H.modify_ \state -> state { score = state.score + 1 }
+              H.modify_ \state -> state { score = state.score + 1
+                                        , currentAttempts = 0
+                                        , criterionAttempts = 
+                                            if foundCriterion
+                                              then state.criterionAttempts
+                                              else snoc criterionAttempts (currentAttempts + 1)
+                                        , foundCriterion = true
+                                        }
               pure true
            else do
               updateState $ Incorrect currentCriterion (compareForError critCard currentCard)
+              H.modify_ \state -> state { currentAttempts = currentAttempts + 1 }
               pure false
 
 timerShowIncorrect :: forall m. MonadAff m => H.HalogenM State Action ChildSlots Output m Unit
@@ -236,9 +268,11 @@ timerShowIncorrect = do
 maybeNextCriterion :: forall m. MonadAff m => H.HalogenM State Action ChildSlots Output m Unit
 maybeNextCriterion = do
   score <- H.gets _.score
-  when
-    (mod score 10 == 0)
-    (H.modify_ \state -> state { currentCriterion = unsafeIndex criteria (score / 10)})
+  when (mod score 10 == 0) $ do
+    H.modify_ \state -> state
+      { currentCriterion = unsafeIndex criteria (score / 10)
+      , foundCriterion = false
+      }
 
 
 sortingAreas :: forall m. Array (Maybe Card) -> H.ComponentHTML Action ChildSlots m
@@ -407,13 +441,13 @@ evalStep result last4 answer =
         else
           result'' { errors = result''.errors + 1 }
 
-eval :: Array Answer -> Results
-eval answers = 
+eval :: Array Answer -> Array Int ->  Results
+eval answers attempts = 
   case head answers of
     Nothing -> initResults
     Just firstAnswer ->
       let
-        initialResult = initResults { timeToFirst = firstAnswer.timeTaken }
+        initialResult = initResults { timeToFirst = firstAnswer.timeTaken, criterionAttempts = attempts }
         go :: Results -> Array Answer -> Array Answer -> Results
         go acc last4 remainingAnswers =
           case head remainingAnswers of
@@ -488,7 +522,8 @@ setNextCard = do
   if newIndex >= 5
     then do
        answers <- H.gets _.answers
-       H.raise $ WisconsinDone answers
+       attempts <- H.gets _.criterionAttempts
+       H.raise $ WisconsinDone answers attempts
     else
        H.modify_ \state -> state { currentIndex = newIndex, currentCard = nextCard newIndex }
   where
