@@ -17,6 +17,10 @@ import Lucid
 import Data.ByteString.Char8 (ByteString)
 import Beck.Types (BeckPostData)
 import Beck.Api (beckHandler)
+import Stroop.Types (StroopResults)
+import Stroop.Api (stroopHandler)
+import GoNoGo.Types (GoNoGoResults)
+import GoNoGo.Api (goNoGoHandler)
 
 type API = Get '[HTML] (Html ())
   :<|> "code-validation" :> ReqBody '[JSON] Code :> Post '[JSON] Bool
@@ -27,6 +31,14 @@ type API = Get '[HTML] (Html ())
   :<|> "barrat"
     :> Header "Cookie" String
     :> ReqBody '[PlainText] String
+    :> Post '[PlainText] String
+  :<|> "stroop"
+    :> Header "Cookie" String
+    :> ReqBody '[JSON] StroopResults
+    :> Post '[PlainText] String
+  :<|> "gonogo"
+    :> Header "Cookie" String
+    :> ReqBody '[JSON] GoNoGoResults
     :> Post '[PlainText] String
   :<|> "beck"
     :> Header "Cookie" String
@@ -42,6 +54,8 @@ server pool = rootHandler
   :<|> validateCode
   :<|> participantHandler pool
   :<|> barratHandler pool
+  :<|> stroopHandler pool
+  :<|> goNoGoHandler pool
   :<|> beckHandler pool
   :<|> serveDirectoryFileServer "public"
 
