@@ -19,8 +19,8 @@ main = do
   env <- lookupSetting "ENV" Development
   port <- lookupSetting "PORT" 8081
   pool <- makePool env
-  let cfg = defaultConfig { getPool = pool, getEnvConfig = env }
-      logger = setLogger env
+  --let cfg = defaultConfig { getPool = pool, getEnvConfig = env }
+  --   logger = setLogger env
   runSqlPool doMigrations pool
   --run port $ logger (app pool)
   runTLS tlsOpts warpOpts (app pool)
