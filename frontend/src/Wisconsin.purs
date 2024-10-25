@@ -533,10 +533,10 @@ instructions :: String
 instructions = 
   "En esta tarea lo que tiene que hacer es tomar cada una de las cartas " <>
   "mostradas y colocarlas sobre una de las zonas designadas según como " <>
-  "crea que se relacionan o deban clasificarse. Los criterios de " <>
-  "clasificación irán cambiando conforme avance la prueba. Si la carta " <>
+  "crea que se relacionan o deban clasificarse.\n Los criterios de " <>
+  "clasificación irán cambiando conforme avance la prueba.\n Si la carta " <>
   "que colocó es correcta, no sucederá nada, pero si es incorrecta, " <>
-  "se le notificará. Entonces tome la siguiente carta y trate de colocarla " <>
+  "se le notificará.\n Entonces tome la siguiente carta y trate de colocarla " <>
   "en el lugar adecuado."
 
 criterionCards :: Array Card
