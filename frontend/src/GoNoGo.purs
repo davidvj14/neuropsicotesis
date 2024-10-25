@@ -123,7 +123,7 @@ renderInstructions =
   [ HP.class_ $ H.ClassName "instructions-container" ]
     [ HH.p_ [ HH.text "En esta prueba verás una serie de estímulos, uno a la vez." ]
     , HH.p_ [ HH.text $ "Haz click a la pantalla cuando veas un CÍRCULO VERDE."
-            <>  " No des click a otro color, únicamente cuando veas el CÍRCULO VERDE"]
+            <>  " No des click a otro color, únicamente cuando veas el CÍRCULO VERDE."]
     , HH.p_ [ HH.text "Procura dar click lo más rápido posible sin cometer ningún error." ]
     , HH.p_ [ HH.text "Comenzaremos con una versión de práctica." ]
     , HH.button
