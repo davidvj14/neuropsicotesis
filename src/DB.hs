@@ -92,7 +92,6 @@ Wisconsin
     tae Double
     time Double
     attempts [Int]
-    
     Primary p_id
 
 Suspicious
