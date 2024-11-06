@@ -14,6 +14,7 @@ data InstructionsOutput = DoneReading
 data Action = ClickedDone
 
 foreign import readCookieImpl :: String -> Effect String
+foreign import setStageCookie :: String -> Effect Unit
 
 readCookie :: String -> Effect (Maybe String)
 readCookie name = do

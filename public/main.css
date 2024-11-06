@@ -135,6 +135,7 @@ th {
 
 .instructions-container {
     justify-content: center;
+    font-size: 1.25em;
     align-items: center;
     text-align: center;
     width: 50vw;

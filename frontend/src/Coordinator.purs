@@ -2,10 +2,10 @@ module Coordinator where
 
 import Prelude
 
+import Extras (setStageCookie)
 import Beck as Beck
 import Barrat as Barrat
 import Data.Maybe (Maybe(..))
-import Effect.Aff (Milliseconds(..), delay)
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
@@ -18,7 +18,6 @@ import Type.Proxy (Proxy(..))
 
 type State = 
   { currentStage :: Stage
-  , fadingOutStage :: Maybe Stage
   }
 
 data Stage 
@@ -40,6 +39,7 @@ stageFromMbStr (Just cookie) =
        "wisconsin" -> Wisconsin
        "gonogo" -> GoNoGo
        "stroop" -> Stroop
+       "void" -> Void
        _ -> Questions
 
 data Action 
@@ -69,7 +69,7 @@ _goNoGo = Proxy :: Proxy "goNoGo"
 _stroop = Proxy :: Proxy "stroop"
 
 initialState :: Stage -> State
-initialState stage = { currentStage: stage, fadingOutStage: Nothing }
+initialState stage = { currentStage: stage }
 
 mainComponent :: forall query output m. MonadAff m => H.Component query Stage output m
 mainComponent =
@@ -86,9 +86,7 @@ render state =
     [
     HH.div
       [ HP.class_ $ H.ClassName "stage-container" ]
-      [ maybeRenderFadingOut state.fadingOutStage
-      , renderCurrent state.currentStage
-      ]
+      [ renderCurrent state.currentStage ]
     ]
 
 renderCurrent :: forall m. MonadAff m => Stage -> H.ComponentHTML Action ChildSlots m
@@ -106,41 +104,32 @@ renderCurrent stage =
         Void -> HH.text ""
     ]
 
-maybeRenderFadingOut :: forall m. MonadAff m => Maybe Stage -> H.ComponentHTML Action ChildSlots m
-maybeRenderFadingOut Nothing = HH.text ""
-maybeRenderFadingOut (Just stage) = 
-  HH.div
-    [ HP.class_ $ H.ClassName "fade-out"]
-    [ case stage of
-        Questions -> HH.slot _questions 10 Q.questionsComponent unit HandleQuestions
-        Barrat -> HH.slot _barrat 11 Barrat.barratComponent unit HandleBarrat
-        Beck -> HH.slot _beck 12 Beck.mainComponent unit HandleBeck
-        Wisconsin -> HH.slot _wisconsin 13 W.mainComponent unit HandleWisconsin
-        GoNoGo -> HH.slot _goNoGo 14 GNG.component unit HandleGoNoGo
-        Stroop -> HH.slot _stroop 15 Stroop.stroopComponent unit HandleStroop
-        Ending -> HH.text "Ending Component"
-        Void -> HH.text ""
-    ]
-
 mainHandler :: forall output m. MonadAff m => Action -> H.HalogenM State Action ChildSlots output m Unit
 mainHandler action = do
   case action of
-    HandleQuestions _ -> fadeToStage Barrat
-    HandleBarrat _ -> fadeToStage Beck
-    HandleBeck _ -> fadeToStage Wisconsin
-    HandleWisconsin _ -> fadeToStage GoNoGo
-    HandleGoNoGo _ -> fadeToStage Stroop
-    HandleStroop _ -> fadeToStage Ending
-    FadeOutComplete -> do
-       fadingOut <- H.gets _.fadingOutStage
-       case fadingOut of
-            Just _ -> H.modify_ \s -> s { fadingOutStage = Nothing }
-            Nothing -> pure unit
+    HandleQuestions Q.Submitted -> do
+       H.liftEffect $ setStageCookie "barrat"
+       fadeToStage Barrat
+    HandleQuestions Q.BadCodes -> do
+       H.liftEffect $ setStageCookie "void"
+       fadeToStage Void
+    HandleBarrat _ -> do 
+       H.liftEffect $ setStageCookie "beck"
+       fadeToStage Beck
+    HandleBeck _ -> do
+       H.liftEffect $ setStageCookie "wisconsin"
+       fadeToStage Wisconsin
+    HandleWisconsin _ -> do
+       H.liftEffect $ setStageCookie "gonogo"
+       fadeToStage GoNoGo
+    HandleGoNoGo _ -> do
+       H.liftEffect $ setStageCookie "stroop"
+       fadeToStage Stroop
+    HandleStroop _ -> do
+       H.liftEffect $ setStageCookie "ending"
+       fadeToStage Ending
     _ -> pure unit
 
 fadeToStage :: forall output m. MonadAff m => Stage -> H.HalogenM State Action ChildSlots output m Unit
 fadeToStage nextStage = do
-  H.modify_ \s -> s { fadingOutStage = Just s.currentStage }
-  H.liftAff $ delay (Milliseconds 500.0)
   H.modify_ \s -> s { currentStage = nextStage }
-  mainHandler FadeOutComplete

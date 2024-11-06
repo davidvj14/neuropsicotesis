@@ -5,7 +5,7 @@ import Prelude
 import Affjax.RequestBody as RequestBody
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
-import Data.Argonaut.Core (jsonSingletonObject, Json)
+import Data.Argonaut.Core (Json, jsonSingletonObject, stringify)
 import Data.Argonaut.Core as DAC
 import Data.Argonaut.Encode as DAE
 import Data.Either (Either(..))
@@ -26,6 +26,7 @@ type State =
   { formData :: FormData
   , conditionalDivs :: ConditionalDivs
   , code :: String
+  , codeAttempts :: Int
   }
 
 type FormData =
@@ -72,7 +73,7 @@ data Action
   | SendForm Event
   | GoNext
 
-data Output = Submitted
+data Output = Submitted | BadCodes
 
 type Slot = forall query. H.Slot query Output Int
 
@@ -110,6 +111,7 @@ initialState _ =
       , badCode : false
       }
     , code: ""
+    , codeAttempts: 0
   }
 
 questionsComponent :: forall input query m. MonadAff m => H.Component query input Output m
@@ -175,7 +177,7 @@ eventHandler = case _ of
 updateForm :: forall m. MonadEffect m => String -> String -> H.HalogenM State Action () Output m Unit
 updateForm key value = do
   formData <- H.gets _.formData
-  H.modify_ \state -> { formData: (case key of
+  H.modify_ \state -> state { formData = (case key of
              "age" -> formData { age = fromMaybe (-1) $ I.fromString value}
              "sex" -> formData { sex = fromMaybe (-1) $ I.fromString value}
              "major" -> formData { major = value }
@@ -196,14 +198,11 @@ updateForm key value = do
              "abuseOther" -> formData { abuseOther = Just value }
              "shortage" -> formData { shortage = formData.shortage + (fromMaybe (0) $ I.fromString value) }
              _ -> formData)
-             , conditionalDivs: state.conditionalDivs
-             , code: state.code
              }
 
 showQuestion :: forall m. MonadEffect m => String -> Boolean -> H.HalogenM State Action () Output m Unit
-showQuestion key shouldShow = H.modify_ \state -> 
-  { formData: state.formData
-  , conditionalDivs: (
+showQuestion key shouldShow = H.modify_ \state -> state
+  { conditionalDivs = (
     case key of
          "alcoholFrequency" -> state.conditionalDivs { alcoholFrequency = shouldShow }
          "smokeFreq" -> state.conditionalDivs { smokeFreq = shouldShow }
@@ -212,15 +211,11 @@ showQuestion key shouldShow = H.modify_ \state ->
          "injury" -> state.conditionalDivs { injury = shouldShow }
          "abuseOther" -> state.conditionalDivs { abuseOther = shouldShow }
          _ -> state.conditionalDivs)
-  , code: state.code
   }
 
 updateCode :: forall m. MonadEffect m => String -> H.HalogenM State Action () Output m Unit
 updateCode newCode = H.modify_ \state ->
-  { formData: state.formData
-  , conditionalDivs: state.conditionalDivs
-  , code: newCode
-  }
+  state { code = newCode }
 
 formHandler :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 formHandler = do
@@ -232,10 +227,12 @@ formHandler = do
        H.liftAff $ sendForm form
        H.raise Submitted
     else do
-       H.modify_ \state -> { formData: state.formData
-                           , conditionalDivs: state.conditionalDivs { badCode = true }
-                           , code: state.code
-                           }
+       att <- H.gets _.codeAttempts
+       if att >= 3
+         then H.raise BadCodes
+         else H.modify_ \state -> state { codeAttempts = state.codeAttempts + 1
+                                        , conditionalDivs = state.conditionalDivs { badCode = true }
+                                        }
 
 sendForm :: FormData -> Aff Unit
 sendForm form = do
@@ -245,13 +242,13 @@ sendForm form = do
 
 validateCode :: String -> Aff Boolean
 validateCode code = do
-  response <- AX.post ResponseFormat.json "/code-validation"
+  result <- AX.post ResponseFormat.json "/code-validation"
     (Just $ RequestBody.json (jsonSingletonObject "code" (DAC.fromString code)))
-  case response of
+  case result of
        Left _ -> do
           pure false
-       Right _ -> do
-          pure true
+       Right response -> do
+          pure $ stringify response.body == "true"
 
 mkQuestion :: forall w i. String -> Array (HH.HTML w i) -> HH.HTML w i
 mkQuestion label innerHtml =

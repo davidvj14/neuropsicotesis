@@ -106,10 +106,12 @@ render state = case state.stage of
   StroopInstructions ->
     HH.div
       [ HP.class_ $ H.ClassName "instructions-container" ]
-      [ HH.p_ [ HH.text "Placeholder instructions" ]
+      [ HH.p_ [ HH.text "En esta prueba verás una serie de palabras de un color determinado." ]
+      , HH.p_ [ HH.text "Deberás presionar en el teclado la letra inicial del color que tenga la palabra." ]
+      , HH.p_ [ HH.text "R para Rojo, A para Azul, V para Verde y M para morado." ]
       , HH.button
           [ HE.onClick \_ -> StartTest ]
-          [ HH.text "Start Test" ]
+          [ HH.text "Comenzar prueba" ]
       ]
   StroopTest ->
     HH.div
@@ -191,7 +193,7 @@ handleAction = case _ of
                             , stroopErrors = if isStroop then state.stroopErrors + 1 else state.stroopErrors
                             , nonStroopErrors = if isStroop then state.nonStroopErrors else state.nonStroopErrors + 1
                             }
-            H.liftAff $ H.liftAff $ delay $ Milliseconds 150.0
+            H.liftAff $ H.liftAff $ delay $ Milliseconds 400.0
             handleAction NextTrial
           else pure unit
 
@@ -202,15 +204,18 @@ handleAction = case _ of
       else do
         wordIndex <- H.liftEffect randomIndex
         colorIndex <- H.liftEffect randomIndex
-        startTime <- H.liftEffect now
         let newWord = fromMaybe "Rojo" $ words !! wordIndex
         let newColor = fromMaybe "Rojo" $ words !! colorIndex
-        H.modify_ _ { currentWord = newWord
-                    , currentColor = newColor
-                    , showFeedback = false
-                    , startTime = Just $ unInst startTime
-                    , responded = false
-                    }
+        if newWord == state.currentWord && newColor == state.currentColor
+          then handleAction NextTrial
+          else do
+            startTime <- H.liftEffect now
+            H.modify_ _ { currentWord = newWord
+                        , currentColor = newColor
+                        , showFeedback = false
+                        , startTime = Just $ unInst startTime
+                        , responded = false
+                        }
 
   SubmitResults -> do
     state <- H.get

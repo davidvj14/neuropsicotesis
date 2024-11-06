@@ -182,11 +182,11 @@
     };
   };
   var composeKleisli = function(dictBind) {
-    var bind17 = bind(dictBind);
+    var bind16 = bind(dictBind);
     return function(f) {
       return function(g) {
         return function(a2) {
-          return bind17(f(a2))(g);
+          return bind16(f(a2))(g);
         };
       };
     };
@@ -944,23 +944,23 @@
 
   // output/Control.Monad/index.js
   var unlessM = function(dictMonad) {
-    var bind17 = bind(dictMonad.Bind1());
+    var bind16 = bind(dictMonad.Bind1());
     var unless2 = unless(dictMonad.Applicative0());
     return function(mb) {
       return function(m) {
-        return bind17(mb)(function(b2) {
+        return bind16(mb)(function(b2) {
           return unless2(b2)(m);
         });
       };
     };
   };
   var ap = function(dictMonad) {
-    var bind17 = bind(dictMonad.Bind1());
+    var bind16 = bind(dictMonad.Bind1());
     var pure19 = pure(dictMonad.Applicative0());
     return function(f) {
       return function(a2) {
-        return bind17(f)(function(f$prime) {
-          return bind17(a2)(function(a$prime) {
+        return bind16(f)(function(f$prime) {
+          return bind16(a2)(function(a$prime) {
             return pure19(f$prime(a$prime));
           });
         });
@@ -1550,12 +1550,12 @@
     };
   };
   var bindExceptT = function(dictMonad) {
-    var bind17 = bind(dictMonad.Bind1());
+    var bind16 = bind(dictMonad.Bind1());
     var pure19 = pure(dictMonad.Applicative0());
     return {
       bind: function(v) {
         return function(k) {
-          return bind17(v)(either(function($193) {
+          return bind16(v)(either(function($193) {
             return pure19(Left.create($193));
           })(function(a2) {
             var v1 = k(a2);
@@ -1608,19 +1608,19 @@
     var append7 = append(dictSemigroup);
     return function(dictMonad) {
       var Bind1 = dictMonad.Bind1();
-      var bind17 = bind(Bind1);
+      var bind16 = bind(Bind1);
       var pure19 = pure(dictMonad.Applicative0());
       var functorExceptT1 = functorExceptT(Bind1.Apply0().Functor0());
       return {
         alt: function(v) {
           return function(v1) {
-            return bind17(v)(function(rm) {
+            return bind16(v)(function(rm) {
               if (rm instanceof Right) {
                 return pure19(new Right(rm.value0));
               }
               ;
               if (rm instanceof Left) {
-                return bind17(v1)(function(rn) {
+                return bind16(v1)(function(rn) {
                   if (rn instanceof Right) {
                     return pure19(new Right(rn.value0));
                   }
@@ -4729,6 +4729,14 @@
     return function() {
       const match = document.cookie.match(new RegExp("(^| )" + name17 + "=([^;]+)"));
       return match ? match[2] : "";
+    };
+  }
+  function setStageCookie(stage) {
+    return function() {
+      var date2 = /* @__PURE__ */ new Date();
+      date2.setTime(date2.getTime() + 7 * 24 * 60 * 60 * 1e3);
+      expires = "; expires=" + date2.toUTCString();
+      document.cookie = "stage=" + stage + expires + "; path=/";
     };
   }
 
@@ -8906,7 +8914,7 @@
   };
   var renderPrepareMessage = /* @__PURE__ */ div2([/* @__PURE__ */ class_("instructions-container")])([/* @__PURE__ */ h2_([/* @__PURE__ */ text("Prep\xE1rate")]), /* @__PURE__ */ p_([/* @__PURE__ */ text("Coloca tu mano en el click derecho del mouse.")])]);
   var renderInstructions2 = /* @__PURE__ */ function() {
-    return div2([class_("instructions-container")])([p_([text("En esta prueba ver\xE1s una serie de est\xEDmulos, uno a la vez.")]), p_([text("Haz click a la pantalla cuando veas un C\xCDRCULO VERDE. No des click a otro color, \xFAnicamente cuando veas el C\xCDRCULO VERDE")]), p_([text("Procura dar click lo m\xE1s r\xE1pido posible sin cometer ning\xFAn error.")]), p_([text("Comenzaremos con una versi\xF3n de pr\xE1ctica.")]), button([onClick(function(v) {
+    return div2([class_("instructions-container")])([p_([text("En esta prueba ver\xE1s una serie de est\xEDmulos, uno a la vez.")]), p_([text("Haz click a la pantalla cuando veas un C\xCDRCULO VERDE. No des click a otro color, \xFAnicamente cuando veas el C\xCDRCULO VERDE.")]), p_([text("Procura dar click lo m\xE1s r\xE1pido posible sin cometer ning\xFAn error.")]), p_([text("Comenzaremos con una versi\xF3n de pr\xE1ctica.")]), button([onClick(function(v) {
       return GoNoGoInstructionsDone.value;
     })])([text("Comenzar")])]);
   }();
@@ -9351,6 +9359,13 @@
     Submitted2.value = new Submitted2();
     return Submitted2;
   }();
+  var BadCodes = /* @__PURE__ */ function() {
+    function BadCodes2() {
+    }
+    ;
+    BadCodes2.value = new BadCodes2();
+    return BadCodes2;
+  }();
   var UpdateForm = /* @__PURE__ */ function() {
     function UpdateForm2(value0, value1) {
       this.value0 = value0;
@@ -9408,16 +9423,16 @@
     return SendForm2;
   }();
   var validateCode = function(code3) {
-    return bind6(post2(json2)("/code-validation")(new Just(json(jsonSingletonObject("code")(id(code3))))))(function(response) {
-      if (response instanceof Left) {
+    return bind6(post2(json2)("/code-validation")(new Just(json(jsonSingletonObject("code")(id(code3))))))(function(result) {
+      if (result instanceof Left) {
         return pure8(false);
       }
       ;
-      if (response instanceof Right) {
-        return pure8(true);
+      if (result instanceof Right) {
+        return pure8(stringify(result.value0.body) === "true");
       }
       ;
-      throw new Error("Failed pattern match at Questions (line 250, column 3 - line 254, column 20): " + [response.constructor.name]);
+      throw new Error("Failed pattern match at Questions (line 247, column 3 - line 251, column 51): " + [result.constructor.name]);
     });
   };
   var updateForm = function(dictMonadEffect) {
@@ -9427,260 +9442,265 @@
           return v.formData;
         }))(function(formData) {
           return modify_6(function(state3) {
-            return {
-              formData: function() {
-                if (key2 === "age") {
-                  var $179 = {};
-                  for (var $180 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $180)) {
-                      $179[$180] = formData[$180];
-                    }
-                    ;
+            var $242 = {};
+            for (var $243 in state3) {
+              if ({}.hasOwnProperty.call(state3, $243)) {
+                $242[$243] = state3[$243];
+              }
+              ;
+            }
+            ;
+            $242.formData = function() {
+              if (key2 === "age") {
+                var $185 = {};
+                for (var $186 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $186)) {
+                    $185[$186] = formData[$186];
                   }
                   ;
-                  $179.age = fromMaybe(-1 | 0)(fromString2(value1));
-                  return $179;
                 }
                 ;
-                if (key2 === "sex") {
-                  var $182 = {};
-                  for (var $183 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $183)) {
-                      $182[$183] = formData[$183];
-                    }
-                    ;
+                $185.age = fromMaybe(-1 | 0)(fromString2(value1));
+                return $185;
+              }
+              ;
+              if (key2 === "sex") {
+                var $188 = {};
+                for (var $189 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $189)) {
+                    $188[$189] = formData[$189];
                   }
                   ;
-                  $182.sex = fromMaybe(-1 | 0)(fromString2(value1));
-                  return $182;
                 }
                 ;
-                if (key2 === "major") {
-                  var $185 = {};
-                  for (var $186 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $186)) {
-                      $185[$186] = formData[$186];
-                    }
-                    ;
+                $188.sex = fromMaybe(-1 | 0)(fromString2(value1));
+                return $188;
+              }
+              ;
+              if (key2 === "major") {
+                var $191 = {};
+                for (var $192 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $192)) {
+                    $191[$192] = formData[$192];
                   }
                   ;
-                  $185.major = value1;
-                  return $185;
                 }
                 ;
-                if (key2 === "alcohol") {
-                  var $188 = {};
-                  for (var $189 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $189)) {
-                      $188[$189] = formData[$189];
-                    }
-                    ;
+                $191.major = value1;
+                return $191;
+              }
+              ;
+              if (key2 === "alcohol") {
+                var $194 = {};
+                for (var $195 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $195)) {
+                    $194[$195] = formData[$195];
                   }
                   ;
-                  $188.alcohol = value1 === "1";
-                  return $188;
                 }
                 ;
-                if (key2 === "alcoholFrequency") {
-                  var $191 = {};
-                  for (var $192 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $192)) {
-                      $191[$192] = formData[$192];
-                    }
-                    ;
+                $194.alcohol = value1 === "1";
+                return $194;
+              }
+              ;
+              if (key2 === "alcoholFrequency") {
+                var $197 = {};
+                for (var $198 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $198)) {
+                    $197[$198] = formData[$198];
                   }
                   ;
-                  $191.alcoholFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
-                  return $191;
                 }
                 ;
-                if (key2 === "alcoholIntensity") {
-                  var $194 = {};
-                  for (var $195 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $195)) {
-                      $194[$195] = formData[$195];
-                    }
-                    ;
+                $197.alcoholFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                return $197;
+              }
+              ;
+              if (key2 === "alcoholIntensity") {
+                var $200 = {};
+                for (var $201 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $201)) {
+                    $200[$201] = formData[$201];
                   }
                   ;
-                  $194.alcoholIntensity = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
-                  return $194;
                 }
                 ;
-                if (key2 === "smoke") {
-                  var $197 = {};
-                  for (var $198 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $198)) {
-                      $197[$198] = formData[$198];
-                    }
-                    ;
+                $200.alcoholIntensity = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                return $200;
+              }
+              ;
+              if (key2 === "smoke") {
+                var $203 = {};
+                for (var $204 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $204)) {
+                    $203[$204] = formData[$204];
                   }
                   ;
-                  $197.smoke = value1 === "1";
-                  return $197;
                 }
                 ;
-                if (key2 === "smokingYears") {
-                  var $200 = {};
-                  for (var $201 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $201)) {
-                      $200[$201] = formData[$201];
-                    }
-                    ;
+                $203.smoke = value1 === "1";
+                return $203;
+              }
+              ;
+              if (key2 === "smokingYears") {
+                var $206 = {};
+                for (var $207 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $207)) {
+                    $206[$207] = formData[$207];
                   }
                   ;
-                  $200.smokingYears = new Just(fromMaybe(-1)(fromString(value1)));
-                  return $200;
                 }
                 ;
-                if (key2 === "smokingIntensity") {
-                  var $203 = {};
-                  for (var $204 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $204)) {
-                      $203[$204] = formData[$204];
-                    }
-                    ;
+                $206.smokingYears = new Just(fromMaybe(-1)(fromString(value1)));
+                return $206;
+              }
+              ;
+              if (key2 === "smokingIntensity") {
+                var $209 = {};
+                for (var $210 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $210)) {
+                    $209[$210] = formData[$210];
                   }
                   ;
-                  $203.smokingIntensity = new Just(fromMaybe(-1)(fromString(value1)));
-                  return $203;
                 }
                 ;
-                if (key2 === "drugs") {
-                  var $206 = {};
-                  for (var $207 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $207)) {
-                      $206[$207] = formData[$207];
-                    }
-                    ;
+                $209.smokingIntensity = new Just(fromMaybe(-1)(fromString(value1)));
+                return $209;
+              }
+              ;
+              if (key2 === "drugs") {
+                var $212 = {};
+                for (var $213 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $213)) {
+                    $212[$213] = formData[$213];
                   }
                   ;
-                  $206.drugs = value1 === "1";
-                  return $206;
                 }
                 ;
-                if (key2 === "drugsFrequency") {
-                  var $209 = {};
-                  for (var $210 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $210)) {
-                      $209[$210] = formData[$210];
-                    }
-                    ;
+                $212.drugs = value1 === "1";
+                return $212;
+              }
+              ;
+              if (key2 === "drugsFrequency") {
+                var $215 = {};
+                for (var $216 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $216)) {
+                    $215[$216] = formData[$216];
                   }
                   ;
-                  $209.drugsFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
-                  return $209;
                 }
                 ;
-                if (key2 === "disorder") {
-                  var $212 = {};
-                  for (var $213 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $213)) {
-                      $212[$213] = formData[$213];
-                    }
-                    ;
+                $215.drugsFrequency = new Just(fromMaybe(-1 | 0)(fromString2(value1)));
+                return $215;
+              }
+              ;
+              if (key2 === "disorder") {
+                var $218 = {};
+                for (var $219 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $219)) {
+                    $218[$219] = formData[$219];
                   }
                   ;
-                  $212.disorder = value1 === "1";
-                  return $212;
                 }
                 ;
-                if (key2 === "disorderInput") {
-                  var $215 = {};
-                  for (var $216 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $216)) {
-                      $215[$216] = formData[$216];
-                    }
-                    ;
+                $218.disorder = value1 === "1";
+                return $218;
+              }
+              ;
+              if (key2 === "disorderInput") {
+                var $221 = {};
+                for (var $222 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $222)) {
+                    $221[$222] = formData[$222];
                   }
                   ;
-                  $215.disorderInput = new Just(value1);
-                  return $215;
                 }
                 ;
-                if (key2 === "injury") {
-                  var $218 = {};
-                  for (var $219 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $219)) {
-                      $218[$219] = formData[$219];
-                    }
-                    ;
+                $221.disorderInput = new Just(value1);
+                return $221;
+              }
+              ;
+              if (key2 === "injury") {
+                var $224 = {};
+                for (var $225 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $225)) {
+                    $224[$225] = formData[$225];
                   }
                   ;
-                  $218.injury = value1 === "1";
-                  return $218;
                 }
                 ;
-                if (key2 === "injuryLocation") {
-                  var $221 = {};
-                  for (var $222 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $222)) {
-                      $221[$222] = formData[$222];
-                    }
-                    ;
+                $224.injury = value1 === "1";
+                return $224;
+              }
+              ;
+              if (key2 === "injuryLocation") {
+                var $227 = {};
+                for (var $228 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $228)) {
+                    $227[$228] = formData[$228];
                   }
                   ;
-                  $221.injuryLocation = new Just(value1);
-                  return $221;
                 }
                 ;
-                if (key2 === "injuryTreated") {
-                  var $224 = {};
-                  for (var $225 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $225)) {
-                      $224[$225] = formData[$225];
-                    }
-                    ;
+                $227.injuryLocation = new Just(value1);
+                return $227;
+              }
+              ;
+              if (key2 === "injuryTreated") {
+                var $230 = {};
+                for (var $231 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $231)) {
+                    $230[$231] = formData[$231];
                   }
                   ;
-                  $224.injuryTreated = new Just(value1 === "1");
-                  return $224;
                 }
                 ;
-                if (key2 === "abuse") {
-                  var $227 = {};
-                  for (var $228 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $228)) {
-                      $227[$228] = formData[$228];
-                    }
-                    ;
+                $230.injuryTreated = new Just(value1 === "1");
+                return $230;
+              }
+              ;
+              if (key2 === "abuse") {
+                var $233 = {};
+                for (var $234 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $234)) {
+                    $233[$234] = formData[$234];
                   }
                   ;
-                  $227.abuse = formData.abuse + fromMaybe(0)(fromString2(value1)) | 0;
-                  return $227;
                 }
                 ;
-                if (key2 === "abuseOther") {
-                  var $230 = {};
-                  for (var $231 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $231)) {
-                      $230[$231] = formData[$231];
-                    }
-                    ;
+                $233.abuse = formData.abuse + fromMaybe(0)(fromString2(value1)) | 0;
+                return $233;
+              }
+              ;
+              if (key2 === "abuseOther") {
+                var $236 = {};
+                for (var $237 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $237)) {
+                    $236[$237] = formData[$237];
                   }
                   ;
-                  $230.abuseOther = new Just(value1);
-                  return $230;
                 }
                 ;
-                if (key2 === "shortage") {
-                  var $233 = {};
-                  for (var $234 in formData) {
-                    if ({}.hasOwnProperty.call(formData, $234)) {
-                      $233[$234] = formData[$234];
-                    }
-                    ;
+                $236.abuseOther = new Just(value1);
+                return $236;
+              }
+              ;
+              if (key2 === "shortage") {
+                var $239 = {};
+                for (var $240 in formData) {
+                  if ({}.hasOwnProperty.call(formData, $240)) {
+                    $239[$240] = formData[$240];
                   }
                   ;
-                  $233.shortage = formData.shortage + fromMaybe(0)(fromString2(value1)) | 0;
-                  return $233;
                 }
                 ;
-                return formData;
-              }(),
-              conditionalDivs: state3.conditionalDivs,
-              code: state3.code
-            };
+                $239.shortage = formData.shortage + fromMaybe(0)(fromString2(value1)) | 0;
+                return $239;
+              }
+              ;
+              return formData;
+            }();
+            return $242;
           });
         });
       };
@@ -9689,11 +9709,16 @@
   var updateCode = function(dictMonadEffect) {
     return function(newCode) {
       return modify_6(function(state3) {
-        return {
-          formData: state3.formData,
-          conditionalDivs: state3.conditionalDivs,
-          code: newCode
-        };
+        var $245 = {};
+        for (var $246 in state3) {
+          if ({}.hasOwnProperty.call(state3, $246)) {
+            $245[$246] = state3[$246];
+          }
+          ;
+        }
+        ;
+        $245.code = newCode;
+        return $245;
       });
     };
   };
@@ -9701,91 +9726,96 @@
     return function(key2) {
       return function(shouldShow) {
         return modify_6(function(state3) {
-          return {
-            formData: state3.formData,
-            conditionalDivs: function() {
-              if (key2 === "alcoholFrequency") {
-                var $237 = {};
-                for (var $238 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $238)) {
-                    $237[$238] = state3["conditionalDivs"][$238];
-                  }
-                  ;
+          var $267 = {};
+          for (var $268 in state3) {
+            if ({}.hasOwnProperty.call(state3, $268)) {
+              $267[$268] = state3[$268];
+            }
+            ;
+          }
+          ;
+          $267.conditionalDivs = function() {
+            if (key2 === "alcoholFrequency") {
+              var $249 = {};
+              for (var $250 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $250)) {
+                  $249[$250] = state3["conditionalDivs"][$250];
                 }
                 ;
-                $237.alcoholFrequency = shouldShow;
-                return $237;
               }
               ;
-              if (key2 === "smokeFreq") {
-                var $240 = {};
-                for (var $241 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $241)) {
-                    $240[$241] = state3["conditionalDivs"][$241];
-                  }
-                  ;
+              $249.alcoholFrequency = shouldShow;
+              return $249;
+            }
+            ;
+            if (key2 === "smokeFreq") {
+              var $252 = {};
+              for (var $253 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $253)) {
+                  $252[$253] = state3["conditionalDivs"][$253];
                 }
                 ;
-                $240.smokeFreq = shouldShow;
-                return $240;
               }
               ;
-              if (key2 === "drugsFrequency") {
-                var $243 = {};
-                for (var $244 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $244)) {
-                    $243[$244] = state3["conditionalDivs"][$244];
-                  }
-                  ;
+              $252.smokeFreq = shouldShow;
+              return $252;
+            }
+            ;
+            if (key2 === "drugsFrequency") {
+              var $255 = {};
+              for (var $256 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $256)) {
+                  $255[$256] = state3["conditionalDivs"][$256];
                 }
                 ;
-                $243.drugsFrequency = shouldShow;
-                return $243;
               }
               ;
-              if (key2 === "disorder") {
-                var $246 = {};
-                for (var $247 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $247)) {
-                    $246[$247] = state3["conditionalDivs"][$247];
-                  }
-                  ;
+              $255.drugsFrequency = shouldShow;
+              return $255;
+            }
+            ;
+            if (key2 === "disorder") {
+              var $258 = {};
+              for (var $259 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $259)) {
+                  $258[$259] = state3["conditionalDivs"][$259];
                 }
                 ;
-                $246.disorder = shouldShow;
-                return $246;
               }
               ;
-              if (key2 === "injury") {
-                var $249 = {};
-                for (var $250 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $250)) {
-                    $249[$250] = state3["conditionalDivs"][$250];
-                  }
-                  ;
+              $258.disorder = shouldShow;
+              return $258;
+            }
+            ;
+            if (key2 === "injury") {
+              var $261 = {};
+              for (var $262 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $262)) {
+                  $261[$262] = state3["conditionalDivs"][$262];
                 }
                 ;
-                $249.injury = shouldShow;
-                return $249;
               }
               ;
-              if (key2 === "abuseOther") {
-                var $252 = {};
-                for (var $253 in state3.conditionalDivs) {
-                  if ({}.hasOwnProperty.call(state3.conditionalDivs, $253)) {
-                    $252[$253] = state3["conditionalDivs"][$253];
-                  }
-                  ;
+              $261.injury = shouldShow;
+              return $261;
+            }
+            ;
+            if (key2 === "abuseOther") {
+              var $264 = {};
+              for (var $265 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $265)) {
+                  $264[$265] = state3["conditionalDivs"][$265];
                 }
                 ;
-                $252.abuseOther = shouldShow;
-                return $252;
               }
               ;
-              return state3.conditionalDivs;
-            }(),
-            code: state3.code
-          };
+              $264.abuseOther = shouldShow;
+              return $264;
+            }
+            ;
+            return state3.conditionalDivs;
+          }();
+          return $267;
         });
       };
     };
@@ -9918,7 +9948,8 @@
         abuseOther: false,
         badCode: false
       },
-      code: ""
+      code: "",
+      codeAttempts: 0
     };
   };
   var formToJSON = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons32(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonMaybe(encodeJsonJBoolean))(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons(encodeJsonJString)(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons4(/* @__PURE__ */ gEncodeJsonCons22(/* @__PURE__ */ gEncodeJsonCons42(/* @__PURE__ */ gEncodeJsonCons42(gEncodeJsonNil)({
@@ -10023,23 +10054,38 @@
           });
         }
         ;
-        return modify_6(function(state3) {
-          return {
-            formData: state3.formData,
-            conditionalDivs: function() {
-              var $260 = {};
-              for (var $261 in state3.conditionalDivs) {
-                if ({}.hasOwnProperty.call(state3.conditionalDivs, $261)) {
-                  $260[$261] = state3["conditionalDivs"][$261];
+        return bind12(gets5(function(v) {
+          return v.codeAttempts;
+        }))(function(att) {
+          var $275 = att >= 3;
+          if ($275) {
+            return raise(BadCodes.value);
+          }
+          ;
+          return modify_6(function(state3) {
+            var $279 = {};
+            for (var $280 in state3) {
+              if ({}.hasOwnProperty.call(state3, $280)) {
+                $279[$280] = state3[$280];
+              }
+              ;
+            }
+            ;
+            $279.codeAttempts = state3.codeAttempts + 1 | 0;
+            $279.conditionalDivs = function() {
+              var $276 = {};
+              for (var $277 in state3.conditionalDivs) {
+                if ({}.hasOwnProperty.call(state3.conditionalDivs, $277)) {
+                  $276[$277] = state3["conditionalDivs"][$277];
                 }
                 ;
               }
               ;
-              $260.badCode = true;
-              return $260;
-            }(),
-            code: state3.code
-          };
+              $276.badCode = true;
+              return $276;
+            }();
+            return $279;
+          });
         });
       });
     });
@@ -10534,7 +10580,7 @@
       return "";
     }
     ;
-    throw new Error("Failed pattern match at Stroop (line 246, column 19 - line 248, column 16): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Stroop (line 251, column 19 - line 253, column 16): " + [v.constructor.name]);
   };
   var handleAction4 = function(dictMonadAff) {
     var liftEffect7 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
@@ -10542,16 +10588,16 @@
     return function(v) {
       if (v instanceof StartTest2) {
         return discard6(modify_7(function(v1) {
-          var $72 = {};
-          for (var $73 in v1) {
-            if ({}.hasOwnProperty.call(v1, $73)) {
-              $72[$73] = v1[$73];
+          var $73 = {};
+          for (var $74 in v1) {
+            if ({}.hasOwnProperty.call(v1, $74)) {
+              $73[$74] = v1[$74];
             }
             ;
           }
           ;
-          $72.stage = StroopTest.value;
-          return $72;
+          $73.stage = StroopTest.value;
+          return $73;
         }))(function() {
           return discard6(handleAction4(dictMonadAff)(NextTrial.value))(function() {
             return bind7(liftEffect7(windowImpl))(function(w) {
@@ -10584,19 +10630,19 @@
           ;
           return discard6(liftEffect7(preventDefault(toEvent2(v.value0))))(function() {
             var userInput = key(v.value0);
-            var $80 = contains(userInput)("RAVMravm");
-            if ($80) {
+            var $81 = contains(userInput)("RAVMravm");
+            if ($81) {
               return discard6(modify_7(function(v1) {
-                var $81 = {};
-                for (var $82 in v1) {
-                  if ({}.hasOwnProperty.call(v1, $82)) {
-                    $81[$82] = v1[$82];
+                var $82 = {};
+                for (var $83 in v1) {
+                  if ({}.hasOwnProperty.call(v1, $83)) {
+                    $82[$83] = v1[$83];
                   }
                   ;
                 }
                 ;
-                $81.responded = true;
-                return $81;
+                $82.responded = true;
+                return $82;
               }))(function() {
                 return bind7(get5)(function(state3) {
                   return bind7(liftEffect7(now))(function(currentTime2) {
@@ -10611,100 +10657,100 @@
                         return 0;
                       }
                       ;
-                      throw new Error("Failed pattern match at Stroop (line 170, column 29 - line 172, column 45): " + [state3.startTime.constructor.name]);
+                      throw new Error("Failed pattern match at Stroop (line 172, column 29 - line 174, column 45): " + [state3.startTime.constructor.name]);
                     }();
                     return discard6(function() {
-                      var $86 = userInput === firstLetter(state3.currentColor);
-                      if ($86) {
+                      var $87 = userInput === firstLetter(state3.currentColor);
+                      if ($87) {
                         return modify_7(function(v1) {
-                          var $91 = {};
-                          for (var $92 in v1) {
-                            if ({}.hasOwnProperty.call(v1, $92)) {
-                              $91[$92] = v1[$92];
+                          var $92 = {};
+                          for (var $93 in v1) {
+                            if ({}.hasOwnProperty.call(v1, $93)) {
+                              $92[$93] = v1[$93];
                             }
                             ;
                           }
                           ;
-                          $91.score = state3.score + 1 | 0;
-                          $91.totalTrials = state3.totalTrials + 1 | 0;
-                          $91.showFeedback = true;
-                          $91.feedbackMessage = "Correcto";
-                          $91.stroopTime = function() {
+                          $92.score = state3.score + 1 | 0;
+                          $92.totalTrials = state3.totalTrials + 1 | 0;
+                          $92.showFeedback = true;
+                          $92.feedbackMessage = "Correcto";
+                          $92.stroopTime = function() {
                             if (isStroop) {
                               return state3.stroopTime + timeTaken;
                             }
                             ;
                             return state3.stroopTime;
                           }();
-                          $91.stroopStimuli = function() {
+                          $92.stroopStimuli = function() {
                             if (isStroop) {
                               return state3.stroopStimuli + 1 | 0;
                             }
                             ;
                             return state3.stroopStimuli;
                           }();
-                          $91.nonStroopTime = function() {
+                          $92.nonStroopTime = function() {
                             if (isStroop) {
                               return state3.nonStroopTime;
                             }
                             ;
                             return state3.nonStroopTime + timeTaken;
                           }();
-                          $91.nonStroopStimuli = function() {
+                          $92.nonStroopStimuli = function() {
                             if (isStroop) {
                               return state3.nonStroopStimuli;
                             }
                             ;
                             return state3.nonStroopStimuli + 1 | 0;
                           }();
-                          return $91;
+                          return $92;
                         });
                       }
                       ;
                       return modify_7(function(v1) {
-                        var $98 = {};
-                        for (var $99 in v1) {
-                          if ({}.hasOwnProperty.call(v1, $99)) {
-                            $98[$99] = v1[$99];
+                        var $99 = {};
+                        for (var $100 in v1) {
+                          if ({}.hasOwnProperty.call(v1, $100)) {
+                            $99[$100] = v1[$100];
                           }
                           ;
                         }
                         ;
-                        $98.totalTrials = state3.totalTrials + 1 | 0;
-                        $98.showFeedback = true;
-                        $98.feedbackMessage = "Incorrecto";
-                        $98.stroopTime = function() {
+                        $99.totalTrials = state3.totalTrials + 1 | 0;
+                        $99.showFeedback = true;
+                        $99.feedbackMessage = "Incorrecto";
+                        $99.stroopTime = function() {
                           if (isStroop) {
                             return state3.stroopTime + timeTaken;
                           }
                           ;
                           return state3.stroopTime;
                         }();
-                        $98.nonStroopTime = function() {
+                        $99.nonStroopTime = function() {
                           if (isStroop) {
                             return state3.nonStroopTime;
                           }
                           ;
                           return state3.nonStroopTime + timeTaken;
                         }();
-                        $98.stroopErrors = function() {
+                        $99.stroopErrors = function() {
                           if (isStroop) {
                             return state3.stroopErrors + 1 | 0;
                           }
                           ;
                           return state3.stroopErrors;
                         }();
-                        $98.nonStroopErrors = function() {
+                        $99.nonStroopErrors = function() {
                           if (isStroop) {
                             return state3.nonStroopErrors;
                           }
                           ;
                           return state3.nonStroopErrors + 1 | 0;
                         }();
-                        return $98;
+                        return $99;
                       });
                     }())(function() {
-                      return discard6(liftAff1(liftAff2(delay(150))))(function() {
+                      return discard6(liftAff1(liftAff2(delay(400))))(function() {
                         return handleAction4(dictMonadAff)(NextTrial.value);
                       });
                     });
@@ -10720,42 +10766,47 @@
       ;
       if (v instanceof NextTrial) {
         return bind7(get5)(function(state3) {
-          var $102 = state3.totalTrials >= 20;
-          if ($102) {
+          var $103 = state3.totalTrials >= 20;
+          if ($103) {
             return modify_7(function(v1) {
-              var $103 = {};
-              for (var $104 in v1) {
-                if ({}.hasOwnProperty.call(v1, $104)) {
-                  $103[$104] = v1[$104];
+              var $104 = {};
+              for (var $105 in v1) {
+                if ({}.hasOwnProperty.call(v1, $105)) {
+                  $104[$105] = v1[$105];
                 }
                 ;
               }
               ;
-              $103.stage = StroopDone.value;
-              return $103;
+              $104.stage = StroopDone.value;
+              return $104;
             });
           }
           ;
           return bind7(liftEffect7(randomIndex))(function(wordIndex) {
             return bind7(liftEffect7(randomIndex))(function(colorIndex) {
+              var newWord = fromMaybe("Rojo")(index(words)(wordIndex));
+              var newColor = fromMaybe("Rojo")(index(words)(colorIndex));
+              var $107 = newWord === state3.currentWord && newColor === state3.currentColor;
+              if ($107) {
+                return handleAction4(dictMonadAff)(NextTrial.value);
+              }
+              ;
               return bind7(liftEffect7(now))(function(startTime) {
-                var newWord = fromMaybe("Rojo")(index(words)(wordIndex));
-                var newColor = fromMaybe("Rojo")(index(words)(colorIndex));
                 return modify_7(function(v1) {
-                  var $106 = {};
-                  for (var $107 in v1) {
-                    if ({}.hasOwnProperty.call(v1, $107)) {
-                      $106[$107] = v1[$107];
+                  var $108 = {};
+                  for (var $109 in v1) {
+                    if ({}.hasOwnProperty.call(v1, $109)) {
+                      $108[$109] = v1[$109];
                     }
                     ;
                   }
                   ;
-                  $106.currentWord = newWord;
-                  $106.currentColor = newColor;
-                  $106.showFeedback = false;
-                  $106.startTime = new Just(unInst(startTime));
-                  $106.responded = false;
-                  return $106;
+                  $108.currentWord = newWord;
+                  $108.currentColor = newColor;
+                  $108.showFeedback = false;
+                  $108.startTime = new Just(unInst(startTime));
+                  $108.responded = false;
+                  return $108;
                 });
               });
             });
@@ -10782,12 +10833,12 @@
               return raise(StroopDoneOut.value);
             }
             ;
-            throw new Error("Failed pattern match at Stroop (line 227, column 5 - line 229, column 39): " + [response.constructor.name]);
+            throw new Error("Failed pattern match at Stroop (line 232, column 5 - line 234, column 39): " + [response.constructor.name]);
           });
         });
       }
       ;
-      throw new Error("Failed pattern match at Stroop (line 142, column 16 - line 229, column 39): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Stroop (line 144, column 16 - line 234, column 39): " + [v.constructor.name]);
     };
   };
   var colorFromName = function(v) {
@@ -10811,9 +10862,9 @@
   };
   var render4 = function(state3) {
     if (state3.stage instanceof StroopInstructions) {
-      return div2([class_("instructions-container")])([p_([text("Placeholder instructions")]), button([onClick(function(v) {
+      return div2([class_("instructions-container")])([p_([text("En esta prueba ver\xE1s una serie de palabras de un color determinado.")]), p_([text("Deber\xE1s presionar en el teclado la letra inicial del color que tenga la palabra.")]), p_([text("R para Rojo, A para Azul, V para Verde y M para morado.")]), button([onClick(function(v) {
         return StartTest2.value;
-      })])([text("Start Test")])]);
+      })])([text("Comenzar prueba")])]);
     }
     ;
     if (state3.stage instanceof StroopTest) {
@@ -10832,7 +10883,7 @@
       })])([text("Siguiente")])]);
     }
     ;
-    throw new Error("Failed pattern match at Stroop (line 105, column 16 - line 139, column 8): " + [state3.stage.constructor.name]);
+    throw new Error("Failed pattern match at Stroop (line 105, column 16 - line 141, column 8): " + [state3.stage.constructor.name]);
   };
   var stroopComponent = function(dictMonadAff) {
     return mkComponent({
@@ -11234,7 +11285,7 @@
     return false;
   };
   var instructions2 = /* @__PURE__ */ function() {
-    return "En esta tarea lo que tiene que hacer es tomar cada una de las cartas mostradas y colocarlas sobre una de las zonas designadas seg\xFAn como crea que se relacionan o deban clasificarse. Los criterios de clasificaci\xF3n ir\xE1n cambiando conforme avance la prueba. Si la carta que coloc\xF3 es correcta, no suceder\xE1 nada, pero si es incorrecta, se le notificar\xE1. Entonces tome la siguiente carta y trate de colocarla en el lugar adecuado.";
+    return "En esta tarea lo que tiene que hacer es tomar cada una de las cartas mostradas y colocarlas sobre una de las zonas designadas seg\xFAn como crea que se relacionan o deban clasificarse.\n Los criterios de clasificaci\xF3n ir\xE1n cambiando conforme avance la prueba.\n Si la carta que coloc\xF3 es correcta, no suceder\xE1 nada, pero si es incorrecta, se le notificar\xE1.\n Entonces tome la siguiente carta y trate de colocarla en el lugar adecuado.";
   }();
   var initResults = {
     score: 0,
@@ -12454,11 +12505,9 @@
   };
 
   // output/Coordinator/index.js
-  var bind9 = /* @__PURE__ */ bind(bindHalogenM);
-  var gets8 = /* @__PURE__ */ gets(monadStateHalogenM);
   var modify_9 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var pure10 = /* @__PURE__ */ pure(applicativeHalogenM);
   var discard8 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
+  var pure10 = /* @__PURE__ */ pure(applicativeHalogenM);
   var slot6 = /* @__PURE__ */ slot();
   var slot14 = /* @__PURE__ */ slot6({
     reflectSymbol: function() {
@@ -12606,13 +12655,6 @@
     };
     return HandleStroop2;
   }();
-  var FadeOutComplete = /* @__PURE__ */ function() {
-    function FadeOutComplete2() {
-    }
-    ;
-    FadeOutComplete2.value = new FadeOutComplete2();
-    return FadeOutComplete2;
-  }();
   var stageFromMbStr = function(v) {
     if (v instanceof Nothing) {
       return Questions.value;
@@ -12639,105 +12681,83 @@
         return Stroop.value;
       }
       ;
+      if (v.value0 === "void") {
+        return Void.value;
+      }
+      ;
       return Questions.value;
     }
     ;
-    throw new Error("Failed pattern match at Coordinator (line 34, column 1 - line 34, column 40): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Coordinator (line 33, column 1 - line 33, column 40): " + [v.constructor.name]);
   };
   var initialState7 = function(stage) {
     return {
-      currentStage: stage,
-      fadingOutStage: Nothing.value
-    };
-  };
-  var mainHandler2 = function(dictMonadAff) {
-    return function(action2) {
-      if (action2 instanceof HandleQuestions) {
-        return fadeToStage(dictMonadAff)(Barrat.value);
-      }
-      ;
-      if (action2 instanceof HandleBarrat) {
-        return fadeToStage(dictMonadAff)(Beck.value);
-      }
-      ;
-      if (action2 instanceof HandleBeck) {
-        return fadeToStage(dictMonadAff)(Wisconsin.value);
-      }
-      ;
-      if (action2 instanceof HandleWisconsin) {
-        return fadeToStage(dictMonadAff)(GoNoGo.value);
-      }
-      ;
-      if (action2 instanceof HandleGoNoGo) {
-        return fadeToStage(dictMonadAff)(Stroop.value);
-      }
-      ;
-      if (action2 instanceof HandleStroop) {
-        return fadeToStage(dictMonadAff)(Ending.value);
-      }
-      ;
-      if (action2 instanceof FadeOutComplete) {
-        return bind9(gets8(function(v) {
-          return v.fadingOutStage;
-        }))(function(fadingOut) {
-          if (fadingOut instanceof Just) {
-            return modify_9(function(s) {
-              var $67 = {};
-              for (var $68 in s) {
-                if ({}.hasOwnProperty.call(s, $68)) {
-                  $67[$68] = s[$68];
-                }
-                ;
-              }
-              ;
-              $67.fadingOutStage = Nothing.value;
-              return $67;
-            });
-          }
-          ;
-          if (fadingOut instanceof Nothing) {
-            return pure10(unit);
-          }
-          ;
-          throw new Error("Failed pattern match at Coordinator (line 136, column 8 - line 138, column 33): " + [fadingOut.constructor.name]);
-        });
-      }
-      ;
-      return pure10(unit);
+      currentStage: stage
     };
   };
   var fadeToStage = function(dictMonadAff) {
-    var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     return function(nextStage) {
-      return discard8(modify_9(function(s) {
-        var $71 = {};
-        for (var $72 in s) {
-          if ({}.hasOwnProperty.call(s, $72)) {
-            $71[$72] = s[$72];
+      return modify_9(function(s) {
+        var $47 = {};
+        for (var $48 in s) {
+          if ({}.hasOwnProperty.call(s, $48)) {
+            $47[$48] = s[$48];
           }
           ;
         }
         ;
-        $71.fadingOutStage = new Just(s.currentStage);
-        return $71;
-      }))(function() {
-        return discard8(liftAff3(delay(500)))(function() {
-          return discard8(modify_9(function(s) {
-            var $74 = {};
-            for (var $75 in s) {
-              if ({}.hasOwnProperty.call(s, $75)) {
-                $74[$75] = s[$75];
-              }
-              ;
-            }
-            ;
-            $74.currentStage = nextStage;
-            return $74;
-          }))(function() {
-            return mainHandler2(dictMonadAff)(FadeOutComplete.value);
-          });
-        });
+        $47.currentStage = nextStage;
+        return $47;
       });
+    };
+  };
+  var mainHandler2 = function(dictMonadAff) {
+    var liftEffect7 = liftEffect(monadEffectHalogenM(dictMonadAff.MonadEffect0()));
+    var fadeToStage1 = fadeToStage(dictMonadAff);
+    return function(action2) {
+      if (action2 instanceof HandleQuestions && action2.value0 instanceof Submitted) {
+        return discard8(liftEffect7(setStageCookie("barrat")))(function() {
+          return fadeToStage1(Barrat.value);
+        });
+      }
+      ;
+      if (action2 instanceof HandleQuestions && action2.value0 instanceof BadCodes) {
+        return discard8(liftEffect7(setStageCookie("void")))(function() {
+          return fadeToStage1(Void.value);
+        });
+      }
+      ;
+      if (action2 instanceof HandleBarrat) {
+        return discard8(liftEffect7(setStageCookie("beck")))(function() {
+          return fadeToStage1(Beck.value);
+        });
+      }
+      ;
+      if (action2 instanceof HandleBeck) {
+        return discard8(liftEffect7(setStageCookie("wisconsin")))(function() {
+          return fadeToStage1(Wisconsin.value);
+        });
+      }
+      ;
+      if (action2 instanceof HandleWisconsin) {
+        return discard8(liftEffect7(setStageCookie("gonogo")))(function() {
+          return fadeToStage1(GoNoGo.value);
+        });
+      }
+      ;
+      if (action2 instanceof HandleGoNoGo) {
+        return discard8(liftEffect7(setStageCookie("stroop")))(function() {
+          return fadeToStage1(Stroop.value);
+        });
+      }
+      ;
+      if (action2 instanceof HandleStroop) {
+        return discard8(liftEffect7(setStageCookie("ending")))(function() {
+          return fadeToStage1(Ending.value);
+        });
+      }
+      ;
+      return pure10(unit);
     };
   };
   var _wisconsin = /* @__PURE__ */ function() {
@@ -12758,59 +12778,6 @@
   var _barrat = /* @__PURE__ */ function() {
     return $$Proxy.value;
   }();
-  var maybeRenderFadingOut = function(dictMonadAff) {
-    var questionsComponent2 = questionsComponent(dictMonadAff);
-    var barratComponent2 = barratComponent(dictMonadAff);
-    var mainComponent1 = mainComponent(dictMonadAff);
-    var mainComponent22 = mainComponent2(dictMonadAff);
-    var component2 = component(dictMonadAff);
-    var stroopComponent2 = stroopComponent(dictMonadAff);
-    return function(v) {
-      if (v instanceof Nothing) {
-        return text("");
-      }
-      ;
-      if (v instanceof Just) {
-        return div2([class_("fade-out")])([function() {
-          if (v.value0 instanceof Questions) {
-            return slot14(_questions)(10)(questionsComponent2)(unit)(HandleQuestions.create);
-          }
-          ;
-          if (v.value0 instanceof Barrat) {
-            return slot25(_barrat)(11)(barratComponent2)(unit)(HandleBarrat.create);
-          }
-          ;
-          if (v.value0 instanceof Beck) {
-            return slot33(_beck)(12)(mainComponent1)(unit)(HandleBeck.create);
-          }
-          ;
-          if (v.value0 instanceof Wisconsin) {
-            return slot42(_wisconsin)(13)(mainComponent22)(unit)(HandleWisconsin.create);
-          }
-          ;
-          if (v.value0 instanceof GoNoGo) {
-            return slot52(_goNoGo)(14)(component2)(unit)(HandleGoNoGo.create);
-          }
-          ;
-          if (v.value0 instanceof Stroop) {
-            return slot62(_stroop)(15)(stroopComponent2)(unit)(HandleStroop.create);
-          }
-          ;
-          if (v.value0 instanceof Ending) {
-            return text("Ending Component");
-          }
-          ;
-          if (v.value0 instanceof Void) {
-            return text("");
-          }
-          ;
-          throw new Error("Failed pattern match at Coordinator (line 114, column 7 - line 122, column 27): " + [v.value0.constructor.name]);
-        }()]);
-      }
-      ;
-      throw new Error("Failed pattern match at Coordinator (line 109, column 1 - line 109, column 99): " + [v.constructor.name]);
-    };
-  };
   var renderCurrent = function(dictMonadAff) {
     var questionsComponent2 = questionsComponent(dictMonadAff);
     var barratComponent2 = barratComponent(dictMonadAff);
@@ -12852,15 +12819,14 @@
           return text("");
         }
         ;
-        throw new Error("Failed pattern match at Coordinator (line 98, column 7 - line 106, column 27): " + [stage.constructor.name]);
+        throw new Error("Failed pattern match at Coordinator (line 96, column 7 - line 104, column 27): " + [stage.constructor.name]);
       }()]);
     };
   };
   var render6 = function(dictMonadAff) {
-    var maybeRenderFadingOut1 = maybeRenderFadingOut(dictMonadAff);
     var renderCurrent1 = renderCurrent(dictMonadAff);
     return function(state3) {
-      return div2([class_("coordinator-container")])([div2([class_("stage-container")])([maybeRenderFadingOut1(state3.fadingOutStage), renderCurrent1(state3.currentStage)])]);
+      return div2([class_("coordinator-container")])([div2([class_("stage-container")])([renderCurrent1(state3.currentStage)])]);
     };
   };
   var mainComponent3 = function(dictMonadAff) {
@@ -12878,7 +12844,7 @@
   };
 
   // output/Halogen.Aff.Util/index.js
-  var bind10 = /* @__PURE__ */ bind(bindAff);
+  var bind9 = /* @__PURE__ */ bind(bindAff);
   var liftEffect3 = /* @__PURE__ */ liftEffect(monadEffectAff);
   var bindFlipped6 = /* @__PURE__ */ bindFlipped(bindEffect);
   var composeKleisliFlipped4 = /* @__PURE__ */ composeKleisliFlipped(bindEffect);
@@ -12889,7 +12855,7 @@
   var discard9 = /* @__PURE__ */ discard(discardUnit);
   var throwError2 = /* @__PURE__ */ throwError(monadThrowAff);
   var selectElement = function(query2) {
-    return bind10(liftEffect3(bindFlipped6(composeKleisliFlipped4(function() {
+    return bind9(liftEffect3(bindFlipped6(composeKleisliFlipped4(function() {
       var $16 = querySelector(query2);
       return function($17) {
         return $16(toParentNode($17));
@@ -12916,7 +12882,7 @@
     };
   });
   var awaitBody = /* @__PURE__ */ discard9(bindAff)(awaitLoad)(function() {
-    return bind10(selectElement("body"))(function(body2) {
+    return bind9(selectElement("body"))(function(body2) {
       return maybe(throwError2(error("Could not find body")))(pure11)(body2);
     });
   });
@@ -13287,7 +13253,7 @@
   };
 
   // output/Halogen.Aff.Driver/index.js
-  var bind11 = /* @__PURE__ */ bind(bindEffect);
+  var bind10 = /* @__PURE__ */ bind(bindEffect);
   var discard11 = /* @__PURE__ */ discard(discardUnit);
   var for_2 = /* @__PURE__ */ for_(applicativeEffect)(foldableMaybe);
   var traverse_6 = /* @__PURE__ */ traverse_(applicativeAff)(foldableList);
@@ -13433,7 +13399,7 @@
                     })(read(childrenOutRef))();
                     when3(isDuplicate)(warn("Halogen: Duplicate slot address was detected during rendering, unexpected results may occur"))();
                     modify_(slot7.set($$var2))(childrenOutRef)();
-                    return bind11(read($$var2))(renderStateX2(function(v) {
+                    return bind10(read($$var2))(renderStateX2(function(v) {
                       if (v instanceof Nothing) {
                         return $$throw("Halogen internal error: child was not initialized in renderChild");
                       }
@@ -13839,11 +13805,11 @@
   };
 
   // output/Main/index.js
-  var bind16 = /* @__PURE__ */ bind(bindAff);
+  var bind11 = /* @__PURE__ */ bind(bindAff);
   var mainComponent4 = /* @__PURE__ */ mainComponent3(monadAffAff);
-  var main2 = /* @__PURE__ */ runHalogenAff(/* @__PURE__ */ bind16(/* @__PURE__ */ liftEffect(monadEffectAff)(/* @__PURE__ */ readCookie("stage")))(function(stageCookie) {
+  var main2 = /* @__PURE__ */ runHalogenAff(/* @__PURE__ */ bind11(/* @__PURE__ */ liftEffect(monadEffectAff)(/* @__PURE__ */ readCookie("stage")))(function(stageCookie) {
     var stage = stageFromMbStr(stageCookie);
-    return bind16(awaitBody)(function(body2) {
+    return bind11(awaitBody)(function(body2) {
       return runUI2(mainComponent4)(stage)(body2);
     });
   }));

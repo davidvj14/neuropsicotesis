@@ -26,23 +26,18 @@ to generate this file without the comments in this block.
   , "exceptions"
   , "foldable-traversable"
   , "halogen"
-  , "halogen-vdom"
   , "integers"
-  , "js-timers"
-  , "lazy"
   , "maybe"
   , "now"
   , "numbers"
   , "prelude"
   , "random"
-  , "record"
   , "strings"
   , "tuples"
   , "web-dom"
   , "web-events"
   , "web-html"
   , "web-uievents"
-  , "yoga-json"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
