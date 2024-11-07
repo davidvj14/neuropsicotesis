@@ -25,10 +25,12 @@ import Web.Event.Event (Event, preventDefault)
 import Web.HTML (window)
 import Web.HTML.Window (alert)
 import Web.UIEvent.MouseEvent as ME
+import Wisconsin (unsafeIndex)
 
 type State =
   { stage :: GoNoGoStage
   , currentStimulus :: Maybe Stimulus
+  , currentIndex :: Int
   , responded :: Boolean
   , responses :: Array Response
   , practiceResponses :: Array Response
@@ -95,6 +97,7 @@ initialState :: forall i. i -> State
 initialState _ = 
   { stage: GoNoGoInstructions
   , currentStimulus: Nothing
+  , currentIndex: 0
   , responded: false
   , responses: []
   , practiceResponses: []
@@ -136,7 +139,7 @@ renderPrepareMessage =
   HH.div
     [ HP.class_ $ H.ClassName "instructions-container"]
     [ HH.h2_ [ HH.text "Prepárate" ]
-    , HH.p_ [ HH.text "Coloca tu mano en el click derecho del mouse." ]
+    , HH.p_ [ HH.text "Coloca tu mano en el click izquierdo del mouse." ]
     ]
 
 renderTestMessage :: forall m. H.ComponentHTML Action () m
@@ -191,7 +194,7 @@ goNoGoHandler :: forall m. MonadAff m => Action -> H.HalogenM State Action () Ou
 goNoGoHandler = case _ of
   GoNoGoInstructionsDone -> do
     H.modify_ _ { stage = PrepareMessage }
-    H.liftAff $ delay $ Milliseconds 1000.0
+    H.liftAff $ delay $ Milliseconds 4000.0
     goNoGoHandler StartPractice
   StartPractice -> do
     H.modify_ _ { stage = PracticeSession }
@@ -229,31 +232,37 @@ goNoGoHandler = case _ of
 runPracticeSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runPracticeSession = do
   replicateM_ 5 $ do
-    showStimulus
+    showStimulusRandom
     H.liftAff $ delay $ Milliseconds 500.0
     hideStimulus
     H.liftAff $ delay $ Milliseconds 1500.0
-  H.modify_ _ { stage = TestMessage }
-  H.liftAff $ delay $ Milliseconds 2000.0
+  H.modify_ _ { stage = TestMessage, currentIndex = 0 }
+  H.liftAff $ delay $ Milliseconds 4000.0
   goNoGoHandler StartTest
 
 runTestSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runTestSession = do
-  replicateM_ 5 $ do
+  replicateM_ 75 $ do
     showStimulus
     H.liftAff $ delay $ Milliseconds 500.0
     hideStimulus
     H.liftAff $ delay $ Milliseconds 1500.0
   H.modify_ _ { stage = Complete }
 
+showStimulusRandom :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
+showStimulusRandom = do
+  stim <- H.liftEffect randomStimulus
+  H.modify_ _ { currentStimulus = Just stim, showStimulus = true, responded = false, showResult = false }
+
 showStimulus :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 showStimulus = do
-  stim <- H.liftEffect randomStimulus
+  currentIndex <- H.gets _.currentIndex
+  let stim =  unsafeIndex stimuli currentIndex
   now <- H.liftEffect nowToNumber
   H.modify_ _ { currentStimulus = Just stim, showStimulus = true, lastTimer = now, showResult = false, responded = false }
 
 hideStimulus :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
-hideStimulus = H.modify_ _ { showStimulus = false }
+hideStimulus = H.modify_ \state -> state { showStimulus = false, currentIndex = state.currentIndex + 1 }
 
 randomStimulus :: Effect Stimulus
 randomStimulus = do
@@ -284,3 +293,5 @@ sum = Array.foldl (+) 0.0
 nowToNumber :: Effect Number
 nowToNumber = map (\(Milliseconds ms) -> ms) $ map unInstant now
 
+stimuli :: Array Stimulus
+stimuli = [Go,Go,NoGo,NoGo,Go,Go,Go,NoGo,Go,NoGo,NoGo,Go,NoGo,NoGo,Go,Go,Go,Go,Go,NoGo,Go,NoGo,Go,Go,Go,Go,Go,NoGo,Go,Go,Go,NoGo,NoGo,NoGo,Go,Go,Go,Go,NoGo,Go,Go,NoGo,Go,Go,NoGo,NoGo,Go,NoGo,NoGo,NoGo,Go,Go,Go,Go,Go,Go,Go,Go,Go,NoGo,Go,Go,Go,NoGo,Go,NoGo,NoGo,Go,NoGo,NoGo,Go,Go,Go,NoGo,Go]
