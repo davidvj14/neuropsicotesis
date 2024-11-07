@@ -40,6 +40,7 @@ stageFromMbStr (Just cookie) =
        "gonogo" -> GoNoGo
        "stroop" -> Stroop
        "void" -> Void
+       "ending" -> Ending
        _ -> Questions
 
 data Action 
@@ -100,7 +101,7 @@ renderCurrent stage =
         Wisconsin -> HH.slot _wisconsin 3 W.mainComponent unit HandleWisconsin
         GoNoGo -> HH.slot _goNoGo 4 GNG.component unit HandleGoNoGo
         Stroop -> HH.slot _stroop 5 Stroop.stroopComponent unit HandleStroop
-        Ending -> HH.text "Ending Component"
+        Ending -> ending
         Void -> HH.text ""
     ]
 
@@ -133,3 +134,13 @@ mainHandler action = do
 fadeToStage :: forall output m. MonadAff m => Stage -> H.HalogenM State Action ChildSlots output m Unit
 fadeToStage nextStage = do
   H.modify_ \s -> s { currentStage = nextStage }
+
+ending :: forall m. MonadAff m => H.ComponentHTML Action ChildSlots m
+ending = 
+  HH.div
+    [ HP.class_ $ H.ClassName "ending-container" ]
+    [ HH.img [ HP.src "public/gracias.jpeg", HP.style "width: 50vw;" ]
+    , HH.br_
+    , HH.h2_ [ HH.text "Has finalizado toda la prueba, agradecemos tu participación." ]
+    ]
+

@@ -31,6 +31,7 @@ import Web.HTML.HTMLElement (focus, fromElement)
 import Web.HTML.Window (document)
 import Web.UIEvent.KeyboardEvent (KeyboardEvent, key)
 import Web.UIEvent.KeyboardEvent as KE
+import Wisconsin (unsafeIndex)
 
 type State =
   { currentWord :: String
@@ -107,7 +108,7 @@ render state = case state.stage of
     HH.div
       [ HP.class_ $ H.ClassName "instructions-container" ]
       [ HH.p_ [ HH.text "En esta prueba verás una serie de palabras de un color determinado." ]
-      , HH.p_ [ HH.text "Deberás presionar en el teclado la letra inicial del color que tenga la palabra." ]
+      , HH.p_ [ HH.text "Deberás presionar en el teclado la letra inicial del color con la que está escrita la palabra lo más rápido posible." ]
       , HH.p_ [ HH.text "R para Rojo, A para Azul, V para Verde y M para morado." ]
       , HH.button
           [ HE.onClick \_ -> StartTest ]
@@ -202,20 +203,15 @@ handleAction = case _ of
     if state.totalTrials >= 40
       then H.modify_ _ { stage = StroopDone }
       else do
-        wordIndex <- H.liftEffect randomIndex
-        colorIndex <- H.liftEffect randomIndex
-        let newWord = fromMaybe "Rojo" $ words !! wordIndex
-        let newColor = fromMaybe "Rojo" $ words !! colorIndex
-        if newWord == state.currentWord && newColor == state.currentColor
-          then handleAction NextTrial
-          else do
-            startTime <- H.liftEffect now
-            H.modify_ _ { currentWord = newWord
-                        , currentColor = newColor
-                        , showFeedback = false
-                        , startTime = Just $ unInst startTime
-                        , responded = false
-                        }
+        let newWord = fromMaybe "Rojo" $ words !! (unsafeIndex wordsIndices state.totalTrials)
+        let newColor = fromMaybe "Rojo" $ words !! (unsafeIndex colorsIndices state.totalTrials)
+        startTime <- H.liftEffect now
+        H.modify_ _ { currentWord = newWord
+                    , currentColor = newColor
+                    , showFeedback = false
+                    , startTime = Just $ unInst startTime
+                    , responded = false
+                    }
 
   SubmitResults -> do
     state <- H.get
@@ -235,6 +231,12 @@ handleAction = case _ of
 
 words :: Array String
 words = ["Rojo", "Azul", "Verde", "Morado"]
+
+wordsIndices :: Array Int
+wordsIndices = [2, 2, 1, 2, 1, 3, 2, 2, 1, 1, 3, 2, 1, 2, 3, 3, 3, 0, 0, 3, 2, 0, 2, 1, 2, 1, 0, 3, 0, 3, 0, 3, 1, 0, 0, 1, 0, 0, 3, 3]
+
+colorsIndices :: Array Int
+colorsIndices = [0, 2, 1, 3, 2, 2, 2, 0, 1, 0, 3, 1, 0, 2, 3, 1, 3, 0, 2, 2, 2, 1, 2, 3, 0, 1, 0, 3, 0, 1, 0, 3, 3, 0, 2, 1, 1, 3, 1, 3]
 
 colorFromName :: String -> String
 colorFromName = case _ of
