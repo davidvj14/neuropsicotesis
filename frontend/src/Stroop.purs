@@ -199,7 +199,7 @@ handleAction = case _ of
 
   NextTrial -> do
     state <- H.get
-    if state.totalTrials >= 20
+    if state.totalTrials >= 40
       then H.modify_ _ { stage = StroopDone }
       else do
         wordIndex <- H.liftEffect randomIndex
