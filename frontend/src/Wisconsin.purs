@@ -519,7 +519,7 @@ setNextCard = do
   currentIndex <- H.gets _.currentIndex
   H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
-  if newIndex >= 5
+  if newIndex >= 64
     then do
        answers <- H.gets _.answers
        attempts <- H.gets _.criterionAttempts
