@@ -12094,6 +12094,7 @@
   var bind8 = /* @__PURE__ */ bind(bindHalogenM);
   var pure9 = /* @__PURE__ */ pure(applicativeHalogenM);
   var gets7 = /* @__PURE__ */ gets(monadStateHalogenM);
+  var log6 = /* @__PURE__ */ log3(monadEffectEffect);
   var get5 = /* @__PURE__ */ get(monadStateHalogenM);
   var liftAff2 = /* @__PURE__ */ liftAff(monadAffAff);
   var gEncodeJsonCons6 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
@@ -12217,7 +12218,7 @@
       return "";
     }
     ;
-    throw new Error("Failed pattern match at Stroop (line 253, column 19 - line 255, column 16): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at Stroop (line 255, column 19 - line 257, column 16): " + [v.constructor.name]);
   };
   var colorsIndices = [0, 2, 1, 3, 2, 2, 2, 0, 1, 0, 3, 1, 0, 2, 3, 1, 3, 0, 2, 2, 2, 1, 2, 3, 0, 1, 0, 3, 0, 1, 0, 3, 3, 0, 2, 1, 1, 3, 1, 3];
   var handleAction4 = function(dictMonadAff) {
@@ -12226,16 +12227,16 @@
     return function(v) {
       if (v instanceof StartTest2) {
         return discard7(modify_8(function(v1) {
-          var $72 = {};
-          for (var $73 in v1) {
-            if ({}.hasOwnProperty.call(v1, $73)) {
-              $72[$73] = v1[$73];
+          var $73 = {};
+          for (var $74 in v1) {
+            if ({}.hasOwnProperty.call(v1, $74)) {
+              $73[$74] = v1[$74];
             }
             ;
           }
           ;
-          $72.stage = StroopTest.value;
-          return $72;
+          $73.stage = StroopTest.value;
+          return $73;
         }))(function() {
           return discard7(handleAction4(dictMonadAff)(NextTrial.value))(function() {
             return bind8(liftEffect7(windowImpl))(function(w) {
@@ -12267,156 +12268,158 @@
           }
           ;
           return discard7(liftEffect7(preventDefault(toEvent3(v.value0))))(function() {
-            var userInput = key(v.value0);
-            var $80 = contains(userInput)("RAVMravm");
-            if ($80) {
-              return discard7(modify_8(function(v1) {
-                var $81 = {};
-                for (var $82 in v1) {
-                  if ({}.hasOwnProperty.call(v1, $82)) {
-                    $81[$82] = v1[$82];
+            var userInput = toLower(key(v.value0));
+            return discard7(liftEffect7(log6(userInput)))(function() {
+              var $81 = contains(toLower(userInput))("ravm");
+              if ($81) {
+                return discard7(modify_8(function(v1) {
+                  var $82 = {};
+                  for (var $83 in v1) {
+                    if ({}.hasOwnProperty.call(v1, $83)) {
+                      $82[$83] = v1[$83];
+                    }
+                    ;
                   }
                   ;
-                }
-                ;
-                $81.responded = true;
-                return $81;
-              }))(function() {
-                return bind8(get5)(function(state3) {
-                  return bind8(liftEffect7(now))(function(currentTime2) {
-                    var cTime = unInst(currentTime2);
-                    var isStroop = state3.currentWord !== state3.currentColor;
-                    var timeTaken = function() {
-                      if (state3.startTime instanceof Just) {
-                        return cTime - state3.startTime.value0;
-                      }
-                      ;
-                      if (state3.startTime instanceof Nothing) {
-                        return 0;
-                      }
-                      ;
-                      throw new Error("Failed pattern match at Stroop (line 173, column 29 - line 175, column 45): " + [state3.startTime.constructor.name]);
-                    }();
-                    return discard7(function() {
-                      var $86 = userInput === firstLetter(state3.currentColor);
-                      if ($86) {
+                  $82.responded = true;
+                  return $82;
+                }))(function() {
+                  return bind8(get5)(function(state3) {
+                    return bind8(liftEffect7(now))(function(currentTime2) {
+                      var cTime = unInst(currentTime2);
+                      var isStroop = state3.currentWord !== state3.currentColor;
+                      var timeTaken = function() {
+                        if (state3.startTime instanceof Just) {
+                          return cTime - state3.startTime.value0;
+                        }
+                        ;
+                        if (state3.startTime instanceof Nothing) {
+                          return 0;
+                        }
+                        ;
+                        throw new Error("Failed pattern match at Stroop (line 175, column 29 - line 177, column 45): " + [state3.startTime.constructor.name]);
+                      }();
+                      return discard7(function() {
+                        var $87 = userInput === firstLetter(state3.currentColor);
+                        if ($87) {
+                          return modify_8(function(v1) {
+                            var $92 = {};
+                            for (var $93 in v1) {
+                              if ({}.hasOwnProperty.call(v1, $93)) {
+                                $92[$93] = v1[$93];
+                              }
+                              ;
+                            }
+                            ;
+                            $92.score = state3.score + 1 | 0;
+                            $92.totalTrials = state3.totalTrials + 1 | 0;
+                            $92.showFeedback = true;
+                            $92.feedbackMessage = "Correcto";
+                            $92.stroopTime = function() {
+                              if (isStroop) {
+                                return state3.stroopTime + timeTaken;
+                              }
+                              ;
+                              return state3.stroopTime;
+                            }();
+                            $92.stroopStimuli = function() {
+                              if (isStroop) {
+                                return state3.stroopStimuli + 1 | 0;
+                              }
+                              ;
+                              return state3.stroopStimuli;
+                            }();
+                            $92.nonStroopTime = function() {
+                              if (isStroop) {
+                                return state3.nonStroopTime;
+                              }
+                              ;
+                              return state3.nonStroopTime + timeTaken;
+                            }();
+                            $92.nonStroopStimuli = function() {
+                              if (isStroop) {
+                                return state3.nonStroopStimuli;
+                              }
+                              ;
+                              return state3.nonStroopStimuli + 1 | 0;
+                            }();
+                            return $92;
+                          });
+                        }
+                        ;
                         return modify_8(function(v1) {
-                          var $91 = {};
-                          for (var $92 in v1) {
-                            if ({}.hasOwnProperty.call(v1, $92)) {
-                              $91[$92] = v1[$92];
+                          var $99 = {};
+                          for (var $100 in v1) {
+                            if ({}.hasOwnProperty.call(v1, $100)) {
+                              $99[$100] = v1[$100];
                             }
                             ;
                           }
                           ;
-                          $91.score = state3.score + 1 | 0;
-                          $91.totalTrials = state3.totalTrials + 1 | 0;
-                          $91.showFeedback = true;
-                          $91.feedbackMessage = "Correcto";
-                          $91.stroopTime = function() {
+                          $99.totalTrials = state3.totalTrials + 1 | 0;
+                          $99.showFeedback = true;
+                          $99.feedbackMessage = "Incorrecto";
+                          $99.stroopTime = function() {
                             if (isStroop) {
                               return state3.stroopTime + timeTaken;
                             }
                             ;
                             return state3.stroopTime;
                           }();
-                          $91.stroopStimuli = function() {
-                            if (isStroop) {
-                              return state3.stroopStimuli + 1 | 0;
-                            }
-                            ;
-                            return state3.stroopStimuli;
-                          }();
-                          $91.nonStroopTime = function() {
+                          $99.nonStroopTime = function() {
                             if (isStroop) {
                               return state3.nonStroopTime;
                             }
                             ;
                             return state3.nonStroopTime + timeTaken;
                           }();
-                          $91.nonStroopStimuli = function() {
+                          $99.stroopErrors = function() {
                             if (isStroop) {
-                              return state3.nonStroopStimuli;
+                              return state3.stroopErrors + 1 | 0;
                             }
                             ;
-                            return state3.nonStroopStimuli + 1 | 0;
+                            return state3.stroopErrors;
                           }();
-                          return $91;
+                          $99.nonStroopErrors = function() {
+                            if (isStroop) {
+                              return state3.nonStroopErrors;
+                            }
+                            ;
+                            return state3.nonStroopErrors + 1 | 0;
+                          }();
+                          return $99;
                         });
-                      }
-                      ;
-                      return modify_8(function(v1) {
-                        var $98 = {};
-                        for (var $99 in v1) {
-                          if ({}.hasOwnProperty.call(v1, $99)) {
-                            $98[$99] = v1[$99];
-                          }
-                          ;
-                        }
-                        ;
-                        $98.totalTrials = state3.totalTrials + 1 | 0;
-                        $98.showFeedback = true;
-                        $98.feedbackMessage = "Incorrecto";
-                        $98.stroopTime = function() {
-                          if (isStroop) {
-                            return state3.stroopTime + timeTaken;
-                          }
-                          ;
-                          return state3.stroopTime;
-                        }();
-                        $98.nonStroopTime = function() {
-                          if (isStroop) {
-                            return state3.nonStroopTime;
-                          }
-                          ;
-                          return state3.nonStroopTime + timeTaken;
-                        }();
-                        $98.stroopErrors = function() {
-                          if (isStroop) {
-                            return state3.stroopErrors + 1 | 0;
-                          }
-                          ;
-                          return state3.stroopErrors;
-                        }();
-                        $98.nonStroopErrors = function() {
-                          if (isStroop) {
-                            return state3.nonStroopErrors;
-                          }
-                          ;
-                          return state3.nonStroopErrors + 1 | 0;
-                        }();
-                        return $98;
-                      });
-                    }())(function() {
-                      return discard7(liftAff1(liftAff2(delay(400))))(function() {
-                        return handleAction4(dictMonadAff)(NextTrial.value);
+                      }())(function() {
+                        return discard7(liftAff1(liftAff2(delay(400))))(function() {
+                          return handleAction4(dictMonadAff)(NextTrial.value);
+                        });
                       });
                     });
                   });
                 });
-              });
-            }
-            ;
-            return pure9(unit);
+              }
+              ;
+              return pure9(unit);
+            });
           });
         });
       }
       ;
       if (v instanceof NextTrial) {
         return bind8(get5)(function(state3) {
-          var $102 = state3.totalTrials >= 40;
-          if ($102) {
+          var $103 = state3.totalTrials >= 40;
+          if ($103) {
             return modify_8(function(v1) {
-              var $103 = {};
-              for (var $104 in v1) {
-                if ({}.hasOwnProperty.call(v1, $104)) {
-                  $103[$104] = v1[$104];
+              var $104 = {};
+              for (var $105 in v1) {
+                if ({}.hasOwnProperty.call(v1, $105)) {
+                  $104[$105] = v1[$105];
                 }
                 ;
               }
               ;
-              $103.stage = StroopDone.value;
-              return $103;
+              $104.stage = StroopDone.value;
+              return $104;
             });
           }
           ;
@@ -12424,20 +12427,20 @@
           var newColor = fromMaybe("Rojo")(index(words)(unsafeIndex2(colorsIndices)(state3.totalTrials)));
           return bind8(liftEffect7(now))(function(startTime) {
             return modify_8(function(v1) {
-              var $106 = {};
-              for (var $107 in v1) {
-                if ({}.hasOwnProperty.call(v1, $107)) {
-                  $106[$107] = v1[$107];
+              var $107 = {};
+              for (var $108 in v1) {
+                if ({}.hasOwnProperty.call(v1, $108)) {
+                  $107[$108] = v1[$108];
                 }
                 ;
               }
               ;
-              $106.currentWord = newWord;
-              $106.currentColor = newColor;
-              $106.showFeedback = false;
-              $106.startTime = new Just(unInst(startTime));
-              $106.responded = false;
-              return $106;
+              $107.currentWord = newWord;
+              $107.currentColor = newColor;
+              $107.showFeedback = false;
+              $107.startTime = new Just(unInst(startTime));
+              $107.responded = false;
+              return $107;
             });
           });
         });
@@ -12462,12 +12465,12 @@
               return raise(StroopDoneOut.value);
             }
             ;
-            throw new Error("Failed pattern match at Stroop (line 228, column 5 - line 230, column 39): " + [response.constructor.name]);
+            throw new Error("Failed pattern match at Stroop (line 230, column 5 - line 232, column 39): " + [response.constructor.name]);
           });
         });
       }
       ;
-      throw new Error("Failed pattern match at Stroop (line 145, column 16 - line 230, column 39): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Stroop (line 146, column 16 - line 232, column 39): " + [v.constructor.name]);
     };
   };
   var colorFromName = function(v) {
@@ -12512,7 +12515,7 @@
       })])([text("Siguiente")])]);
     }
     ;
-    throw new Error("Failed pattern match at Stroop (line 106, column 16 - line 142, column 8): " + [state3.stage.constructor.name]);
+    throw new Error("Failed pattern match at Stroop (line 107, column 16 - line 143, column 8): " + [state3.stage.constructor.name]);
   };
   var stroopComponent = function(dictMonadAff) {
     return mkComponent({
