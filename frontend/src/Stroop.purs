@@ -16,6 +16,7 @@ import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
 import Effect.Aff (delay)
 import Effect.Aff.Class (class MonadAff)
+import Effect.Class.Console (log)
 import Effect.Now (now)
 import Effect.Random (randomInt)
 import Halogen as H
@@ -163,7 +164,8 @@ handleAction = case _ of
       else do
         H.liftEffect $ preventDefault $ KE.toEvent event
         let userInput = key event
-        if contains (Pattern userInput) "RAVMravm"
+        H.liftEffect $ log userInput
+        if contains (Pattern $ toLower userInput) "RAVMravm"
           then do
             H.modify_ _ { responded = true }
             state <- H.get
