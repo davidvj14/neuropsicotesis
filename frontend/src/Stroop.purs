@@ -163,9 +163,9 @@ handleAction = case _ of
       then pure unit
       else do
         H.liftEffect $ preventDefault $ KE.toEvent event
-        let userInput = key event
+        let userInput = toLower $ key event
         H.liftEffect $ log userInput
-        if contains (Pattern $ toLower userInput) "RAVMravm"
+        if contains (Pattern $ toLower userInput) "ravm"
           then do
             H.modify_ _ { responded = true }
             state <- H.get
