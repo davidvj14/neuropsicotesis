@@ -9082,29 +9082,29 @@
   var timerShowIncorrect = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     return discard4(modify_5(function(state3) {
-      var $190 = {};
-      for (var $191 in state3) {
-        if ({}.hasOwnProperty.call(state3, $191)) {
-          $190[$191] = state3[$191];
+      var $191 = {};
+      for (var $192 in state3) {
+        if ({}.hasOwnProperty.call(state3, $192)) {
+          $191[$192] = state3[$192];
         }
         ;
       }
       ;
-      $190.showIncorrect = true;
-      return $190;
+      $191.showIncorrect = true;
+      return $191;
     }))(function() {
       return discard4(liftAff3(delay(500)))(function() {
         return modify_5(function(state3) {
-          var $193 = {};
-          for (var $194 in state3) {
-            if ({}.hasOwnProperty.call(state3, $194)) {
-              $193[$194] = state3[$194];
+          var $194 = {};
+          for (var $195 in state3) {
+            if ({}.hasOwnProperty.call(state3, $195)) {
+              $194[$195] = state3[$195];
             }
             ;
           }
           ;
-          $193.showIncorrect = false;
-          return $193;
+          $194.showIncorrect = false;
+          return $194;
         });
       });
     });
@@ -9124,7 +9124,7 @@
           return [];
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 147, column 5 - line 154, column 23): " + [mbCard.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 149, column 5 - line 156, column 23): " + [mbCard.constructor.name]);
       }());
     };
   };
@@ -9157,6 +9157,9 @@
     timeAfterError: 0,
     totalTime: 0,
     criterionAttempts: []
+  };
+  var hiddenCard = function(card) {
+    return img([src2(card.image), style("display: none")]);
   };
   var eqCriterion = {
     eq: function(x) {
@@ -9250,7 +9253,7 @@
             return eq12(v.value0)(v1.value0) || eq12(v.value0)(v1.value1);
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 364, column 5 - line 367, column 48): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 376, column 5 - line 379, column 48): " + [v1.constructor.name]);
         }
         ;
         if (v instanceof TwoErr) {
@@ -9266,10 +9269,10 @@
             return eq12(v.value0)(v1.value0) || (eq12(v.value0)(v1.value1) || (eq12(v.value1)(v1.value0) || eq12(v.value1)(v1.value1)));
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 369, column 5 - line 372, column 72): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 381, column 5 - line 384, column 72): " + [v1.constructor.name]);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 360, column 1 - line 372, column 72): " + [v.constructor.name, v1.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 372, column 1 - line 384, column 72): " + [v.constructor.name, v1.constructor.name]);
       };
     }
   };
@@ -9344,15 +9347,6 @@
     return div2([class_("sorting-area")])([img([src2(card.image), style("overflow: hidden")])]);
   };
   var criteriaCards = /* @__PURE__ */ div2([/* @__PURE__ */ id3("criteria-cards")])([/* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(0)), /* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(1)), /* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(2)), /* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(3))]);
-  var renderWisconsin = function(state3) {
-    return div2([class_("wisconsin-container")])([function() {
-      if (state3.showIncorrect) {
-        return renderIncorrect;
-      }
-      ;
-      return div_([]);
-    }(), criteriaCards, br_, sortingAreas(state3.sortedCards), deckArea(state3.currentCard)]);
-  };
   var criteria = /* @__PURE__ */ function() {
     return [Color.value, Shape.value, $$Number.value, Shape.value, $$Number.value, Color.value];
   }();
@@ -9601,7 +9595,7 @@
                       });
                     }
                     ;
-                    throw new Error("Failed pattern match at Wisconsin (line 209, column 3 - line 260, column 25): " + [currentCriterion.constructor.name]);
+                    throw new Error("Failed pattern match at Wisconsin (line 221, column 3 - line 272, column 25): " + [currentCriterion.constructor.name]);
                   });
                 });
               });
@@ -9627,10 +9621,10 @@
           return eq5(v.value0.grade)(grade);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 407, column 17 - line 409, column 42): " + [v.value0.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 419, column 17 - line 421, column 42): " + [v.value0.grade.constructor.name]);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 405, column 3 - line 409, column 42): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 417, column 3 - line 421, column 42): " + [v.constructor.name]);
     };
   };
   var checkForMaintenanceError = function(last4) {
@@ -9776,7 +9770,7 @@
           };
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 432, column 5 - line 442, column 52): " + [answer.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 444, column 5 - line 454, column 52): " + [answer.grade.constructor.name]);
       };
     };
   };
@@ -9822,7 +9816,7 @@
                   return;
                 }
                 ;
-                throw new Error("Failed pattern match at Wisconsin (line 453, column 11 - line 460, column 61): " + [v1.constructor.name]);
+                throw new Error("Failed pattern match at Wisconsin (line 465, column 11 - line 472, column 61): " + [v1.constructor.name]);
               }
               ;
               while (!$tco_done) {
@@ -9836,7 +9830,7 @@
         return go2(initialResult)([])(answers);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 446, column 3 - line 462, column 36): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 458, column 3 - line 474, column 36): " + [v.constructor.name]);
     };
   };
   var cards = /* @__PURE__ */ function() {
@@ -10162,6 +10156,16 @@
       number: Four.value
     }];
   }();
+  var hiddenCards = /* @__PURE__ */ div2([])(/* @__PURE__ */ map(functorArray)(hiddenCard)(cards));
+  var renderWisconsin = function(state3) {
+    return div2([class_("wisconsin-container")])([function() {
+      if (state3.showIncorrect) {
+        return renderIncorrect;
+      }
+      ;
+      return div_([]);
+    }(), criteriaCards, hiddenCards, br_, sortingAreas(state3.sortedCards), deckArea(state3.currentCard)]);
+  };
   var initialState3 = function(v) {
     return {
       currentCard: unsafeIndex2(cards)(0),
@@ -10188,8 +10192,8 @@
     }))(function(currentIndex) {
       return discard4(liftEffect7(log5(show5(currentIndex))))(function() {
         var newIndex = currentIndex + 1 | 0;
-        var $295 = newIndex >= 64;
-        if ($295) {
+        var $296 = newIndex >= 64;
+        if ($296) {
           return bind5(gets4(function(v) {
             return v.answers;
           }))(function(answers) {
@@ -10202,17 +10206,17 @@
         }
         ;
         return modify_5(function(state3) {
-          var $296 = {};
-          for (var $297 in state3) {
-            if ({}.hasOwnProperty.call(state3, $297)) {
-              $296[$297] = state3[$297];
+          var $297 = {};
+          for (var $298 in state3) {
+            if ({}.hasOwnProperty.call(state3, $298)) {
+              $297[$298] = state3[$298];
             }
             ;
           }
           ;
-          $296.currentIndex = newIndex;
-          $296.currentCard = nextCard(newIndex);
-          return $296;
+          $297.currentIndex = newIndex;
+          $297.currentCard = nextCard(newIndex);
+          return $297;
         });
       });
     });
@@ -10235,16 +10239,16 @@
             }))(function(currentCard) {
               var newSorted = unsafeArrUpdate(areaId)(new Just(currentCard))(sortedCards);
               return discard4(modify_5(function(state3) {
-                var $299 = {};
-                for (var $300 in state3) {
-                  if ({}.hasOwnProperty.call(state3, $300)) {
-                    $299[$300] = state3[$300];
+                var $300 = {};
+                for (var $301 in state3) {
+                  if ({}.hasOwnProperty.call(state3, $301)) {
+                    $300[$301] = state3[$301];
                   }
                   ;
                 }
                 ;
-                $299.sortedCards = newSorted;
-                return $299;
+                $300.sortedCards = newSorted;
+                return $300;
               }))(function() {
                 return bind5(evalAnswer1(areaId))(function(isCorrect) {
                   return discard4(when2(!isCorrect)(timerShowIncorrect1))(function() {
@@ -10252,16 +10256,16 @@
                       return discard4(maybeNextCriterion1)(function() {
                         return bind5(liftEffect7(nowToNumber))(function(timer) {
                           return modify_5(function(state3) {
-                            var $302 = {};
-                            for (var $303 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $303)) {
-                                $302[$303] = state3[$303];
+                            var $303 = {};
+                            for (var $304 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $304)) {
+                                $303[$304] = state3[$304];
                               }
                               ;
                             }
                             ;
-                            $302.lastTimer = timer;
-                            return $302;
+                            $303.lastTimer = timer;
+                            return $303;
                           });
                         });
                       });
@@ -10283,17 +10287,17 @@
       if (action2 instanceof WisconsinInstructionsDone) {
         return bind5(liftEffect7(nowToNumber))(function(ms) {
           return modify_5(function(state3) {
-            var $306 = {};
-            for (var $307 in state3) {
-              if ({}.hasOwnProperty.call(state3, $307)) {
-                $306[$307] = state3[$307];
+            var $307 = {};
+            for (var $308 in state3) {
+              if ({}.hasOwnProperty.call(state3, $308)) {
+                $307[$308] = state3[$308];
               }
               ;
             }
             ;
-            $306.stage = WisconsinTest.value;
-            $306.lastTimer = ms;
-            return $306;
+            $307.stage = WisconsinTest.value;
+            $307.lastTimer = ms;
+            return $307;
           });
         });
       }
@@ -10347,7 +10351,7 @@
         return slot24(_wisconsinTest)(41)(wisconsinComponent1)(state3)(HandleWisconsinDone.create);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 114, column 16 - line 118, column 75): " + [state3.stage.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 115, column 16 - line 119, column 75): " + [state3.stage.constructor.name]);
     };
   };
   var mainComponent2 = function(dictMonadAff) {
