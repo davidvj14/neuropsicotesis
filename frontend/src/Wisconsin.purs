@@ -11,6 +11,7 @@ import Data.Array as Array
 import Data.DateTime.Instant (unInstant)
 import Data.Maybe (Maybe(..))
 import Data.Time.Duration (Milliseconds(..))
+import Data.Traversable (for, traverse)
 import Effect (Effect)
 import Effect.Aff as Aff
 import Effect.Aff.Class (class MonadAff)
@@ -132,6 +133,7 @@ renderWisconsin state =
     [ HP.class_ $ H.ClassName "wisconsin-container" ]
     [ if state.showIncorrect then renderIncorrect else HH.div_ []
     , criteriaCards
+    , hiddenCards
     , HH.br_ 
     , sortingAreas state.sortedCards 
     , deckArea state.currentCard
@@ -152,6 +154,16 @@ sortingArea areaId mbCard =
               ]
            ]
          Nothing -> []
+
+hiddenCard :: forall m. Card -> H.ComponentHTML Action ChildSlots m
+hiddenCard card =
+    HH.img [ HP.src card.image, HP.style "display: none" ]
+
+hiddenCards :: forall m. H.ComponentHTML Action ChildSlots m
+hiddenCards =
+  HH.div
+    []
+    (map hiddenCard cards)
 
 wisconsinComponent :: forall query m. MonadAff m => H.Component query State Output m
 wisconsinComponent = 
