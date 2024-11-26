@@ -9,7 +9,9 @@ import Data.Argonaut (encodeJson)
 import Data.Array (drop, head, last, length, replicate, snoc, take, updateAt, (!!))
 import Data.Array as Array
 import Data.DateTime.Instant (unInstant)
+import Data.Int (toNumber)
 import Data.Maybe (Maybe(..))
+import Data.Number (floor)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Traversable (for, traverse)
 import Effect (Effect)
@@ -133,10 +135,9 @@ renderWisconsin state =
     [ HP.class_ $ H.ClassName "wisconsin-container" ]
     [ if state.showIncorrect then renderIncorrect else HH.div_ []
     , criteriaCards
-    , hiddenCards
     , HH.br_ 
     , sortingAreas state.sortedCards 
-    , deckArea state.currentCard
+    , deckArea state.currentCard state.currentIndex
     ]
 
 sortingArea :: forall m. Int -> Maybe Card -> H.ComponentHTML Action ChildSlots m
@@ -154,16 +155,6 @@ sortingArea areaId mbCard =
               ]
            ]
          Nothing -> []
-
-hiddenCard :: forall m. Card -> H.ComponentHTML Action ChildSlots m
-hiddenCard card =
-    HH.img [ HP.src card.image, HP.style "display: none" ]
-
-hiddenCards :: forall m. H.ComponentHTML Action ChildSlots m
-hiddenCards =
-  HH.div
-    []
-    (map hiddenCard cards)
 
 wisconsinComponent :: forall query m. MonadAff m => H.Component query State Output m
 wisconsinComponent = 
@@ -319,14 +310,48 @@ criterionCard card =
       , HP.style "overflow: hidden"
       ] 
     ]
-
-deckArea :: forall m. Card -> H.ComponentHTML Action ChildSlots m
-deckArea card =
+{-
+deckArea :: forall m. Card -> Int -> H.ComponentHTML Action ChildSlots m
+deckArea card currentIndex =
   HH.div
     [ HP.class_ $ H.ClassName "deck-area" 
     , HP.draggable true
     ]
-    [ HH.img [ HP.src card.image, HP.style "overflow: hidden", HP.id "deck-card" ] ]
+    [ HH.img 
+      [ HP.src card.image
+      , HP.style "overflow: hidden;"
+      , HP.id "deck-card" ]
+    ]
+    where
+          row = (floor $ (toNumber currentIndex) / 8.0) * 300.0
+          col = (mod currentIndex 8) * 300
+          -}
+deckArea :: forall m. Card -> Int -> H.ComponentHTML Action ChildSlots m
+deckArea card currentIndex =
+  HH.div
+    [ HP.class_ $ H.ClassName "deck-area" 
+    , HP.draggable true
+    ]
+    [ HH.div
+      [ HP.class_ $ H.ClassName "sprite-container"
+      , HP.style $
+          "width: 2400px" <>  -- Assuming 8x8 grid with 8px tiles
+          "height: 2400px" <>
+          "background-image: url(public/wisconsin/sprite.png)" <>
+          "background-position: " <> calculateSpritePosition currentIndex <>
+          "background-repeat: no-repeat"
+      ]
+      []
+    ]
+
+-- Helper function to calculate sprite position based on grid index
+calculateSpritePosition :: Int -> String
+calculateSpritePosition index =
+  let 
+    row = index `div` 300
+    col = index `mod` 300
+  in 
+    "-" <> show (col * 300) <> "px -" <> show (row * 300) <> "px"
 
 renderIncorrect :: forall m. H.ComponentHTML Action ChildSlots m
 renderIncorrect = 
