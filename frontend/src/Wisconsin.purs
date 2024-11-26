@@ -69,7 +69,7 @@ type State =
   , stage :: WisconsinStage
   , lastTimer :: Number
   , showIncorrect :: Boolean
-  , sortedCards :: Array (Maybe Card)
+  , sortedCards :: Array (Maybe Int)
   , currentAttempts :: Int
   , criterionAttempts :: Array Int
   , foundCriterion :: Boolean
@@ -137,10 +137,10 @@ renderWisconsin state =
     , criteriaCards
     , HH.br_ 
     , sortingAreas state.sortedCards 
-    , deckArea state.currentCard state.currentIndex
+    , deckArea state.currentIndex
     ]
 
-sortingArea :: forall m. Int -> Maybe Card -> H.ComponentHTML Action ChildSlots m
+sortingArea :: forall m. Int -> Maybe Int -> H.ComponentHTML Action ChildSlots m
 sortingArea areaId mbCard =
   HH.div
     [ HP.class_ $ H.ClassName "sorting-area"
@@ -148,11 +148,17 @@ sortingArea areaId mbCard =
     , HE.onDragOver \ev -> PreventDefault $ DE.toEvent ev
     ]
     case mbCard of
-         Just card ->
-           [ HH.img
-              [ HP.src card.image
-              , HP.style "overflow:hidden"
+         Just index ->
+           [ HH.div
+           [ HP.id "deck-card"
+           , HP.style
+              $  "width: 200px; "
+              <> "height: 200px; " 
+              <> "background-image: url(public/wisconsin/sprite.png); "
+              <> "background-position: " <> calculateSpritePosition index <> "; "
+              <> "background-repeat: no-repeat;"
               ]
+            []
            ]
          Nothing -> []
 
@@ -185,7 +191,8 @@ handleDrop ev areaId = do
   H.liftEffect $ preventDefault $ DE.toEvent ev
   sortedCards <- H.gets _.sortedCards
   currentCard <- H.gets _.currentCard
-  let newSorted = unsafeArrUpdate areaId (Just currentCard) sortedCards
+  index <- H.gets _.currentIndex
+  let newSorted = unsafeArrUpdate areaId (Just index) sortedCards
   H.modify_ \state -> state { sortedCards = newSorted }
   isCorrect <- evalAnswer areaId
   when (not isCorrect) (timerShowIncorrect)
@@ -278,7 +285,7 @@ maybeNextCriterion = do
       }
 
 
-sortingAreas :: forall m. Array (Maybe Card) -> H.ComponentHTML Action ChildSlots m
+sortingAreas :: forall m. Array (Maybe Int) -> H.ComponentHTML Action ChildSlots m
 sortingAreas sortedCards =
   HH.div
     [ HP.id "card-area" ]
@@ -310,48 +317,32 @@ criterionCard card =
       , HP.style "overflow: hidden"
       ] 
     ]
-{-
-deckArea :: forall m. Card -> Int -> H.ComponentHTML Action ChildSlots m
-deckArea card currentIndex =
-  HH.div
-    [ HP.class_ $ H.ClassName "deck-area" 
-    , HP.draggable true
-    ]
-    [ HH.img 
-      [ HP.src card.image
-      , HP.style "overflow: hidden;"
-      , HP.id "deck-card" ]
-    ]
-    where
-          row = (floor $ (toNumber currentIndex) / 8.0) * 300.0
-          col = (mod currentIndex 8) * 300
-          -}
-deckArea :: forall m. Card -> Int -> H.ComponentHTML Action ChildSlots m
-deckArea card currentIndex =
+
+deckArea :: forall m. Int -> H.ComponentHTML Action ChildSlots m
+deckArea currentIndex =
   HH.div
     [ HP.class_ $ H.ClassName "deck-area" 
     , HP.draggable true
     ]
     [ HH.div
-      [ HP.class_ $ H.ClassName "sprite-container"
+      [ HP.id "deck-card"
       , HP.style $
-          "width: 2400px" <>  -- Assuming 8x8 grid with 8px tiles
-          "height: 2400px" <>
-          "background-image: url(public/wisconsin/sprite.png)" <>
-          "background-position: " <> calculateSpritePosition currentIndex <>
-          "background-repeat: no-repeat"
+          "width: 200px; " <> 
+          "height: 200px; " <>
+          "background-image: url(public/wisconsin/sprite.png); " <>
+          "background-position: " <> calculateSpritePosition currentIndex <> "; " <>
+          "background-repeat: no-repeat;"
       ]
       []
     ]
 
--- Helper function to calculate sprite position based on grid index
 calculateSpritePosition :: Int -> String
 calculateSpritePosition index =
   let 
-    row = index `div` 300
-    col = index `mod` 300
+    row = index `div` 8
+    col = index `mod` 8
   in 
-    "-" <> show (col * 300) <> "px -" <> show (row * 300) <> "px"
+    "-" <> show (col * 200) <> "px -" <> show (row * 200) <> "px"
 
 renderIncorrect :: forall m. H.ComponentHTML Action ChildSlots m
 renderIncorrect = 
