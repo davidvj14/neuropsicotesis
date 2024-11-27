@@ -302,20 +302,26 @@ criteriaCards :: forall m. H.ComponentHTML Action ChildSlots m
 criteriaCards =
   HH.div
     [ HP.id "criteria-cards"]
-    [ criterionCard $ unsafeIndex criterionCards 0
-    , criterionCard $ unsafeIndex criterionCards 1
-    , criterionCard $ unsafeIndex criterionCards 2
-    , criterionCard $ unsafeIndex criterionCards 3
+    [ criterionCard 0
+    , criterionCard 1
+    , criterionCard 2
+    , criterionCard 3
     ]
 
-criterionCard :: forall m. Card -> H.ComponentHTML Action ChildSlots m
-criterionCard card = 
+criterionCard :: forall m. Int -> H.ComponentHTML Action ChildSlots m
+criterionCard n = 
   HH.div
     [ HP.class_ $ H.ClassName "sorting-area"]
-    [ HH.img
-      [ HP.src card.image
-      , HP.style "overflow: hidden"
-      ] 
+    [ HH.div
+      [ HP.id "deck-card"
+      , HP.style $
+          "width: 200px; " <> 
+          "height: 200px; " <>
+          "background-image: url(public/wisconsin/init_sprite.png); " <>
+          "background-position: " <> calculateSpritePosition n <> "; " <>
+          "background-repeat: no-repeat;"
+      ]
+      []
     ]
 
 deckArea :: forall m. Int -> H.ComponentHTML Action ChildSlots m
@@ -504,8 +510,7 @@ type Answer =
   }
 
 type Card = 
-  { image :: String
-  , shape :: CardShape
+  { shape :: CardShape
   , color :: CardColor
   , number :: CardNumber
   }
@@ -569,23 +574,19 @@ instructions =
 
 criterionCards :: Array Card
 criterionCards = 
-  [ { image: "public/wisconsin/init1.png"
-    , shape: Square
+  [ { shape: Square
     , color: Cyan
     , number: One
     }
-  , { image: "public/wisconsin/init2.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Red
     , number: Two
     }
-  , { image: "public/wisconsin/init3.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Brown
     , number: Three
     }
-  , { image: "public/wisconsin/init4.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Blue
     , number: Four
     }
@@ -593,323 +594,259 @@ criterionCards =
 
 cards :: Array Card
 cards = 
-  [ { image: "public/wisconsin/card1.png"
-    , shape: Square
+  [ { shape: Square
     , color: Blue
     , number: One
     }
-  , { image: "public/wisconsin/card2.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Brown
     , number: Two
     }
-  , { image: "public/wisconsin/card3.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Cyan
     , number: Three
     }
-  , { image: "public/wisconsin/card4.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Red
     , number: Four
     }
-  , { image: "public/wisconsin/card5.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Blue
     , number: One
     }
-  , { image: "public/wisconsin/card6.png"
-    , shape: Square
+  , { shape: Square
     , color: Brown
     , number: Two
     }
-  , { image: "public/wisconsin/card7.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Cyan
     , number: Three
     }
-  , { image: "public/wisconsin/card8.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Red
     , number: Four
     }
-  , { image: "public/wisconsin/card9.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Blue
     , number: One
     }
-  , { image: "public/wisconsin/card10.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Brown
     , number: Two
     }
-  , { image: "public/wisconsin/card11.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Cyan
     , number: Three
     }
-  , { image: "public/wisconsin/card12.png"
-    , shape: Square
+  , { shape: Square
     , color: Red
     , number: Four
     }
-  , { image: "public/wisconsin/card13.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Blue
     , number: One
     }
-  , { image: "public/wisconsin/card14.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Brown
     , number: Two
     }
-  , { image: "public/wisconsin/card15.png"
-    , shape: Square
+  , { shape: Square
     , color: Cyan
     , number: Three
     }
-  , { image: "public/wisconsin/card16.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Red
     , number: Four
     }
-  , { image: "public/wisconsin/card17.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Cyan
     , number: One
     }
-  , { image: "public/wisconsin/card18.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Red
     , number: Two
     }
-  , { image: "public/wisconsin/card19.png"
-    , shape: Square
+  , { shape: Square
     , color: Blue
     , number: Three
     }
-  , { image: "public/wisconsin/card20.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Brown
     , number: Four
     }
-  , { image: "public/wisconsin/card21.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Cyan
     , number: One
     }
-  , { image: "public/wisconsin/card22.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Red
     , number: Two
     }
-  , { image: "public/wisconsin/card23.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Blue
     , number: Three
     }
-  , { image: "public/wisconsin/card24.png"
-    , shape: Square
+  , { shape: Square
     , color: Brown
     , number: Four
     }
-  , { image: "public/wisconsin/card25.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Cyan
     , number: One
     }
-  , { image: "public/wisconsin/card26.png"
-    , shape: Square
+  , { shape: Square
     , color: Red
     , number: Two
     }
-  , { image: "public/wisconsin/card27.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Blue
     , number: Three
     }
-  , { image: "public/wisconsin/card28.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Brown
     , number: Four
     }
-  , { image: "public/wisconsin/card29.png"
-    , shape: Square
+  , { shape: Square
     , color: Cyan
     , number: One
     }
-  , { image: "public/wisconsin/card30.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Red
     , number: Two
     }
-  , { image: "public/wisconsin/card31.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Blue
     , number: Three
     }
-  , { image: "public/wisconsin/card32.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Brown
     , number: Four
     }
-  , { image: "public/wisconsin/card33.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Brown
     , number: One
     }
-  , { image: "public/wisconsin/card34.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Blue
     , number: Two
     }
-  , { image: "public/wisconsin/card35.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Red
     , number: Three
     }
-  , { image: "public/wisconsin/card36.png"
-    , shape: Square
+  , { shape: Square
     , color: Cyan
     , number: Four
     }
-  , { image: "public/wisconsin/card37.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Brown
     , number: One
     }
-  , { image: "public/wisconsin/card38.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Blue
     , number: Two
     }
-  , { image: "public/wisconsin/card39.png"
-    , shape: Square
+  , { shape: Square
     , color: Red
     , number: Three
     }
-  , { image: "public/wisconsin/card40.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Cyan
     , number: Four
     }
-  , { image: "public/wisconsin/card41.png"
-    , shape: Square
+  , { shape: Square
     , color: Brown
     , number: One
     }
-  , { image: "public/wisconsin/card42.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Blue
     , number: Two
     }
-  , { image: "public/wisconsin/card43.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Red
     , number: Three
     }
-  , { image: "public/wisconsin/card44.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Cyan
     , number: Four
     }
-  , { image: "public/wisconsin/card45.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Brown
     , number: One
     }
-  , { image: "public/wisconsin/card46.png"
-    , shape: Square
+  , { shape: Square
     , color: Blue
     , number: Two
     }
-  , { image: "public/wisconsin/card47.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Red
     , number: Three
     }
-  , { image: "public/wisconsin/card48.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Cyan
     , number: Four
     }
-  , { image: "public/wisconsin/card49.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Red
     , number: One
     }
-  , { image: "public/wisconsin/card50.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Cyan
     , number: Two
     }
-  , { image: "public/wisconsin/card51.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Brown
     , number: Three
     }
-  , { image: "public/wisconsin/card52.png"
-    , shape: Square
+  , { shape: Square
     , color: Blue
     , number: Four
     }
-  , { image: "public/wisconsin/card53.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Red
     , number: One
     }
-  , { image: "public/wisconsin/card54.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Cyan
     , number: Two
     }
-  , { image: "public/wisconsin/card55.png"
-    , shape: Square
+  , { shape: Square
     , color: Brown
     , number: Three
     }
-  , { image: "public/wisconsin/card56.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Blue
     , number: Four
     }
-  , { image: "public/wisconsin/card57.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Red
     , number: One
     }
-  , { image: "public/wisconsin/card58.png"
-    , shape: Square
+  , { shape: Square
     , color: Cyan
     , number: Two
     }
-  , { image: "public/wisconsin/card59.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Brown
     , number: Three
     }
-  , { image: "public/wisconsin/card60.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Blue
     , number: Four
     }
-  , { image: "public/wisconsin/card61.png"
-    , shape: Square
+  , { shape: Square
     , color: Red
     , number: One
     }
-  , { image: "public/wisconsin/card62.png"
-    , shape: Rhombus
+  , { shape: Rhombus
     , color: Cyan
     , number: Two
     }
-  , { image: "public/wisconsin/card63.png"
-    , shape: Trapeze
+  , { shape: Trapeze
     , color: Brown
     , number: Three
     }
-  , { image: "public/wisconsin/card64.png"
-    , shape: Octagon
+  , { shape: Octagon
     , color: Blue
     , number: Four
     }
