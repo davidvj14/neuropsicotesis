@@ -9082,54 +9082,32 @@
   var timerShowIncorrect = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     return discard4(modify_5(function(state3) {
-      var $191 = {};
-      for (var $192 in state3) {
-        if ({}.hasOwnProperty.call(state3, $192)) {
-          $191[$192] = state3[$192];
+      var $192 = {};
+      for (var $193 in state3) {
+        if ({}.hasOwnProperty.call(state3, $193)) {
+          $192[$193] = state3[$193];
         }
         ;
       }
       ;
-      $191.showIncorrect = true;
-      return $191;
+      $192.showIncorrect = true;
+      return $192;
     }))(function() {
       return discard4(liftAff3(delay(500)))(function() {
         return modify_5(function(state3) {
-          var $194 = {};
-          for (var $195 in state3) {
-            if ({}.hasOwnProperty.call(state3, $195)) {
-              $194[$195] = state3[$195];
+          var $195 = {};
+          for (var $196 in state3) {
+            if ({}.hasOwnProperty.call(state3, $196)) {
+              $195[$196] = state3[$196];
             }
             ;
           }
           ;
-          $194.showIncorrect = false;
-          return $194;
+          $195.showIncorrect = false;
+          return $195;
         });
       });
     });
-  };
-  var sortingArea = function(areaId) {
-    return function(mbCard) {
-      return div2([class_("sorting-area"), onDrop(function(ev) {
-        return new HandleDrop(ev, areaId);
-      }), onDragOver(function(ev) {
-        return new PreventDefault(toEvent2(ev));
-      })])(function() {
-        if (mbCard instanceof Just) {
-          return [img([src2(mbCard.value0.image), style("overflow:hidden")])];
-        }
-        ;
-        if (mbCard instanceof Nothing) {
-          return [];
-        }
-        ;
-        throw new Error("Failed pattern match at Wisconsin (line 149, column 5 - line 156, column 23): " + [mbCard.constructor.name]);
-      }());
-    };
-  };
-  var sortingAreas = function(sortedCards) {
-    return div2([id3("card-area")])([div2([id3("card-area")])([sortingArea(0)(unsafeIndex2(sortedCards)(0)), sortingArea(1)(unsafeIndex2(sortedCards)(1)), sortingArea(2)(unsafeIndex2(sortedCards)(2)), sortingArea(3)(unsafeIndex2(sortedCards)(3))])]);
   };
   var renderIncorrect = /* @__PURE__ */ div2([/* @__PURE__ */ id3("message"), /* @__PURE__ */ class_("message-container")])([/* @__PURE__ */ text("Incorrecto")]);
   var nowToNumber = function __do2() {
@@ -9157,9 +9135,6 @@
     timeAfterError: 0,
     totalTime: 0,
     criterionAttempts: []
-  };
-  var hiddenCard = function(card) {
-    return img([src2(card.image), style("display: none")]);
   };
   var eqCriterion = {
     eq: function(x) {
@@ -9253,7 +9228,7 @@
             return eq12(v.value0)(v1.value0) || eq12(v.value0)(v1.value1);
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 376, column 5 - line 379, column 48): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 398, column 5 - line 401, column 48): " + [v1.constructor.name]);
         }
         ;
         if (v instanceof TwoErr) {
@@ -9269,10 +9244,10 @@
             return eq12(v.value0)(v1.value0) || (eq12(v.value0)(v1.value1) || (eq12(v.value1)(v1.value0) || eq12(v.value1)(v1.value1)));
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 381, column 5 - line 384, column 72): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 403, column 5 - line 406, column 72): " + [v1.constructor.name]);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 372, column 1 - line 384, column 72): " + [v.constructor.name, v1.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 394, column 1 - line 406, column 72): " + [v.constructor.name, v1.constructor.name]);
       };
     }
   };
@@ -9317,36 +9292,25 @@
     }
   };
   var eq6 = /* @__PURE__ */ eq(eqCardColor);
-  var deckArea = function(card) {
-    return div2([class_("deck-area"), draggable(true)])([img([src2(card.image), style("overflow: hidden"), id3("deck-card")])]);
-  };
   var criterionCards = /* @__PURE__ */ function() {
     return [{
-      image: "public/wisconsin/init1.png",
       shape: Square.value,
       color: Cyan.value,
       number: One.value
     }, {
-      image: "public/wisconsin/init2.png",
       shape: Octagon.value,
       color: Red.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/init3.png",
       shape: Rhombus.value,
       color: Brown.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/init4.png",
       shape: Trapeze.value,
       color: Blue.value,
       number: Four.value
     }];
   }();
-  var criterionCard = function(card) {
-    return div2([class_("sorting-area")])([img([src2(card.image), style("overflow: hidden")])]);
-  };
-  var criteriaCards = /* @__PURE__ */ div2([/* @__PURE__ */ id3("criteria-cards")])([/* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(0)), /* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(1)), /* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(2)), /* @__PURE__ */ criterionCard(/* @__PURE__ */ unsafeIndex2(criterionCards)(3))]);
   var criteria = /* @__PURE__ */ function() {
     return [Color.value, Shape.value, $$Number.value, Shape.value, $$Number.value, Color.value];
   }();
@@ -9355,39 +9319,39 @@
       return v.score;
     }))(function(score) {
       return when2(mod2(score)(10) === 0)(modify_5(function(state3) {
-        var $231 = {};
-        for (var $232 in state3) {
-          if ({}.hasOwnProperty.call(state3, $232)) {
-            $231[$232] = state3[$232];
+        var $230 = {};
+        for (var $231 in state3) {
+          if ({}.hasOwnProperty.call(state3, $231)) {
+            $230[$231] = state3[$231];
           }
           ;
         }
         ;
-        $231.currentCriterion = unsafeIndex2(criteria)(div3(score)(10));
-        $231.foundCriterion = false;
-        return $231;
+        $230.currentCriterion = unsafeIndex2(criteria)(div3(score)(10));
+        $230.foundCriterion = false;
+        return $230;
       }));
     });
   };
   var compareForError = function(c1) {
     return function(c2) {
       var matches2 = append12(function() {
-        var $234 = eq22(c1.shape)(c2.shape);
-        if ($234) {
+        var $233 = eq22(c1.shape)(c2.shape);
+        if ($233) {
           return [Shape.value];
         }
         ;
         return [];
       }())(append12(function() {
-        var $235 = eq6(c1.color)(c2.color);
-        if ($235) {
+        var $234 = eq6(c1.color)(c2.color);
+        if ($234) {
           return [Color.value];
         }
         ;
         return [];
       }())(function() {
-        var $236 = eq3(c1.number)(c2.number);
-        if ($236) {
+        var $235 = eq3(c1.number)(c2.number);
+        if ($235) {
           return [$$Number.value];
         }
         ;
@@ -9435,46 +9399,46 @@
                     var time4 = timerNew - timerOld;
                     var updateState = function(grade) {
                       return modify_5(function(state3) {
-                        var $238 = {};
-                        for (var $239 in state3) {
-                          if ({}.hasOwnProperty.call(state3, $239)) {
-                            $238[$239] = state3[$239];
+                        var $237 = {};
+                        for (var $238 in state3) {
+                          if ({}.hasOwnProperty.call(state3, $238)) {
+                            $237[$238] = state3[$238];
                           }
                           ;
                         }
                         ;
-                        $238.answers = snoc(state3.answers)({
+                        $237.answers = snoc(state3.answers)({
                           grade,
                           timeTaken: time4
                         });
-                        $238.currentAttempts = state3.currentAttempts + 1 | 0;
-                        return $238;
+                        $237.currentAttempts = state3.currentAttempts + 1 | 0;
+                        return $237;
                       });
                     };
                     if (currentCriterion instanceof Shape) {
-                      var $242 = eq22(currentCard.shape)(critCard.shape);
-                      if ($242) {
+                      var $241 = eq22(currentCard.shape)(critCard.shape);
+                      if ($241) {
                         return discard4(updateState(Correct.value))(function() {
                           return discard4(modify_5(function(state3) {
-                            var $244 = {};
-                            for (var $245 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $245)) {
-                                $244[$245] = state3[$245];
+                            var $243 = {};
+                            for (var $244 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $244)) {
+                                $243[$244] = state3[$244];
                               }
                               ;
                             }
                             ;
-                            $244.score = state3.score + 1 | 0;
-                            $244.currentAttempts = 0;
-                            $244.criterionAttempts = function() {
+                            $243.score = state3.score + 1 | 0;
+                            $243.currentAttempts = 0;
+                            $243.criterionAttempts = function() {
                               if (foundCriterion) {
                                 return state3.criterionAttempts;
                               }
                               ;
                               return snoc(criterionAttempts)(currentAttempts + 1 | 0);
                             }();
-                            $244.foundCriterion = true;
-                            return $244;
+                            $243.foundCriterion = true;
+                            return $243;
                           }))(function() {
                             return pure12(true);
                           });
@@ -9483,16 +9447,16 @@
                       ;
                       return discard4(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
                         return discard4(modify_5(function(state3) {
-                          var $247 = {};
-                          for (var $248 in state3) {
-                            if ({}.hasOwnProperty.call(state3, $248)) {
-                              $247[$248] = state3[$248];
+                          var $246 = {};
+                          for (var $247 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $247)) {
+                              $246[$247] = state3[$247];
                             }
                             ;
                           }
                           ;
-                          $247.currentAttempts = currentAttempts + 1 | 0;
-                          return $247;
+                          $246.currentAttempts = currentAttempts + 1 | 0;
+                          return $246;
                         }))(function() {
                           return pure12(false);
                         });
@@ -9500,29 +9464,29 @@
                     }
                     ;
                     if (currentCriterion instanceof Color) {
-                      var $250 = eq6(currentCard.color)(critCard.color);
-                      if ($250) {
+                      var $249 = eq6(currentCard.color)(critCard.color);
+                      if ($249) {
                         return discard4(updateState(Correct.value))(function() {
                           return discard4(modify_5(function(state3) {
-                            var $252 = {};
-                            for (var $253 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $253)) {
-                                $252[$253] = state3[$253];
+                            var $251 = {};
+                            for (var $252 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $252)) {
+                                $251[$252] = state3[$252];
                               }
                               ;
                             }
                             ;
-                            $252.score = state3.score + 1 | 0;
-                            $252.currentAttempts = 0;
-                            $252.criterionAttempts = function() {
+                            $251.score = state3.score + 1 | 0;
+                            $251.currentAttempts = 0;
+                            $251.criterionAttempts = function() {
                               if (foundCriterion) {
                                 return state3.criterionAttempts;
                               }
                               ;
                               return snoc(criterionAttempts)(currentAttempts + 1 | 0);
                             }();
-                            $252.foundCriterion = true;
-                            return $252;
+                            $251.foundCriterion = true;
+                            return $251;
                           }))(function() {
                             return pure12(true);
                           });
@@ -9531,16 +9495,16 @@
                       ;
                       return discard4(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
                         return discard4(modify_5(function(state3) {
-                          var $255 = {};
-                          for (var $256 in state3) {
-                            if ({}.hasOwnProperty.call(state3, $256)) {
-                              $255[$256] = state3[$256];
+                          var $254 = {};
+                          for (var $255 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $255)) {
+                              $254[$255] = state3[$255];
                             }
                             ;
                           }
                           ;
-                          $255.currentAttempts = currentAttempts + 1 | 0;
-                          return $255;
+                          $254.currentAttempts = currentAttempts + 1 | 0;
+                          return $254;
                         }))(function() {
                           return pure12(false);
                         });
@@ -9548,29 +9512,29 @@
                     }
                     ;
                     if (currentCriterion instanceof $$Number) {
-                      var $258 = eq3(currentCard.number)(critCard.number);
-                      if ($258) {
+                      var $257 = eq3(currentCard.number)(critCard.number);
+                      if ($257) {
                         return discard4(updateState(Correct.value))(function() {
                           return discard4(modify_5(function(state3) {
-                            var $260 = {};
-                            for (var $261 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $261)) {
-                                $260[$261] = state3[$261];
+                            var $259 = {};
+                            for (var $260 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $260)) {
+                                $259[$260] = state3[$260];
                               }
                               ;
                             }
                             ;
-                            $260.score = state3.score + 1 | 0;
-                            $260.currentAttempts = 0;
-                            $260.criterionAttempts = function() {
+                            $259.score = state3.score + 1 | 0;
+                            $259.currentAttempts = 0;
+                            $259.criterionAttempts = function() {
                               if (foundCriterion) {
                                 return state3.criterionAttempts;
                               }
                               ;
                               return snoc(criterionAttempts)(currentAttempts + 1 | 0);
                             }();
-                            $260.foundCriterion = true;
-                            return $260;
+                            $259.foundCriterion = true;
+                            return $259;
                           }))(function() {
                             return pure12(true);
                           });
@@ -9579,23 +9543,23 @@
                       ;
                       return discard4(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
                         return discard4(modify_5(function(state3) {
-                          var $263 = {};
-                          for (var $264 in state3) {
-                            if ({}.hasOwnProperty.call(state3, $264)) {
-                              $263[$264] = state3[$264];
+                          var $262 = {};
+                          for (var $263 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $263)) {
+                              $262[$263] = state3[$263];
                             }
                             ;
                           }
                           ;
-                          $263.currentAttempts = currentAttempts + 1 | 0;
-                          return $263;
+                          $262.currentAttempts = currentAttempts + 1 | 0;
+                          return $262;
                         }))(function() {
                           return pure12(false);
                         });
                       });
                     }
                     ;
-                    throw new Error("Failed pattern match at Wisconsin (line 221, column 3 - line 272, column 25): " + [currentCriterion.constructor.name]);
+                    throw new Error("Failed pattern match at Wisconsin (line 219, column 3 - line 270, column 25): " + [currentCriterion.constructor.name]);
                   });
                 });
               });
@@ -9621,10 +9585,10 @@
           return eq5(v.value0.grade)(grade);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 419, column 17 - line 421, column 42): " + [v.value0.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 441, column 17 - line 443, column 42): " + [v.value0.grade.constructor.name]);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 417, column 3 - line 421, column 42): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 439, column 3 - line 443, column 42): " + [v.constructor.name]);
     };
   };
   var checkForMaintenanceError = function(last4) {
@@ -9712,8 +9676,8 @@
         }
         ;
         if (answer.grade instanceof Incorrect) {
-          var $286 = checkForPerseveration(last4)(answer.grade);
-          if ($286) {
+          var $285 = checkForPerseveration(last4)(answer.grade);
+          if ($285) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -9727,8 +9691,8 @@
             };
           }
           ;
-          var $287 = checkForDeferred(last4)(answer.grade);
-          if ($287) {
+          var $286 = checkForDeferred(last4)(answer.grade);
+          if ($286) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -9742,8 +9706,8 @@
             };
           }
           ;
-          var $288 = checkForMaintenanceError(last4);
-          if ($288) {
+          var $287 = checkForMaintenanceError(last4);
+          if ($287) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -9770,7 +9734,7 @@
           };
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 444, column 5 - line 454, column 52): " + [answer.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 466, column 5 - line 476, column 52): " + [answer.grade.constructor.name]);
       };
     };
   };
@@ -9816,7 +9780,7 @@
                   return;
                 }
                 ;
-                throw new Error("Failed pattern match at Wisconsin (line 465, column 11 - line 472, column 61): " + [v1.constructor.name]);
+                throw new Error("Failed pattern match at Wisconsin (line 487, column 11 - line 494, column 61): " + [v1.constructor.name]);
               }
               ;
               while (!$tco_done) {
@@ -9830,342 +9794,268 @@
         return go2(initialResult)([])(answers);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 458, column 3 - line 474, column 36): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 480, column 3 - line 496, column 36): " + [v.constructor.name]);
     };
   };
   var cards = /* @__PURE__ */ function() {
     return [{
-      image: "public/wisconsin/card1.png",
       shape: Square.value,
       color: Blue.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card2.png",
       shape: Rhombus.value,
       color: Brown.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card3.png",
       shape: Trapeze.value,
       color: Cyan.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card4.png",
       shape: Octagon.value,
       color: Red.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card5.png",
       shape: Rhombus.value,
       color: Blue.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card6.png",
       shape: Square.value,
       color: Brown.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card7.png",
       shape: Octagon.value,
       color: Cyan.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card8.png",
       shape: Rhombus.value,
       color: Red.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card9.png",
       shape: Octagon.value,
       color: Blue.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card10.png",
       shape: Trapeze.value,
       color: Brown.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card11.png",
       shape: Rhombus.value,
       color: Cyan.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card12.png",
       shape: Square.value,
       color: Red.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card13.png",
       shape: Trapeze.value,
       color: Blue.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card14.png",
       shape: Octagon.value,
       color: Brown.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card15.png",
       shape: Square.value,
       color: Cyan.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card16.png",
       shape: Trapeze.value,
       color: Red.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card17.png",
       shape: Octagon.value,
       color: Cyan.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card18.png",
       shape: Trapeze.value,
       color: Red.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card19.png",
       shape: Square.value,
       color: Blue.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card20.png",
       shape: Rhombus.value,
       color: Brown.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card21.png",
       shape: Rhombus.value,
       color: Cyan.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card22.png",
       shape: Octagon.value,
       color: Red.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card23.png",
       shape: Trapeze.value,
       color: Blue.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card24.png",
       shape: Square.value,
       color: Brown.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card25.png",
       shape: Trapeze.value,
       color: Cyan.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card26.png",
       shape: Square.value,
       color: Red.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card27.png",
       shape: Rhombus.value,
       color: Blue.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card28.png",
       shape: Octagon.value,
       color: Brown.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card29.png",
       shape: Square.value,
       color: Cyan.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card30.png",
       shape: Rhombus.value,
       color: Red.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card31.png",
       shape: Octagon.value,
       color: Blue.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card32.png",
       shape: Trapeze.value,
       color: Brown.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card33.png",
       shape: Octagon.value,
       color: Brown.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card34.png",
       shape: Rhombus.value,
       color: Blue.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card35.png",
       shape: Octagon.value,
       color: Red.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card36.png",
       shape: Square.value,
       color: Cyan.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card37.png",
       shape: Rhombus.value,
       color: Brown.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card38.png",
       shape: Octagon.value,
       color: Blue.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card39.png",
       shape: Square.value,
       color: Red.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card40.png",
       shape: Trapeze.value,
       color: Cyan.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card41.png",
       shape: Square.value,
       color: Brown.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card42.png",
       shape: Trapeze.value,
       color: Blue.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card43.png",
       shape: Rhombus.value,
       color: Red.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card44.png",
       shape: Octagon.value,
       color: Cyan.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card45.png",
       shape: Trapeze.value,
       color: Brown.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card46.png",
       shape: Square.value,
       color: Blue.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card47.png",
       shape: Octagon.value,
       color: Red.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card48.png",
       shape: Rhombus.value,
       color: Cyan.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card49.png",
       shape: Octagon.value,
       color: Red.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card50.png",
       shape: Trapeze.value,
       color: Cyan.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card51.png",
       shape: Rhombus.value,
       color: Brown.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card52.png",
       shape: Square.value,
       color: Blue.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card53.png",
       shape: Trapeze.value,
       color: Red.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card54.png",
       shape: Octagon.value,
       color: Cyan.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card55.png",
       shape: Square.value,
       color: Brown.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card56.png",
       shape: Rhombus.value,
       color: Blue.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card57.png",
       shape: Rhombus.value,
       color: Red.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card58.png",
       shape: Square.value,
       color: Cyan.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card59.png",
       shape: Octagon.value,
       color: Brown.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card60.png",
       shape: Trapeze.value,
       color: Blue.value,
       number: Four.value
     }, {
-      image: "public/wisconsin/card61.png",
       shape: Square.value,
       color: Red.value,
       number: One.value
     }, {
-      image: "public/wisconsin/card62.png",
       shape: Rhombus.value,
       color: Cyan.value,
       number: Two.value
     }, {
-      image: "public/wisconsin/card63.png",
       shape: Trapeze.value,
       color: Brown.value,
       number: Three.value
     }, {
-      image: "public/wisconsin/card64.png",
       shape: Octagon.value,
       color: Blue.value,
       number: Four.value
     }];
   }();
-  var hiddenCards = /* @__PURE__ */ div2([])(/* @__PURE__ */ map(functorArray)(hiddenCard)(cards));
-  var renderWisconsin = function(state3) {
-    return div2([class_("wisconsin-container")])([function() {
-      if (state3.showIncorrect) {
-        return renderIncorrect;
-      }
-      ;
-      return div_([]);
-    }(), criteriaCards, hiddenCards, br_, sortingAreas(state3.sortedCards), deckArea(state3.currentCard)]);
-  };
   var initialState3 = function(v) {
     return {
       currentCard: unsafeIndex2(cards)(0),
@@ -10192,8 +10082,8 @@
     }))(function(currentIndex) {
       return discard4(liftEffect7(log5(show5(currentIndex))))(function() {
         var newIndex = currentIndex + 1 | 0;
-        var $296 = newIndex >= 64;
-        if ($296) {
+        var $294 = newIndex >= 64;
+        if ($294) {
           return bind5(gets4(function(v) {
             return v.answers;
           }))(function(answers) {
@@ -10206,17 +10096,17 @@
         }
         ;
         return modify_5(function(state3) {
-          var $297 = {};
-          for (var $298 in state3) {
-            if ({}.hasOwnProperty.call(state3, $298)) {
-              $297[$298] = state3[$298];
+          var $295 = {};
+          for (var $296 in state3) {
+            if ({}.hasOwnProperty.call(state3, $296)) {
+              $295[$296] = state3[$296];
             }
             ;
           }
           ;
-          $297.currentIndex = newIndex;
-          $297.currentCard = nextCard(newIndex);
-          return $297;
+          $295.currentIndex = newIndex;
+          $295.currentCard = nextCard(newIndex);
+          return $295;
         });
       });
     });
@@ -10237,35 +10127,39 @@
             return bind5(gets4(function(v) {
               return v.currentCard;
             }))(function(currentCard) {
-              var newSorted = unsafeArrUpdate(areaId)(new Just(currentCard))(sortedCards);
-              return discard4(modify_5(function(state3) {
-                var $300 = {};
-                for (var $301 in state3) {
-                  if ({}.hasOwnProperty.call(state3, $301)) {
-                    $300[$301] = state3[$301];
+              return bind5(gets4(function(v) {
+                return v.currentIndex;
+              }))(function(index4) {
+                var newSorted = unsafeArrUpdate(areaId)(new Just(index4))(sortedCards);
+                return discard4(modify_5(function(state3) {
+                  var $298 = {};
+                  for (var $299 in state3) {
+                    if ({}.hasOwnProperty.call(state3, $299)) {
+                      $298[$299] = state3[$299];
+                    }
+                    ;
                   }
                   ;
-                }
-                ;
-                $300.sortedCards = newSorted;
-                return $300;
-              }))(function() {
-                return bind5(evalAnswer1(areaId))(function(isCorrect) {
-                  return discard4(when2(!isCorrect)(timerShowIncorrect1))(function() {
-                    return discard4(setNextCard1)(function() {
-                      return discard4(maybeNextCriterion1)(function() {
-                        return bind5(liftEffect7(nowToNumber))(function(timer) {
-                          return modify_5(function(state3) {
-                            var $303 = {};
-                            for (var $304 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $304)) {
-                                $303[$304] = state3[$304];
+                  $298.sortedCards = newSorted;
+                  return $298;
+                }))(function() {
+                  return bind5(evalAnswer1(areaId))(function(isCorrect) {
+                    return discard4(when2(!isCorrect)(timerShowIncorrect1))(function() {
+                      return discard4(setNextCard1)(function() {
+                        return discard4(maybeNextCriterion1)(function() {
+                          return bind5(liftEffect7(nowToNumber))(function(timer) {
+                            return modify_5(function(state3) {
+                              var $301 = {};
+                              for (var $302 in state3) {
+                                if ({}.hasOwnProperty.call(state3, $302)) {
+                                  $301[$302] = state3[$302];
+                                }
+                                ;
                               }
                               ;
-                            }
-                            ;
-                            $303.lastTimer = timer;
-                            return $303;
+                              $301.lastTimer = timer;
+                              return $301;
+                            });
                           });
                         });
                       });
@@ -10287,17 +10181,17 @@
       if (action2 instanceof WisconsinInstructionsDone) {
         return bind5(liftEffect7(nowToNumber))(function(ms) {
           return modify_5(function(state3) {
-            var $307 = {};
-            for (var $308 in state3) {
-              if ({}.hasOwnProperty.call(state3, $308)) {
-                $307[$308] = state3[$308];
+            var $305 = {};
+            for (var $306 in state3) {
+              if ({}.hasOwnProperty.call(state3, $306)) {
+                $305[$306] = state3[$306];
               }
               ;
             }
             ;
-            $307.stage = WisconsinTest.value;
-            $307.lastTimer = ms;
-            return $307;
+            $305.stage = WisconsinTest.value;
+            $305.lastTimer = ms;
+            return $305;
           });
         });
       }
@@ -10319,6 +10213,49 @@
       ;
       return pure12(unit);
     };
+  };
+  var calculateSpritePosition = function(index4) {
+    var row = div3(index4)(8);
+    var col2 = mod2(index4)(8);
+    return "-" + (show5(col2 * 200 | 0) + ("px -" + (show5(row * 200 | 0) + "px")));
+  };
+  var criterionCard = function(n) {
+    return div2([class_("sorting-area")])([div2([id3("deck-card"), style("width: 200px; " + ("height: 200px; " + ("background-image: url(public/wisconsin/init_sprite.png); " + ("background-position: " + (calculateSpritePosition(n) + "; background-repeat: no-repeat;")))))])([])]);
+  };
+  var criteriaCards = /* @__PURE__ */ div2([/* @__PURE__ */ id3("criteria-cards")])([/* @__PURE__ */ criterionCard(0), /* @__PURE__ */ criterionCard(1), /* @__PURE__ */ criterionCard(2), /* @__PURE__ */ criterionCard(3)]);
+  var deckArea = function(currentIndex) {
+    return div2([class_("deck-area"), draggable(true)])([div2([id3("deck-card"), style("width: 200px; " + ("height: 200px; " + ("background-image: url(public/wisconsin/sprite.png); " + ("background-position: " + (calculateSpritePosition(currentIndex) + "; background-repeat: no-repeat;")))))])([])]);
+  };
+  var sortingArea = function(areaId) {
+    return function(mbCard) {
+      return div2([class_("sorting-area"), onDrop(function(ev) {
+        return new HandleDrop(ev, areaId);
+      }), onDragOver(function(ev) {
+        return new PreventDefault(toEvent2(ev));
+      })])(function() {
+        if (mbCard instanceof Just) {
+          return [div2([id3("deck-card"), style("width: 200px; " + ("height: 200px; " + ("background-image: url(public/wisconsin/sprite.png); " + ("background-position: " + (calculateSpritePosition(mbCard.value0) + "; background-repeat: no-repeat;")))))])([])];
+        }
+        ;
+        if (mbCard instanceof Nothing) {
+          return [];
+        }
+        ;
+        throw new Error("Failed pattern match at Wisconsin (line 150, column 5 - line 163, column 23): " + [mbCard.constructor.name]);
+      }());
+    };
+  };
+  var sortingAreas = function(sortedCards) {
+    return div2([id3("card-area")])([div2([id3("card-area")])([sortingArea(0)(unsafeIndex2(sortedCards)(0)), sortingArea(1)(unsafeIndex2(sortedCards)(1)), sortingArea(2)(unsafeIndex2(sortedCards)(2)), sortingArea(3)(unsafeIndex2(sortedCards)(3))])]);
+  };
+  var renderWisconsin = function(state3) {
+    return div2([class_("wisconsin-container")])([function() {
+      if (state3.showIncorrect) {
+        return renderIncorrect;
+      }
+      ;
+      return div_([]);
+    }(), criteriaCards, br_, sortingAreas(state3.sortedCards), deckArea(state3.currentIndex)]);
   };
   var wisconsinComponent = function(dictMonadAff) {
     return mkComponent({
@@ -10351,7 +10288,7 @@
         return slot24(_wisconsinTest)(41)(wisconsinComponent1)(state3)(HandleWisconsinDone.create);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 115, column 16 - line 119, column 75): " + [state3.stage.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 117, column 16 - line 121, column 75): " + [state3.stage.constructor.name]);
     };
   };
   var mainComponent2 = function(dictMonadAff) {
