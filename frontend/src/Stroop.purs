@@ -202,7 +202,7 @@ handleAction = case _ of
 
   NextTrial -> do
     state <- H.get
-    if state.totalTrials >= 40
+    if state.totalTrials >= 10
       then H.modify_ _ { stage = StroopDone }
       else do
         let newWord = fromMaybe "Rojo" $ words !! (unsafeIndex wordsIndices state.totalTrials)
