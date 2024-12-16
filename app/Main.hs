@@ -20,9 +20,9 @@ main = do
   port <- lookupSetting "PORT" 8081
   pool <- makePool env
   --let cfg = defaultConfig { getPool = pool, getEnvConfig = env }
-     logger = setLogger env
+  --let logger = setLogger env
   runSqlPool doMigrations pool
-  run port $ logger (app pool)
+  run port (app pool)
   --runTLS tlsOpts warpOpts (app pool)
     --where
       --tlsOpts = tlsSettings "/etc/ssl/certs/prueba-np.com.crt" "/etc/ssl/private/prueba-np.com.key"
