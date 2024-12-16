@@ -181,6 +181,7 @@ wisconsinHandler action =
        HandleDrop ev areaId -> handleDrop ev areaId
        HandleWisconsinDone (WisconsinDone answers attempts) -> do
           let results = eval answers attempts
+          H.liftEffect $ log $ show results
           _ <- H.liftAff $ AX.post ResponseFormat.ignore "/wisconsin"
             (Just $ RequestBody.Json $ encodeJson results)
           H.raise $ WisconsinDone [] []
@@ -475,7 +476,7 @@ evalStep result last4 answer =
         else
           result'' { errors = result''.errors + 1 }
 
-eval :: Array Answer -> Array Int ->  Results
+eval :: Array Answer -> Array Int -> Results
 eval answers attempts = 
   case head answers of
     Nothing -> initResults
@@ -552,7 +553,7 @@ setNextCard = do
   currentIndex <- H.gets _.currentIndex
   H.liftEffect $ log $ show currentIndex
   let newIndex = currentIndex + 1
-  if newIndex >= 64
+  if newIndex >= 10
     then do
        answers <- H.gets _.answers
        attempts <- H.gets _.criterionAttempts
