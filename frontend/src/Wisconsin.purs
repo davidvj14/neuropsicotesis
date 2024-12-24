@@ -6,7 +6,7 @@ import Affjax.RequestBody as RequestBody
 import Affjax.ResponseFormat as ResponseFormat
 import Affjax.Web as AX
 import Data.Argonaut (encodeJson)
-import Data.Array (drop, head, last, length, replicate, snoc, take, updateAt, (!!))
+import Data.Array (drop, head, last, length, replicate, snoc, cons, take, updateAt, (!!))
 import Data.Array as Array
 import Data.DateTime.Instant (unInstant)
 import Data.Int (toNumber)
@@ -490,7 +490,7 @@ eval answers attempts =
             Just answer ->
               let
                 newAcc = evalStep acc last4 answer
-                newLast4 = take 4 $ snoc last4 answer
+                newLast4 = take 4 $ cons answer last4
               in
                 go newAcc newLast4 (drop 1 remainingAnswers)
       in
