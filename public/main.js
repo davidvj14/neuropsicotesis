@@ -395,8 +395,32 @@
     var str = n.toString();
     return isNaN(str + ".0") ? str : str + ".0";
   };
+  var showArrayImpl = function(f) {
+    return function(xs) {
+      var ss = [];
+      for (var i2 = 0, l = xs.length; i2 < l; i2++) {
+        ss[i2] = f(xs[i2]);
+      }
+      return "[" + ss.join(",") + "]";
+    };
+  };
 
   // output/Data.Show/index.js
+  var showRecordFields = function(dict) {
+    return dict.showRecordFields;
+  };
+  var showRecord = function() {
+    return function() {
+      return function(dictShowRecordFields) {
+        var showRecordFields1 = showRecordFields(dictShowRecordFields);
+        return {
+          show: function(record) {
+            return "{" + (showRecordFields1($$Proxy.value)(record) + "}");
+          }
+        };
+      };
+    };
+  };
   var showNumber = {
     show: showNumberImpl
   };
@@ -405,6 +429,45 @@
   };
   var show = function(dict) {
     return dict.show;
+  };
+  var showArray = function(dictShow) {
+    return {
+      show: showArrayImpl(show(dictShow))
+    };
+  };
+  var showRecordFieldsCons = function(dictIsSymbol) {
+    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+    return function(dictShowRecordFields) {
+      var showRecordFields1 = showRecordFields(dictShowRecordFields);
+      return function(dictShow) {
+        var show12 = show(dictShow);
+        return {
+          showRecordFields: function(v) {
+            return function(record) {
+              var tail2 = showRecordFields1($$Proxy.value)(record);
+              var key2 = reflectSymbol2($$Proxy.value);
+              var focus3 = unsafeGet(key2)(record);
+              return " " + (key2 + (": " + (show12(focus3) + ("," + tail2))));
+            };
+          }
+        };
+      };
+    };
+  };
+  var showRecordFieldsConsNil = function(dictIsSymbol) {
+    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+    return function(dictShow) {
+      var show12 = show(dictShow);
+      return {
+        showRecordFields: function(v) {
+          return function(record) {
+            var key2 = reflectSymbol2($$Proxy.value);
+            var focus3 = unsafeGet(key2)(record);
+            return " " + (key2 + (": " + (show12(focus3) + " ")));
+          };
+        }
+      };
+    };
   };
 
   // output/Data.Maybe/index.js
@@ -1605,7 +1668,7 @@
     };
   };
   var altExceptT = function(dictSemigroup) {
-    var append7 = append(dictSemigroup);
+    var append8 = append(dictSemigroup);
     return function(dictMonad) {
       var Bind1 = dictMonad.Bind1();
       var bind16 = bind(Bind1);
@@ -1626,7 +1689,7 @@
                   }
                   ;
                   if (rn instanceof Left) {
-                    return pure19(new Left(append7(rm.value0)(rn.value0)));
+                    return pure19(new Left(append8(rm.value0)(rn.value0)));
                   }
                   ;
                   throw new Error("Failed pattern match at Control.Monad.Except.Trans (line 87, column 9 - line 89, column 49): " + [rn.constructor.name]);
@@ -1944,12 +2007,12 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append7 = append(dictMonoid.Semigroup0());
+      var append8 = append(dictMonoid.Semigroup0());
       var mempty2 = mempty(dictMonoid);
       return function(f) {
         return foldr22(function(x) {
           return function(acc) {
-            return append7(f(x))(acc);
+            return append8(f(x))(acc);
           };
         })(mempty2);
       };
@@ -2093,6 +2156,7 @@
 
   // output/Data.Array/index.js
   var fromJust2 = /* @__PURE__ */ fromJust();
+  var append2 = /* @__PURE__ */ append(semigroupArray);
   var zipWith = /* @__PURE__ */ runFn3(zipWithImpl);
   var zip = /* @__PURE__ */ function() {
     return zipWith(Tuple.create);
@@ -2156,6 +2220,11 @@
           return fromJust2(deleteAt(i2)(v2));
         })(findIndex(v(v1))(v2));
       };
+    };
+  };
+  var cons = function(x) {
+    return function(xs) {
+      return append2([x])(xs);
     };
   };
 
@@ -2765,7 +2834,7 @@
   var head2 = function(v) {
     return v.value0;
   };
-  var cons = function(y) {
+  var cons2 = function(y) {
     return function(v) {
       return new NonEmpty(y, new Cons(v.value0, v.value1));
     };
@@ -6466,7 +6535,7 @@
               }
               ;
               if (func instanceof Ap) {
-                return goLeft(dictApplicative)(fStack)(cons(func.value1)(valStack))(nat)(func.value0)(count + 1 | 0);
+                return goLeft(dictApplicative)(fStack)(cons2(func.value1)(valStack))(nat)(func.value0)(count + 1 | 0);
               }
               ;
               throw new Error("Failed pattern match at Control.Applicative.Free (line 102, column 41 - line 105, column 81): " + [func.constructor.name]);
@@ -6796,13 +6865,13 @@
   var empty6 = /* @__PURE__ */ function() {
     return CatNil.value;
   }();
-  var append2 = link;
+  var append3 = link;
   var semigroupCatList = {
-    append: append2
+    append: append3
   };
   var snoc4 = function(cat) {
     return function(a2) {
-      return append2(cat)(new CatCons(a2, empty5));
+      return append3(cat)(new CatCons(a2, empty5));
     };
   };
 
@@ -6819,7 +6888,7 @@
       return val;
     };
   };
-  var append3 = /* @__PURE__ */ append(semigroupCatList);
+  var append4 = /* @__PURE__ */ append(semigroupCatList);
   var Free = /* @__PURE__ */ function() {
     function Free2(value0, value1) {
       this.value0 = value0;
@@ -6865,7 +6934,7 @@
       };
       var concatF = function(v22) {
         return function(r) {
-          return new Free(v22.value0, append3(v22.value1)(r));
+          return new Free(v22.value0, append4(v22.value1)(r));
         };
       };
       if (v.value0 instanceof Return) {
@@ -6994,7 +7063,7 @@
   // output/Halogen.Subscription/index.js
   var $$void4 = /* @__PURE__ */ $$void(functorEffect);
   var bind2 = /* @__PURE__ */ bind(bindEffect);
-  var append4 = /* @__PURE__ */ append(semigroupArray);
+  var append5 = /* @__PURE__ */ append(semigroupArray);
   var traverse_2 = /* @__PURE__ */ traverse_(applicativeEffect);
   var traverse_1 = /* @__PURE__ */ traverse_2(foldableArray);
   var unsubscribe = function(v) {
@@ -7018,7 +7087,7 @@
       emitter: function(k) {
         return function __do4() {
           modify_(function(v) {
-            return append4(v)([k]);
+            return append5(v)([k]);
           })(subscribers)();
           return modify_(deleteBy(unsafeRefEq)(k))(subscribers);
         };
@@ -8123,7 +8192,7 @@
       return "anxiety";
     }
   })())());
-  var append5 = /* @__PURE__ */ append(semigroupArray);
+  var append6 = /* @__PURE__ */ append(semigroupArray);
   var value6 = /* @__PURE__ */ value3(isPropString);
   var identity9 = /* @__PURE__ */ identity(categoryFn);
   var slot3 = /* @__PURE__ */ slot();
@@ -8524,7 +8593,7 @@
     return function(index4) {
       var step4 = function(arr) {
         return function(v) {
-          return append5(arr)([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v1) {
+          return append6(arr)([input([type_6(InputRadio.value), name4(show4(index4)), required2(true), onChecked(function(v1) {
             return new UpdateDepression(index4, v.value0);
           })]), text("    " + v.value1), br_]);
         };
@@ -8774,45 +8843,55 @@
   var pure12 = /* @__PURE__ */ pure(applicativeHalogenM);
   var log5 = /* @__PURE__ */ log3(monadEffectEffect);
   var show5 = /* @__PURE__ */ show(showInt);
-  var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
-  var gEncodeJsonCons1 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJNumber);
-  var encodeJson3 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonArray(encodeJsonInt))(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons1(gEncodeJsonNil)({
-    reflectSymbol: function() {
-      return "totalTime";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "timeToFirst";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "timeAfterError";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "score";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "perseverations";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "maintenanceErrors";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "errors";
-    }
-  })())({
-    reflectSymbol: function() {
-      return "deferredPerseverations";
-    }
-  })())({
+  var criterionAttemptsIsSymbol = {
     reflectSymbol: function() {
       return "criterionAttempts";
     }
-  })())());
+  };
+  var deferredPerseverationsIsSymbol = {
+    reflectSymbol: function() {
+      return "deferredPerseverations";
+    }
+  };
+  var errorsIsSymbol = {
+    reflectSymbol: function() {
+      return "errors";
+    }
+  };
+  var maintenanceErrorsIsSymbol = {
+    reflectSymbol: function() {
+      return "maintenanceErrors";
+    }
+  };
+  var perseverationsIsSymbol = {
+    reflectSymbol: function() {
+      return "perseverations";
+    }
+  };
+  var scoreIsSymbol = {
+    reflectSymbol: function() {
+      return "score";
+    }
+  };
+  var timeAfterErrorIsSymbol = {
+    reflectSymbol: function() {
+      return "timeAfterError";
+    }
+  };
+  var timeToFirstIsSymbol = {
+    reflectSymbol: function() {
+      return "timeToFirst";
+    }
+  };
+  var totalTimeIsSymbol = {
+    reflectSymbol: function() {
+      return "totalTime";
+    }
+  };
+  var show1 = /* @__PURE__ */ show(/* @__PURE__ */ showRecord()()(/* @__PURE__ */ showRecordFieldsCons(criterionAttemptsIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(deferredPerseverationsIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(errorsIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(maintenanceErrorsIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(perseverationsIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(scoreIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(timeAfterErrorIsSymbol)(/* @__PURE__ */ showRecordFieldsCons(timeToFirstIsSymbol)(/* @__PURE__ */ showRecordFieldsConsNil(totalTimeIsSymbol)(showNumber))(showNumber))(showNumber))(showInt))(showInt))(showInt))(showInt))(showInt))(/* @__PURE__ */ showArray(showInt))));
+  var gEncodeJsonCons3 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
+  var gEncodeJsonCons1 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonJNumber);
+  var encodeJson3 = /* @__PURE__ */ encodeJson(/* @__PURE__ */ encodeRecord(/* @__PURE__ */ gEncodeJsonCons(/* @__PURE__ */ encodeJsonArray(encodeJsonInt))(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons3(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons1(/* @__PURE__ */ gEncodeJsonCons1(gEncodeJsonNil)(totalTimeIsSymbol)())(timeToFirstIsSymbol)())(timeAfterErrorIsSymbol)())(scoreIsSymbol)())(perseverationsIsSymbol)())(maintenanceErrorsIsSymbol)())(errorsIsSymbol)())(deferredPerseverationsIsSymbol)())(criterionAttemptsIsSymbol)())());
   var identity10 = /* @__PURE__ */ identity(categoryFn);
   var slot5 = /* @__PURE__ */ slot();
   var slot13 = /* @__PURE__ */ slot5({
@@ -9082,29 +9161,29 @@
   var timerShowIncorrect = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     return discard4(modify_5(function(state3) {
-      var $192 = {};
-      for (var $193 in state3) {
-        if ({}.hasOwnProperty.call(state3, $193)) {
-          $192[$193] = state3[$193];
+      var $223 = {};
+      for (var $224 in state3) {
+        if ({}.hasOwnProperty.call(state3, $224)) {
+          $223[$224] = state3[$224];
         }
         ;
       }
       ;
-      $192.showIncorrect = true;
-      return $192;
+      $223.showIncorrect = true;
+      return $223;
     }))(function() {
       return discard4(liftAff3(delay(500)))(function() {
         return modify_5(function(state3) {
-          var $195 = {};
-          for (var $196 in state3) {
-            if ({}.hasOwnProperty.call(state3, $196)) {
-              $195[$196] = state3[$196];
+          var $226 = {};
+          for (var $227 in state3) {
+            if ({}.hasOwnProperty.call(state3, $227)) {
+              $226[$227] = state3[$227];
             }
             ;
           }
           ;
-          $195.showIncorrect = false;
-          return $195;
+          $226.showIncorrect = false;
+          return $226;
         });
       });
     });
@@ -9228,7 +9307,7 @@
             return eq12(v.value0)(v1.value0) || eq12(v.value0)(v1.value1);
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 398, column 5 - line 401, column 48): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 399, column 5 - line 402, column 48): " + [v1.constructor.name]);
         }
         ;
         if (v instanceof TwoErr) {
@@ -9244,10 +9323,10 @@
             return eq12(v.value0)(v1.value0) || (eq12(v.value0)(v1.value1) || (eq12(v.value1)(v1.value0) || eq12(v.value1)(v1.value1)));
           }
           ;
-          throw new Error("Failed pattern match at Wisconsin (line 403, column 5 - line 406, column 72): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Wisconsin (line 404, column 5 - line 407, column 72): " + [v1.constructor.name]);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 394, column 1 - line 406, column 72): " + [v.constructor.name, v1.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 395, column 1 - line 407, column 72): " + [v.constructor.name, v1.constructor.name]);
       };
     }
   };
@@ -9319,39 +9398,39 @@
       return v.score;
     }))(function(score) {
       return when2(mod2(score)(10) === 0)(modify_5(function(state3) {
-        var $230 = {};
-        for (var $231 in state3) {
-          if ({}.hasOwnProperty.call(state3, $231)) {
-            $230[$231] = state3[$231];
+        var $261 = {};
+        for (var $262 in state3) {
+          if ({}.hasOwnProperty.call(state3, $262)) {
+            $261[$262] = state3[$262];
           }
           ;
         }
         ;
-        $230.currentCriterion = unsafeIndex2(criteria)(div3(score)(10));
-        $230.foundCriterion = false;
-        return $230;
+        $261.currentCriterion = unsafeIndex2(criteria)(div3(score)(10));
+        $261.foundCriterion = false;
+        return $261;
       }));
     });
   };
   var compareForError = function(c1) {
     return function(c2) {
       var matches2 = append12(function() {
-        var $233 = eq22(c1.shape)(c2.shape);
-        if ($233) {
+        var $264 = eq22(c1.shape)(c2.shape);
+        if ($264) {
           return [Shape.value];
         }
         ;
         return [];
       }())(append12(function() {
-        var $234 = eq6(c1.color)(c2.color);
-        if ($234) {
+        var $265 = eq6(c1.color)(c2.color);
+        if ($265) {
           return [Color.value];
         }
         ;
         return [];
       }())(function() {
-        var $235 = eq3(c1.number)(c2.number);
-        if ($235) {
+        var $266 = eq3(c1.number)(c2.number);
+        if ($266) {
           return [$$Number.value];
         }
         ;
@@ -9399,46 +9478,46 @@
                     var time4 = timerNew - timerOld;
                     var updateState = function(grade) {
                       return modify_5(function(state3) {
-                        var $237 = {};
-                        for (var $238 in state3) {
-                          if ({}.hasOwnProperty.call(state3, $238)) {
-                            $237[$238] = state3[$238];
+                        var $268 = {};
+                        for (var $269 in state3) {
+                          if ({}.hasOwnProperty.call(state3, $269)) {
+                            $268[$269] = state3[$269];
                           }
                           ;
                         }
                         ;
-                        $237.answers = snoc(state3.answers)({
+                        $268.answers = snoc(state3.answers)({
                           grade,
                           timeTaken: time4
                         });
-                        $237.currentAttempts = state3.currentAttempts + 1 | 0;
-                        return $237;
+                        $268.currentAttempts = state3.currentAttempts + 1 | 0;
+                        return $268;
                       });
                     };
                     if (currentCriterion instanceof Shape) {
-                      var $241 = eq22(currentCard.shape)(critCard.shape);
-                      if ($241) {
+                      var $272 = eq22(currentCard.shape)(critCard.shape);
+                      if ($272) {
                         return discard4(updateState(Correct.value))(function() {
                           return discard4(modify_5(function(state3) {
-                            var $243 = {};
-                            for (var $244 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $244)) {
-                                $243[$244] = state3[$244];
+                            var $274 = {};
+                            for (var $275 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $275)) {
+                                $274[$275] = state3[$275];
                               }
                               ;
                             }
                             ;
-                            $243.score = state3.score + 1 | 0;
-                            $243.currentAttempts = 0;
-                            $243.criterionAttempts = function() {
+                            $274.score = state3.score + 1 | 0;
+                            $274.currentAttempts = 0;
+                            $274.criterionAttempts = function() {
                               if (foundCriterion) {
                                 return state3.criterionAttempts;
                               }
                               ;
                               return snoc(criterionAttempts)(currentAttempts + 1 | 0);
                             }();
-                            $243.foundCriterion = true;
-                            return $243;
+                            $274.foundCriterion = true;
+                            return $274;
                           }))(function() {
                             return pure12(true);
                           });
@@ -9447,16 +9526,16 @@
                       ;
                       return discard4(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
                         return discard4(modify_5(function(state3) {
-                          var $246 = {};
-                          for (var $247 in state3) {
-                            if ({}.hasOwnProperty.call(state3, $247)) {
-                              $246[$247] = state3[$247];
+                          var $277 = {};
+                          for (var $278 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $278)) {
+                              $277[$278] = state3[$278];
                             }
                             ;
                           }
                           ;
-                          $246.currentAttempts = currentAttempts + 1 | 0;
-                          return $246;
+                          $277.currentAttempts = currentAttempts + 1 | 0;
+                          return $277;
                         }))(function() {
                           return pure12(false);
                         });
@@ -9464,29 +9543,29 @@
                     }
                     ;
                     if (currentCriterion instanceof Color) {
-                      var $249 = eq6(currentCard.color)(critCard.color);
-                      if ($249) {
+                      var $280 = eq6(currentCard.color)(critCard.color);
+                      if ($280) {
                         return discard4(updateState(Correct.value))(function() {
                           return discard4(modify_5(function(state3) {
-                            var $251 = {};
-                            for (var $252 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $252)) {
-                                $251[$252] = state3[$252];
+                            var $282 = {};
+                            for (var $283 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $283)) {
+                                $282[$283] = state3[$283];
                               }
                               ;
                             }
                             ;
-                            $251.score = state3.score + 1 | 0;
-                            $251.currentAttempts = 0;
-                            $251.criterionAttempts = function() {
+                            $282.score = state3.score + 1 | 0;
+                            $282.currentAttempts = 0;
+                            $282.criterionAttempts = function() {
                               if (foundCriterion) {
                                 return state3.criterionAttempts;
                               }
                               ;
                               return snoc(criterionAttempts)(currentAttempts + 1 | 0);
                             }();
-                            $251.foundCriterion = true;
-                            return $251;
+                            $282.foundCriterion = true;
+                            return $282;
                           }))(function() {
                             return pure12(true);
                           });
@@ -9495,16 +9574,16 @@
                       ;
                       return discard4(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
                         return discard4(modify_5(function(state3) {
-                          var $254 = {};
-                          for (var $255 in state3) {
-                            if ({}.hasOwnProperty.call(state3, $255)) {
-                              $254[$255] = state3[$255];
+                          var $285 = {};
+                          for (var $286 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $286)) {
+                              $285[$286] = state3[$286];
                             }
                             ;
                           }
                           ;
-                          $254.currentAttempts = currentAttempts + 1 | 0;
-                          return $254;
+                          $285.currentAttempts = currentAttempts + 1 | 0;
+                          return $285;
                         }))(function() {
                           return pure12(false);
                         });
@@ -9512,29 +9591,29 @@
                     }
                     ;
                     if (currentCriterion instanceof $$Number) {
-                      var $257 = eq3(currentCard.number)(critCard.number);
-                      if ($257) {
+                      var $288 = eq3(currentCard.number)(critCard.number);
+                      if ($288) {
                         return discard4(updateState(Correct.value))(function() {
                           return discard4(modify_5(function(state3) {
-                            var $259 = {};
-                            for (var $260 in state3) {
-                              if ({}.hasOwnProperty.call(state3, $260)) {
-                                $259[$260] = state3[$260];
+                            var $290 = {};
+                            for (var $291 in state3) {
+                              if ({}.hasOwnProperty.call(state3, $291)) {
+                                $290[$291] = state3[$291];
                               }
                               ;
                             }
                             ;
-                            $259.score = state3.score + 1 | 0;
-                            $259.currentAttempts = 0;
-                            $259.criterionAttempts = function() {
+                            $290.score = state3.score + 1 | 0;
+                            $290.currentAttempts = 0;
+                            $290.criterionAttempts = function() {
                               if (foundCriterion) {
                                 return state3.criterionAttempts;
                               }
                               ;
                               return snoc(criterionAttempts)(currentAttempts + 1 | 0);
                             }();
-                            $259.foundCriterion = true;
-                            return $259;
+                            $290.foundCriterion = true;
+                            return $290;
                           }))(function() {
                             return pure12(true);
                           });
@@ -9543,23 +9622,23 @@
                       ;
                       return discard4(updateState(new Incorrect(currentCriterion, compareForError(critCard)(currentCard))))(function() {
                         return discard4(modify_5(function(state3) {
-                          var $262 = {};
-                          for (var $263 in state3) {
-                            if ({}.hasOwnProperty.call(state3, $263)) {
-                              $262[$263] = state3[$263];
+                          var $293 = {};
+                          for (var $294 in state3) {
+                            if ({}.hasOwnProperty.call(state3, $294)) {
+                              $293[$294] = state3[$294];
                             }
                             ;
                           }
                           ;
-                          $262.currentAttempts = currentAttempts + 1 | 0;
-                          return $262;
+                          $293.currentAttempts = currentAttempts + 1 | 0;
+                          return $293;
                         }))(function() {
                           return pure12(false);
                         });
                       });
                     }
                     ;
-                    throw new Error("Failed pattern match at Wisconsin (line 219, column 3 - line 270, column 25): " + [currentCriterion.constructor.name]);
+                    throw new Error("Failed pattern match at Wisconsin (line 220, column 3 - line 271, column 25): " + [currentCriterion.constructor.name]);
                   });
                 });
               });
@@ -9585,10 +9664,10 @@
           return eq5(v.value0.grade)(grade);
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 441, column 17 - line 443, column 42): " + [v.value0.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 442, column 17 - line 444, column 42): " + [v.value0.grade.constructor.name]);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 439, column 3 - line 443, column 42): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 440, column 3 - line 444, column 42): " + [v.constructor.name]);
     };
   };
   var checkForMaintenanceError = function(last4) {
@@ -9676,8 +9755,8 @@
         }
         ;
         if (answer.grade instanceof Incorrect) {
-          var $285 = checkForPerseveration(last4)(answer.grade);
-          if ($285) {
+          var $316 = checkForPerseveration(last4)(answer.grade);
+          if ($316) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -9691,8 +9770,8 @@
             };
           }
           ;
-          var $286 = checkForDeferred(last4)(answer.grade);
-          if ($286) {
+          var $317 = checkForDeferred(last4)(answer.grade);
+          if ($317) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -9706,8 +9785,8 @@
             };
           }
           ;
-          var $287 = checkForMaintenanceError(last4);
-          if ($287) {
+          var $318 = checkForMaintenanceError(last4);
+          if ($318) {
             return {
               score: result$prime$prime.score,
               errors: result$prime$prime.errors,
@@ -9734,7 +9813,7 @@
           };
         }
         ;
-        throw new Error("Failed pattern match at Wisconsin (line 466, column 5 - line 476, column 52): " + [answer.grade.constructor.name]);
+        throw new Error("Failed pattern match at Wisconsin (line 467, column 5 - line 477, column 52): " + [answer.grade.constructor.name]);
       };
     };
   };
@@ -9772,7 +9851,7 @@
                 }
                 ;
                 if (v1 instanceof Just) {
-                  var newLast4 = take(4)(snoc(last4)(v1.value0));
+                  var newLast4 = take(4)(cons(v1.value0)(last4));
                   var newAcc = evalStep(acc)(last4)(v1.value0);
                   $tco_var_acc = newAcc;
                   $tco_var_last4 = newLast4;
@@ -9780,7 +9859,7 @@
                   return;
                 }
                 ;
-                throw new Error("Failed pattern match at Wisconsin (line 487, column 11 - line 494, column 61): " + [v1.constructor.name]);
+                throw new Error("Failed pattern match at Wisconsin (line 488, column 11 - line 495, column 61): " + [v1.constructor.name]);
               }
               ;
               while (!$tco_done) {
@@ -9794,7 +9873,7 @@
         return go2(initialResult)([])(answers);
       }
       ;
-      throw new Error("Failed pattern match at Wisconsin (line 480, column 3 - line 496, column 36): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Wisconsin (line 481, column 3 - line 497, column 36): " + [v.constructor.name]);
     };
   };
   var cards = /* @__PURE__ */ function() {
@@ -10082,8 +10161,8 @@
     }))(function(currentIndex) {
       return discard4(liftEffect7(log5(show5(currentIndex))))(function() {
         var newIndex = currentIndex + 1 | 0;
-        var $294 = newIndex >= 64;
-        if ($294) {
+        var $325 = newIndex >= 10;
+        if ($325) {
           return bind5(gets4(function(v) {
             return v.answers;
           }))(function(answers) {
@@ -10096,17 +10175,17 @@
         }
         ;
         return modify_5(function(state3) {
-          var $295 = {};
-          for (var $296 in state3) {
-            if ({}.hasOwnProperty.call(state3, $296)) {
-              $295[$296] = state3[$296];
+          var $326 = {};
+          for (var $327 in state3) {
+            if ({}.hasOwnProperty.call(state3, $327)) {
+              $326[$327] = state3[$327];
             }
             ;
           }
           ;
-          $295.currentIndex = newIndex;
-          $295.currentCard = nextCard(newIndex);
-          return $295;
+          $326.currentIndex = newIndex;
+          $326.currentCard = nextCard(newIndex);
+          return $326;
         });
       });
     });
@@ -10132,16 +10211,16 @@
               }))(function(index4) {
                 var newSorted = unsafeArrUpdate(areaId)(new Just(index4))(sortedCards);
                 return discard4(modify_5(function(state3) {
-                  var $298 = {};
-                  for (var $299 in state3) {
-                    if ({}.hasOwnProperty.call(state3, $299)) {
-                      $298[$299] = state3[$299];
+                  var $329 = {};
+                  for (var $330 in state3) {
+                    if ({}.hasOwnProperty.call(state3, $330)) {
+                      $329[$330] = state3[$330];
                     }
                     ;
                   }
                   ;
-                  $298.sortedCards = newSorted;
-                  return $298;
+                  $329.sortedCards = newSorted;
+                  return $329;
                 }))(function() {
                   return bind5(evalAnswer1(areaId))(function(isCorrect) {
                     return discard4(when2(!isCorrect)(timerShowIncorrect1))(function() {
@@ -10149,16 +10228,16 @@
                         return discard4(maybeNextCriterion1)(function() {
                           return bind5(liftEffect7(nowToNumber))(function(timer) {
                             return modify_5(function(state3) {
-                              var $301 = {};
-                              for (var $302 in state3) {
-                                if ({}.hasOwnProperty.call(state3, $302)) {
-                                  $301[$302] = state3[$302];
+                              var $332 = {};
+                              for (var $333 in state3) {
+                                if ({}.hasOwnProperty.call(state3, $333)) {
+                                  $332[$333] = state3[$333];
                                 }
                                 ;
                               }
                               ;
-                              $301.lastTimer = timer;
-                              return $301;
+                              $332.lastTimer = timer;
+                              return $332;
                             });
                           });
                         });
@@ -10181,17 +10260,17 @@
       if (action2 instanceof WisconsinInstructionsDone) {
         return bind5(liftEffect7(nowToNumber))(function(ms) {
           return modify_5(function(state3) {
-            var $305 = {};
-            for (var $306 in state3) {
-              if ({}.hasOwnProperty.call(state3, $306)) {
-                $305[$306] = state3[$306];
+            var $336 = {};
+            for (var $337 in state3) {
+              if ({}.hasOwnProperty.call(state3, $337)) {
+                $336[$337] = state3[$337];
               }
               ;
             }
             ;
-            $305.stage = WisconsinTest.value;
-            $305.lastTimer = ms;
-            return $305;
+            $336.stage = WisconsinTest.value;
+            $336.lastTimer = ms;
+            return $336;
           });
         });
       }
@@ -10206,8 +10285,10 @@
       ;
       if (action2 instanceof HandleWisconsinDone) {
         var results = $$eval(action2.value0.value0)(action2.value0.value1);
-        return bind5(liftAff3(post2(ignore)("/wisconsin")(new Just(new Json(encodeJson3(results))))))(function() {
-          return raise(new WisconsinDone([], []));
+        return discard4(liftEffect7(log5(show1(results))))(function() {
+          return bind5(liftAff3(post2(ignore)("/wisconsin")(new Just(new Json(encodeJson3(results))))))(function() {
+            return raise(new WisconsinDone([], []));
+          });
         });
       }
       ;
@@ -10441,7 +10522,7 @@
   }();
   var sum2 = /* @__PURE__ */ foldl2(/* @__PURE__ */ add(semiringNumber))(0);
   var stimuli = /* @__PURE__ */ function() {
-    return [Go.value, Go.value, NoGo.value, NoGo.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, NoGo.value, NoGo.value, Go.value, NoGo.value, NoGo.value, Go.value, Go.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, NoGo.value, Go.value, Go.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, Go.value, Go.value, NoGo.value, NoGo.value, NoGo.value, Go.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, Go.value, NoGo.value, Go.value, Go.value, NoGo.value, NoGo.value, Go.value, NoGo.value, NoGo.value, NoGo.value, Go.value, Go.value, Go.value, Go.value, Go.value, Go.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, NoGo.value, NoGo.value, Go.value, NoGo.value, NoGo.value, Go.value, Go.value, Go.value, NoGo.value, Go.value];
+    return [Go.value, Go.value, NoGo.value, NoGo.value, Go.value, Go.value, Go.value, NoGo.value, Go.value, NoGo.value];
   }();
   var replicateM_ = function(dictMonad) {
     var pure23 = pure(dictMonad.Applicative0());
@@ -10620,7 +10701,7 @@
   var runTestSession = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     var hideStimulus1 = hideStimulus(dictMonadAff);
-    return discard5(replicateM_1(75)(discard5(showStimulus(dictMonadAff))(function() {
+    return discard5(replicateM_1(10)(discard5(showStimulus(dictMonadAff))(function() {
       return discard5(liftAff3(delay(500)))(function() {
         return discard5(hideStimulus1)(function() {
           return liftAff3(delay(1500));
@@ -10713,7 +10794,7 @@
   var runPracticeSession = function(dictMonadAff) {
     var liftAff3 = liftAff(monadAffHalogenM(dictMonadAff));
     var hideStimulus1 = hideStimulus(dictMonadAff);
-    return discard5(replicateM_1(5)(discard5(showStimulusRandom(dictMonadAff))(function() {
+    return discard5(replicateM_1(3)(discard5(showStimulusRandom(dictMonadAff))(function() {
       return discard5(liftAff3(delay(500)))(function() {
         return discard5(hideStimulus1)(function() {
           return liftAff3(delay(1500));
@@ -10916,7 +10997,7 @@
   var bind12 = /* @__PURE__ */ bind(bindHalogenM);
   var gets6 = /* @__PURE__ */ gets(monadStateHalogenM);
   var modify_7 = /* @__PURE__ */ modify_2(monadStateHalogenM);
-  var append6 = /* @__PURE__ */ append(semigroupArray);
+  var append7 = /* @__PURE__ */ append(semigroupArray);
   var type_7 = /* @__PURE__ */ type_3(isPropInputType);
   var value7 = /* @__PURE__ */ value3(isPropString);
   var gEncodeJsonCons5 = /* @__PURE__ */ gEncodeJsonCons(encodeJsonInt);
@@ -11396,7 +11477,7 @@
   };
   var mkQuestion2 = function(label5) {
     return function(innerHtml) {
-      return div2([class_("question")])(append6([label_([text(label5)]), br_])(append6(innerHtml)([br_])));
+      return div2([class_("question")])(append7([label_([text(label5)]), br_])(append7(innerHtml)([br_])));
     };
   };
   var sexQuestion = /* @__PURE__ */ function() {
@@ -12344,7 +12425,7 @@
       ;
       if (v instanceof NextTrial) {
         return bind8(get5)(function(state3) {
-          var $103 = state3.totalTrials >= 40;
+          var $103 = state3.totalTrials >= 10;
           if ($103) {
             return modify_8(function(v1) {
               var $104 = {};
@@ -12708,9 +12789,7 @@
       }
       ;
       if (action2 instanceof HandleWisconsin) {
-        return discard8(liftEffect7(setStageCookie("gonogo")))(function() {
-          return fadeToStage1(GoNoGo.value);
-        });
+        return fadeToStage1(GoNoGo.value);
       }
       ;
       if (action2 instanceof HandleGoNoGo) {

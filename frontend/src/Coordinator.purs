@@ -121,7 +121,7 @@ mainHandler action = do
        H.liftEffect $ setStageCookie "wisconsin"
        fadeToStage Wisconsin
     HandleWisconsin _ -> do
-       H.liftEffect $ setStageCookie "gonogo"
+       --H.liftEffect $ setStageCookie "gonogo"
        fadeToStage GoNoGo
     HandleGoNoGo _ -> do
        H.liftEffect $ setStageCookie "stroop"

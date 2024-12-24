@@ -231,7 +231,7 @@ goNoGoHandler = case _ of
 
 runPracticeSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runPracticeSession = do
-  replicateM_ 5 $ do
+  replicateM_ 3 $ do
     showStimulusRandom
     H.liftAff $ delay $ Milliseconds 500.0
     hideStimulus
@@ -242,7 +242,7 @@ runPracticeSession = do
 
 runTestSession :: forall m. MonadAff m => H.HalogenM State Action () Output m Unit
 runTestSession = do
-  replicateM_ 75 $ do
+  replicateM_ 10 $ do
     showStimulus
     H.liftAff $ delay $ Milliseconds 500.0
     hideStimulus
@@ -294,4 +294,4 @@ nowToNumber :: Effect Number
 nowToNumber = map (\(Milliseconds ms) -> ms) $ map unInstant now
 
 stimuli :: Array Stimulus
-stimuli = [Go,Go,NoGo,NoGo,Go,Go,Go,NoGo,Go,NoGo,NoGo,Go,NoGo,NoGo,Go,Go,Go,Go,Go,NoGo,Go,NoGo,Go,Go,Go,Go,Go,NoGo,Go,Go,Go,NoGo,NoGo,NoGo,Go,Go,Go,Go,NoGo,Go,Go,NoGo,Go,Go,NoGo,NoGo,Go,NoGo,NoGo,NoGo,Go,Go,Go,Go,Go,Go,Go,Go,Go,NoGo,Go,Go,Go,NoGo,Go,NoGo,NoGo,Go,NoGo,NoGo,Go,Go,Go,NoGo,Go]
+stimuli = [Go,Go,NoGo,NoGo,Go,Go,Go,NoGo,Go,NoGo]
